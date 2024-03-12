@@ -7,7 +7,8 @@ MAINTAINER KBase Developer
 # installation scripts.
 
 # RUN apt-get update
-
+COPY ./pyEFI-0.0.1-py3-none-any.whl .
+RUN pip install pyEFI-0.0.1-py3-none-any.whl
 
 # -----------------------------------------
 WORKDIR /kb/module
