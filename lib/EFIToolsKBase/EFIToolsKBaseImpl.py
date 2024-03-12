@@ -83,6 +83,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_EST_Families
 
+    def run_EFI_EST_FASTA(self, ctx, params):
+        #BEGIN run_EFI_EST_FASTA
+        pass
+        #END run_EFI_EST_FASTA
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
