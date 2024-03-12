@@ -1,0 +1,368 @@
+{
+    "ver": "0.0.1",
+    "authors": [
+        "hdemeyer"
+    ],
+    "contact": "",
+    "categories": [
+        "active"
+    ],
+    "widgets": {
+        "input": null,
+        "output": null
+    },
+    "parameters": [
+        {
+            "id": "query_sequence",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "textarea",
+            "textarea_options": {
+                "n_rows": 10
+            }
+        },
+        {
+            "id": "e_value",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "5"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1
+            }
+        },
+        {
+            "id": "max_sequences_retrieved",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "1000"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1,
+                "max_int": 10000
+            }
+        },
+        {
+            "id": "sequence_database",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "UniProt"
+            ],
+            "field_type": "dropdown",
+            "dropdown_options": {
+                "options": [
+                    {
+                        "value": "UniProt",
+                        "display": "UniProt"
+                    },
+                    {
+                        "value": "UniRef90",
+                        "display": "UniRef90"
+                    },
+                    {
+                        "value": "UniRef50",
+                        "display": "UniRef50"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "fragment_option",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                false
+            ],
+            "field_type": "checkbox",
+            "checkbox_options": {
+                "unchecked_value": false,
+                "checked_value": true
+            }
+        },
+        {
+            "id": "taxonomic_level",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "Superkingdom"
+            ],
+            "field_type": "dropdown",
+            "dropdown_options": {
+                "options": [
+                    {
+                        "value": "Superkingdom",
+                        "display": "Superkingdom"
+                    },
+                    {
+                        "value": "Kingdom",
+                        "display": "Kingdom"
+                    },
+                    {
+                        "value": "Pylum",
+                        "display": "Phylum"
+                    },
+                    {
+                        "value": "Class",
+                        "display": "Class"
+                    },
+                    {
+                        "value": "Order",
+                        "display": "Order"
+                    },
+                    {
+                        "value": "Family",
+                        "display": "Family"
+                    },
+                    {
+                        "value": "Genus",
+                        "display": "Genus"
+                    },
+                    {
+                        "value": "Species",
+                        "display": "Species"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "filter_string",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "text"
+        },
+        {
+            "id": "ssn_e_value",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "5"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1
+            }
+        },
+        {
+            "id": "families_to_add",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "text"
+        },
+        {
+            "id": "families_addition_cluster_id_format",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "UniProt"
+            ],
+            "field_type": "dropdown",
+            "dropdown_options": {
+                "options": [
+                    {
+                        "value": "UniProt",
+                        "display": "UniProt"
+                    },
+                    {
+                        "value": "UniRef90",
+                        "display": "UniRef90"
+                    },
+                    {
+                        "value": "UniRef50",
+                        "display": "UniRef50"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "fraction",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "1"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1
+            }
+        }
+    ],
+    "parameter-groups": [
+        {
+            "id": "blast_options",
+            "parameters": [
+                "e_value",
+                "max_sequences_retrieved",
+                "sequence_database"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "fragment_options",
+            "parameters": [
+                "fragment_option"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "taxonomy_filter_options",
+            "parameters": [
+                "taxonomic_level",
+                "filter_string"
+            ],
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": true,
+            "with_border": true
+        },
+        {
+            "id": "ssn_edge_calc_options",
+            "parameters": [
+                "ssn_e_value"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "protein_family_addition_options",
+            "parameters": [
+                "families_to_add",
+                "families_addition_cluster_id_format",
+                "fraction"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        }
+    ],
+    "behavior": {
+        "service-mapping": {
+            "url": "",
+            "name": "EFIToolsKBase",
+            "method": "run_EFIToolsKBase",
+            "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                },
+                {
+                    "narrative_system_variable": "workspace_id",
+                    "target_property": "workspace_id"
+                },
+                {
+                    "input_parameter": "query_sequence",
+                    "target_property": "query_sequence",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "e_value",
+                    "target_property": "e_value",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "max_sequences_retrieved",
+                    "target_property": "max_sequences_retrieved",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "sequence_database",
+                    "target_property": "sequence_database",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "fragment_option",
+                    "target_property": "fragment_option",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "taxonomic_level",
+                    "target_property": "taxonomic_level",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "filter_string",
+                    "target_property": "filter_string",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "ssn_e_value",
+                    "target_property": "ssn_e_value",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "families_to_add",
+                    "target_property": "families_to_add",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "families_addition_cluster_id_format",
+                    "target_property": "families_addition_cluster_id_format",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "fraction",
+                    "target_property": "fraction",
+                    "target_type_transform": "resolved-ref"
+                }
+            ],
+            "output_mapping": [
+                {
+                    "service_method_output_path": [
+                        0,
+                        "report_name"
+                    ],
+                    "target_property": "report_name"
+                },
+                {
+                    "service_method_output_path": [
+                        0,
+                        "report_ref"
+                    ],
+                    "target_property": "report_ref"
+                }
+            ]
+        }
+    },
+    "job_id_output_field": "docker"
+}
