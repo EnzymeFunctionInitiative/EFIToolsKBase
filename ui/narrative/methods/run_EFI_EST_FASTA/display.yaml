@@ -1,0 +1,146 @@
+#
+# define display information
+#
+name: EFI-EST FASTA
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    fasta_sequences:
+        ui-name: Sequences (paste)
+        short-hint: |
+            Input FASTA-formatted sequences with the selected accession IDs in the header. 
+            
+    fasta_sequences_file:
+        ui-name: Sequences (upload)
+        short-hint: |
+            Upload FASTA-formatted sequences with the selected accession IDs in the header.
+            
+    header_format:
+        ui-name: Header Format
+        short-hint: |
+            The database-format used in the FASTA headers
+    
+    fragment_option:
+        ui-name: Exclude UniProt-defined fragments in the results
+        short-hint: |
+            Exclude UniProt-defined fragments in the results
+        long-hint: |
+            UniProt designates a Sequence Status for each member: Complete if the encoding DNA sequence has both start and stop codons; Fragment if the start and/or stop codon is missing. Approximately 10% of the entries in UniProt are fragments. 
+    
+    family_filter:
+        ui-name: Input a list of Pfam families, InterPro families, and/or Pfam clans to restrict the UniProt and/or UniRef IDs in the SSN to these families.
+        short-hint: |
+            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans. 
+
+    taxonomic_level:
+        ui-name: Taxonomic Level
+        short-hint: |
+            Which level of taxomony to which the filter string is applied
+    
+    filter_string:
+        ui-name: Filter string
+        short-hint: |
+            The filter to apply, may inlcude NOT at the beginning
+
+    families_to_add:
+        ui-name: Families
+        short-hint: |
+            The input format is a single family or comma/space separated list of families
+        long-hint: |
+            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
+
+    use_alternate_cluster_id_format:
+        ui-name: Use alternate cluster ID format
+        short-hint: |
+            Use selected cluster ID format instead of UniProt IDs
+            
+    fraction:
+        ui-name: Fraction
+        short-hint: |
+            Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
+        long-hint: |
+            Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
+
+
+    domain:
+        ui-name: Sequences trimmed to the domain boundaries defined by the input family will be used for the calculations
+        short-hint: |
+            Sequences trimmed to the domain boundaries defined by the input family will be used for the calculations
+    
+    family_domain_bound:
+        ui-name: Family
+        short-hint: |
+            Use domain boundaries from the specified family (enter only one family).
+    
+    region:
+        ui-name: Region
+        short-hint: |
+            N-terminal will select the portion of the sequence that is N-terminal to the specified domain to generate the SSN. C-terminal will select the portion of the sequence that is C-terminal to the specified domain to generate the SSN. Domain will use the specified domain. 
+
+    ssn_e_value:
+        ui-name: Negative log of e-value for all-by-all BLAST
+        short-hint: |
+            Negative log of e-value for all-by-all BLAST
+        long-hint: |
+            Input an alternate e-value for BLAST to calculate similarities/edge alignment scores similarities. The default parameter (5) is useful for most sequences. However, a larger e-value/smaller negative log should be used for short sequences or when low pairwise identities may be useful for separating functionally distinct SSN clusters. 
+
+    families_addition_cluster_id_format:
+        ui-name: |
+            Family Addition Format
+        short-hint:
+            The type of ID entered in the Families text box above
+
+parameter-groups:
+    fasta_input:
+        ui-name: FASTA Input
+        short-hint: |
+            FASTA Input
+
+    fragment_options:
+        ui-name: Fragment Option
+        short-hint: |
+            Fragment Options
+    family_filter_option:
+        ui-name: Filter by Family
+        short-hint: |
+            Filter by Family
+            
+    taxonomy_filter_options:
+        ui-name: Filter by Taxonomy
+        short-hint: |
+            A taxonomy filter is applied to the list of UniProt, UniRef90, or UniRef50 cluster IDs retrieved by the BLAST
+    
+    protein_family_addition_options:
+        ui-name: Protein Family Addition Options
+        short-hint:
+            Add sequences belonging to Pfam and/or InterPro families to the sequences used to generate the SSN. 
+    
+    family_domain_boundary_option:
+        ui-name: Family Domain Boundary Option
+        short-hint: |
+            Pfam and InterPro databases define domain boundaries for members of their families
+    
+    ssn_edge_calc_options:
+        ui-name: SSN Edge Calculation Option
+        short-hint: |
+            Parameters for all-by-all BLAST
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
