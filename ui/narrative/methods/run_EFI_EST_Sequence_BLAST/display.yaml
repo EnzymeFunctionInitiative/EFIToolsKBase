@@ -85,7 +85,7 @@ parameters:
         ui-name: |
             Family Addition Format
         short-hint:
-            When checked, use selected cluster ID sequences instead of UniProt IDs (UniProt is used when unchecked).
+            The type of ID entered in the "Families" text box above
             
     fraction:
         ui-name: |
@@ -114,7 +114,7 @@ parameter-groups:
     ssn_edge_calc_options:
         ui-name: SSN Edge Calculation Option
         short-hint: |
-            Parameters for BLAST
+            Parameters for all-by-all BLAST
             
     protein_family_addition_options:
         ui-name: Protein Family Addition Options
