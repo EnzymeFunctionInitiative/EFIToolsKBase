@@ -28,8 +28,8 @@ class EFIToolsKBase:
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = ""
-    GIT_COMMIT_HASH = ""
+    GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
+    GIT_COMMIT_HASH = "9df52a8cc63f42b1b488bb7bbb1868e8feefb3bf"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -45,7 +45,7 @@ class EFIToolsKBase:
         #END_CONSTRUCTOR
         pass
 
-    def run_EFIToolsKBase(self, ctx, params):
+    def run_EFI_EST_Sequence_BLAST(self, ctx, params):
         """
         This example function accepts any number of parameters and returns results in a KBaseReport
         :param params: instance of mapping from String to unspecified object
@@ -54,7 +54,7 @@ class EFIToolsKBase:
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_EFIToolsKBase
+        #BEGIN run_EFI_EST_Sequence_BLAST
 
         config = dict(
             callback_url=self.callback_url,
@@ -69,11 +69,11 @@ class EFIToolsKBase:
         era = ExampleReadsApp(ctx, config=config)
         output = era.do_analysis(params)
 
-        #END run_EFIToolsKBase
+        #END run_EFI_EST_Sequence_BLAST
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFIToolsKBase return value ' +
+            raise ValueError('Method run_EFI_EST_Sequence_BLAST return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]

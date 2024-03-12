@@ -1,0 +1,125 @@
+#
+# define display information
+#
+name: EFI-EST Sequence BLAST
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    query_sequence:
+        ui-name: Query Sequence
+        short-hint: |
+            The protein sequence to submit to BLAST
+        long-hint: |
+             The input sequence is used as the query for a search of the UniProt, UniRef90, or UniRef50 database using BLAST. For the UniRef90 and UniRef50 databases, the sequence of the cluster ID (representative sequence) is used for the BLAST. The database is selected using the BLAST Retrieval Options. An all-by-all BLAST is performed to obtain the similarities between sequence pairs to calculate edge values to generate the SSN. 
+    e_value:
+        ui-name: E-value
+        short-hint: |
+            Negative log of e-value for retrieving similar sequences (>= 1; default: 5)
+        long-hint: |
+            Input a larger e-value (smaller negative log) to retrieve homologues if the query sequence is short. Input a smaller e-value (larger negative log) to retrieve more similar homologues.
+    
+    max_sequences_retrieved:
+        ui-name: Maximum sequences retrieved
+        short-hint: |
+            Maximum number of sequences retrived by BLAST
+            
+    sequence_database:
+        ui-name: Sequence Database
+        short-hint: |
+            The Sequence databse to BLAST against
+            
+    fragment_option:
+        ui-name: Exclude UniProt-defined fragments in the results
+        short-hint: |
+            Exclude UniProt-defined fragments in the results
+        long-hint: |
+            UniProt designates a Sequence Status for each member: Complete if the encoding DNA sequence has both start and stop codons; Fragment if the start and/or stop codon is missing. Approximately 10% of the entries in UniProt are fragments. 
+
+    taxonomic_level:
+        ui-name: Taxonomic Level
+        short-hint: |
+            Which level of taxomony to which the filter string is applied
+    
+    filter_string:
+        ui-name: Filter string
+        short-hint: |
+            The filter to apply, may inlcude NOT at the beginning
+
+    ssn_e_value:
+        ui-name: Negative log of e-value for all-by-all BLAST
+        short-hint: |
+            Negative log of e-value for all-by-all BLAST
+        long-hint: |
+            Input an alternate e-value for BLAST to calculate similarities/edge alignment scores similarities. The default parameter (5) is useful for most sequences. However, a larger e-value/smaller negative log should be used for short sequences or when low pairwise identities may be useful for separating functionally distinct SSN clusters. 
+
+    families_to_add:
+        ui-name: Families
+        short-hint: |
+            The input format is a single family or comma/space separated list of families
+        long-hint: |
+            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
+
+    use_alternate_cluster_id_format:
+        ui-name: Use alternate cluster ID format
+        short-hint: |
+            Use selected cluster ID format instead of UniProt IDs
+
+    families_addition_cluster_id_format:
+        ui-name: |
+            Family Addition Format
+        short-hint:
+            The type of ID entered in the "Families" text box above
+            
+    fraction:
+        ui-name: |
+             Reduce the number of sequences used to a fraction of the full family size
+        short-hint: |
+            Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
+        long-hint: |
+            Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
+
+parameter-groups:
+    blast_options:
+        ui-name: BLAST Retrieval Options
+        short-hint: |
+            Parameters for BLAST
+            
+    fragment_options:
+        ui-name: Fragment Option
+        short-hint: |
+            Fragment Options
+    
+    taxonomy_filter_options:
+        ui-name: Filter by Taxonomy
+        short-hint: |
+            A taxonomy filter is applied to the list of UniProt, UniRef90, or UniRef50 cluster IDs retrieved by the BLAST
+    
+    ssn_edge_calc_options:
+        ui-name: SSN Edge Calculation Option
+        short-hint: |
+            Parameters for all-by-all BLAST
+            
+    protein_family_addition_options:
+        ui-name: Protein Family Addition Options
+        short-hint:
+            Add sequences belonging to Pfam and/or InterPro families to the sequences used to generate the SSN. 
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
