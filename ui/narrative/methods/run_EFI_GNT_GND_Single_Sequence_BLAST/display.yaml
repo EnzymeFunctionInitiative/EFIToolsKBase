@@ -1,0 +1,53 @@
+#
+# define display information
+#
+name: EFI-GNT GND Single Sequence BLAST
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    sequence:
+        ui-name: Sequence
+        short-hint: |
+            The provided sequence is used as the query for a BLAST search of the UniProt database. The retrieved sequences are used to generate genomic neighborhood diagrams. 
+            
+    max_blast_sequences:
+        ui-name: Maximum BLAST Sequences
+        short-hint: |
+            Maximum number of sequences retrieved
+            
+    e_value:
+        ui-name: E-Value
+        short-hint: |
+            Negative log of e-value for all-by-all BLAST
+
+    neighborhood_window_size:
+        ui-name: Neighborhood window size
+        short-hint: |
+            Number of neighbors to retrieve on either side of the query sequence for each BLAST result
+            
+    sequence_database:
+        ui-name: Sequence database
+        short-hint: |
+            If the Sequence Database is set to UniRef90, the resulting GNDs will also include GNDs for UniRef90 cluster IDs that group together UniProt sequences by 90% sequence identiy. For UniRef50, the GNDs will also include UniProt sequences that are grouped by 50% sequence identity. Any of the Exclude Fragments options will exclude UniProt-defined sequence fragments. 
+            
+    
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
