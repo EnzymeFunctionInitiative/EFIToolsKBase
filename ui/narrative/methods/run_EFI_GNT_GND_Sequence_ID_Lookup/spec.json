@@ -1,0 +1,146 @@
+{
+    "ver": "0.0.1",
+    "authors": [
+        "hdemeyer"
+    ],
+    "contact": "",
+    "categories": [
+        "active"
+    ],
+    "widgets": {
+        "input": null,
+        "output": null
+    },
+    "parameters": [
+        {
+            "id": "sequence_id",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "textarea",
+            "textarea_options": {
+                "n_rows": 10
+            }
+        },
+        {
+            "id": "sequence_id_upload",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "file"
+        },
+        {
+            "id": "neighborhood_window_size",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "10"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1
+            }
+        },
+        {
+            "id": "sequence_database",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "UniProt"
+            ],
+            "field_type": "dropdown",
+            "dropdown_options": {
+                "options": [
+                    {
+                        "value": "UniProt",
+                        "display": "UniProt"
+                    },
+                    {
+                        "value": "UniProt_nofrag",
+                        "display": "UniProt - Exclude fragments"
+                    },
+                    {
+                        "value": "UniRef50",
+                        "display": "UniRef50"
+                    },
+                    {
+                        "value": "UniRef50_nofrag",
+                        "display": "UniRef50 - Exclude fragments"
+                    },
+                    {
+                        "value": "UniRef90",
+                        "display": "UniRef90"
+                    },
+                    {
+                        "value": "UniRef90_nofrag",
+                        "display": "UniRef90 - Exclude fragments"
+                    }
+                ]
+            }
+        }
+    ],
+    "behavior": {
+        "service-mapping": {
+            "url": "",
+            "name": "EFIToolsKBase",
+            "method": "run_EFIToolsKBase",
+            "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                },
+                {
+                    "narrative_system_variable": "workspace_id",
+                    "target_property": "workspace_id"
+                },
+                {
+                    "input_parameter": "sequence_id",
+                    "target_property": "sequence_id",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "sequence_id_upload",
+                    "target_property": "sequence_id_upload",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "neighborhood_window_size",
+                    "target_property": "neighborhood_window_size",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "sequence_database",
+                    "target_property": "sequence_database",
+                    "target_type_transform": "resolved-ref"
+                }
+            ],
+            "output_mapping": [
+                {
+                    "service_method_output_path": [
+                        0,
+                        "report_name"
+                    ],
+                    "target_property": "report_name"
+                },
+                {
+                    "service_method_output_path": [
+                        0,
+                        "report_ref"
+                    ],
+                    "target_property": "report_ref"
+                }
+            ]
+        }
+    },
+    "job_id_output_field": "docker"
+}
