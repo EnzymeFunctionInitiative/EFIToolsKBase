@@ -98,11 +98,6 @@ class EFIToolsKBase:
         pass
         #END run_EFI_GNT_GND_Single_Sequence_BLAST
 
-    def run_EFI_GNT_GND_Sequence_ID_Lookup(self, ctx, params):
-        #BEGIN run_EFI_GNT_GND_Sequence_ID_Lookup
-        pass
-        #END run_EFI_GNT_GND_Sequence_ID_Lookup
-
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
