@@ -88,6 +88,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_EST_FASTA
 
+    def run_EFI_EST_Accession_IDs(self, ctx, params):
+        #BEGIN run_EFI_EST_Accession_IDs
+        pass
+        #END run_EFI_EST_accession_IDs
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
