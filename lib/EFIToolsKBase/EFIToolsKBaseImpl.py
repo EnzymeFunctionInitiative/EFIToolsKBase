@@ -108,6 +108,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_GNT_GND_FASTA_Sequence_Lookup
 
+    def run_EFI_EST_SSN_Utils_Color_SSNs(self, ctx, params):
+        #BEGIN run_EFI_EST_SSN_Utils_Color_SSNs
+        pass
+        #END run_EFI_EST_SSN_Utils_Color_SSNs
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

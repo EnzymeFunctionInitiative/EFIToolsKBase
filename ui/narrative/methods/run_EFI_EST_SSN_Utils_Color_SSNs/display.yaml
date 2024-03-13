@@ -1,0 +1,31 @@
+#
+# define display information
+#
+name: EFI-EST SSN Utilities Color SSNs
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    ssn_file:
+        ui-name: SSN File upload
+        short-hint: |
+            A Cytoscape-edited SSN can serve as input. The accepted format is XGMML (or compressed XGMML as zip). The clusters are numbered and colored using two conventions: 1) Sequence Count Cluster Number assigned in order of decreasing number of UniProt IDs in the cluster; 2) Node Count Cluster Number assigned in order of decreasing number of nodes in the cluster. 
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
