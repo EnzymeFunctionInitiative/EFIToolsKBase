@@ -1,0 +1,97 @@
+#
+# define display information
+#
+name: EFI-EST SSN Utilities Cluster Analysis
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    ssn_file:
+        ui-name: SSN File upload
+        short-hint: |
+            A Cytoscape-edited SSN can serve as input. The accepted format is XGMML (or compressed XGMML as zip). 
+
+    min_node_count:
+        ui-name: Minimum Node Count
+        short-hint: |
+            Minimum number of nodes in order to include a cluster in the computations
+    
+    max_node_count:
+        ui-name: Maximum Node Count
+        short-hint: |
+            Maximum number of nodes to include in the MSA
+
+    msa_web_logos:
+        ui-name: Make Weblogo
+        short-hint: |
+            Make Weblogos for each cluster
+    
+    consensus_residue_list:
+        ui-name: Residues to compute for (comma-separated list of amino acid codes)
+        short-hint: |
+            Residues to compute for (comma-separated list of amino acid codes)
+            
+    consensus_residue_thresholds:
+        ui-name: Percent identity threshold(s) for determining conservation
+        short-hint: |
+            Percent identity threshold(s) for determining conservation (multiple comma-separated values allowed)
+
+    make_hmms:
+        ui-name: Make HMMs
+        short-hint: |
+            The MSA for the (length-filtered) node IDs is used to generate the HMM with hmmbuild from HMMER3
+            
+    make_length_histogram:
+        ui-name: Make Length Histograms
+        short-hint: |
+            Make length histograms for each cluster
+            
+parameter-groups:
+    cluster_analysis:
+        ui-name: Cluster Analysis
+        short-hint: |
+            Clusters in the submitted SSN are identified, numbered and colored using two conventions: Sequence Count Cluster Numbers are assigned in order of decreasing number of UniProt IDs in the cluster; Node Count Cluster Numbers are assigned in order of decreasing number of nodes in the cluster. 
+
+    sequence_filter:
+        ui-name: Sequence Filter
+        short-hint: |
+            The MSA is generated with MUSCLE using the node IDs. Clusters containing less than the Minimum Node Count will be excluded from the analyses. Since MUSCLE can fail with a large number sequences (variable; anywhere from >750 to 1500), the Maximum Node Count parameter can be used to limit the number of sequences that MUSCLE uses. 
+    
+    weblogos:
+        ui-name: WebLogos
+        short-hint: |
+            Provides the WebLogo and MSA for the node IDs in each cluster containing greater than the Minimum Node Count specified in the Sequence Filter. The percent identity matrix for the MSA is also provided. 
+            
+    consensus_residues:
+        ui-name: Consensus Residues
+        short-hint: |
+            Provides a tab-delimited text file with the number of the conserved residues and their MSA positions for each specified residue in each cluster containing greater than the Minimum Node Count. Note the default residue is C and the percent identity levels that are displayed are from 90 to 10% in intervals of 10%; a residue is counted as conserved if it occurs with ≥80% identity. 
+
+    hmms:
+        ui-name: HMMs
+        short-hint: |
+            Provides the HMM for each cluster containing greater than the specified Minimum Node Count. 
+
+    length_histogram:
+        ui-name: Length Histograms
+        short-hint: |
+            Length histograms for the node IDs (where applicable, UniProt, UniRef90, and UniRef50 IDs).
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>

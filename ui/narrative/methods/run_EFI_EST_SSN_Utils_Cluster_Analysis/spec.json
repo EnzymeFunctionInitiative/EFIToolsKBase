@@ -1,0 +1,256 @@
+{
+    "ver": "0.0.1",
+    "authors": [
+        "hdemeyer"
+    ],
+    "contact": "",
+    "categories": [
+        "active"
+    ],
+    "widgets": {
+        "input": null,
+        "output": null
+    },
+    "parameters": [
+        {
+            "id": "ssn_file",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "file"
+        },
+        {
+            "id": "min_node_count",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "5"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1
+            }
+        },
+        {
+            "id": "max_node_count",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "1500"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int",
+                "min_int": 1
+            }
+        },
+        {
+            "id": "msa_web_logos",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "true"
+            ],
+            "field_type": "checkbox",
+            "checkbox_options": {
+                "unchecked_value": false,
+                "checked_value": true
+            }
+        },
+        {
+            "id": "consensus_residue_list",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "C"
+            ],
+            "field_type": "text"
+        },
+        {
+            "id": "consensus_residue_thresholds",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1"
+            ],
+            "field_type": "text"
+        },
+        {
+            "id": "make_hmms",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "true"
+            ],
+            "field_type": "checkbox",
+            "checkbox_options": {
+                "unchecked_value": false,
+                "checked_value": true
+            }
+        },
+        {
+            "id": "make_length_histogram",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                "true"
+            ],
+            "field_type": "checkbox",
+            "checkbox_options": {
+                "unchecked_value": false,
+                "checked_value": true
+            }
+        }
+    ],
+    "parameter-groups": [
+        {
+            "id": "cluster_analysis",
+            "parameters": [
+                "ssn_file"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "sequence_filter",
+            "parameters": [
+                "min_node_count",
+                "max_node_count"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "weblogos",
+            "parameters": [
+                "msa_web_logos"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "consensus_residues",
+            "parameters": [
+                "consensus_residue_list",
+                "consensus_residue_thresholds"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "hmms",
+            "parameters": [
+                "make_hmms"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "length_histogram",
+            "parameters": [
+                "make_length_histogram"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        }
+    ],
+    "behavior": {
+        "service-mapping": {
+            "url": "",
+            "name": "EFIToolsKBase",
+            "method": "run_EFIToolsKBase",
+            "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                },
+                {
+                    "narrative_system_variable": "workspace_id",
+                    "target_property": "workspace_id"
+                },
+                {
+                    "input_parameter": "ssn_file",
+                    "target_property": "ssn_file",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "min_node_count",
+                    "target_property": "min_node_count",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "max_node_count",
+                    "target_property": "max_node_count",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "msa_web_logos",
+                    "target_property": "msa_web_logos",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "consensus_residue_list",
+                    "target_property": "consensus_residue_list",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "consensus_residue_thresholds",
+                    "target_property": "consensus_residue_thresholds",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "make_hmms",
+                    "target_property": "make_hmms",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "make_length_histogram",
+                    "target_property": "make_length_histogram",
+                    "target_type_transform": "resolved-ref"
+                }
+            ],
+            "output_mapping": [
+                {
+                    "service_method_output_path": [
+                        0,
+                        "report_name"
+                    ],
+                    "target_property": "report_name"
+                },
+                {
+                    "service_method_output_path": [
+                        0,
+                        "report_ref"
+                    ],
+                    "target_property": "report_ref"
+                }
+            ]
+        }
+    },
+    "job_id_output_field": "docker"
+}
