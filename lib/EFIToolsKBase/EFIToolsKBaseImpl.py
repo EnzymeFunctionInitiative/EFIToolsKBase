@@ -113,6 +113,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_EST_SSN_Utils_Color_SSNs
 
+    def run_EFI_EST_SSN_Utils_Cluster_Analysis(self, ctx, params):
+        #BEGIN run_EFI_EST_SSN_Utils_Cluster_Analysis
+        pass
+        #END run_EFI_EST_SSN_Utils_Cluster_Analysis
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
