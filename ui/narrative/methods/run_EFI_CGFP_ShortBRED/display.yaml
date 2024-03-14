@@ -1,0 +1,72 @@
+#
+# define display information
+#
+name: EFI-EST SSN Utilities Cluster Analysis
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    ssn_file:
+        ui-name: SSN File upload
+        short-hint: |
+            A Cytoscape-edited SSN can serve as input. The accepted format is XGMML (or compressed XGMML as zip). 
+
+    min_sequence_length:
+        ui-name: Minimum Sequence Length
+        short-hint: |
+            Minimum Sequence Length
+    
+    max_sequence_length:
+        ui-name: Maximum Sequence Length
+        short-hint: |
+            Maximum Sequence Length
+
+    reference_database:
+        ui-name: Reference Database
+        short-hint: |
+            ShortBRED uses the UniProt, UniRef90 or UniRef50 databases to evaluate markers in order to eliminate those that could give false positives during the quantify step. The default database used in this process is UniRef90.
+    
+    cd_hit_sequence_identity:
+        ui-name: CD-HIT sequence identity
+        short-hint: |
+            This is the sequence identity parameter that will be used for determining the ShortBRED consensus sequence families.
+            
+    sequence_search_type:
+        ui-name: Sequence search type
+        short-hint: |
+            This is the search algorithm that will be used to remove false positives and identify unique markers.
+            
+parameter-groups:
+    run:
+        ui-name: Run CGFP/shortBRED
+        short-hint: |
+            Clusters in the submitted SSN are identified, numbered and colored using two conventions: Sequence Count Cluster Numbers are assigned in order of decreasing number of UniProt IDs in the cluster; Node Count Cluster Numbers are assigned in order of decreasing number of nodes in the cluster. 
+
+    sequence_length_restriction_options:
+        ui-name: Sequence Length Restriction Option
+        short-hint: |
+            If the submitted SSN was generated using the UniRef90 or 50 option, then it is recommended to specify a minimum sequence length, in order to eliminate fragments that may be included in UniRef clusters. A maximum length can also be specified. 
+    
+    marker_id_options:
+        ui-name: Marker Identification Options
+        short-hint: |
+            Marker Identification Options 
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>

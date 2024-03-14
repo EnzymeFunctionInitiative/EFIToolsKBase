@@ -118,6 +118,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_EST_SSN_Utils_Cluster_Analysis
 
+    def run_EFI_CGFP_ShortBRED(self, ctx, params):
+        #BEGIN run_EFI_CGFP_ShortBRED
+        pass
+        #END run_EFI_CGFP_ShortBRED
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
