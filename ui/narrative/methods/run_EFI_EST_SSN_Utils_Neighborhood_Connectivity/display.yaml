@@ -1,0 +1,37 @@
+#
+# define display information
+#
+name: EFI-EST SSN Utilities Neighborhood Connectivity
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    ssn_file:
+        ui-name: SSN File
+        short-hint: |
+            A Cytoscape-edited SSN can serve as input. The accepted format is XGMML (or compressed XGMML as zip).
+        
+parameter-groups:
+    neighborhood_connectivity:
+        ui-name: Neighborhood Connectivity
+        short-hint: |
+            The nodes for unresolved families can be difficult to identify in SSNs generated with low alignment scores. Coloring the nodes according to the number of edges to other nodes (Neighborhood Connectivity, NC) helps identify families with highly connected nodes (https://doi.org/10.1016/j.heliyon.2020.e05867). Using Neighborhood Connectivity Coloring as a guide, the alignment score threshold can be chosen in Cytoscape to separate the SSN into families. 
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
