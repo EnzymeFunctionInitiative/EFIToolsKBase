@@ -1,0 +1,42 @@
+#
+# define display information
+#
+name: EFI-EST SSN Utilities Neighborhood Connectivity
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    ssn_file:
+        ui-name: SSN File
+        short-hint: |
+            A Color SSN (from either the Color SSN or Cluster Analysis utility) is the required input (cluster numbers are required).
+            
+    alignment_score:
+        ui-name: Alignment Score
+        short-hint: |
+            The alignment score to calculate convergence ratio per cluster (should be the same as the original SSN alignment score).
+        
+parameter-groups:
+    convergence_ratio:
+        ui-name: Neighborhood Connectivity
+        short-hint: |
+            The convergence ratio is the ratio of the actual number of edges in the cluster to the maximum possible number of edges (each node connected to every other node). For UniRef SSNs, two convergence ratios are calculated, one for the edges connecting the UniRef nodes in the input SSN and the second for the hypothetical edges that would connect the internal UniProt IDsin the cluster. The user specifies the value of the alignment score to be used (usually the same a alignment score used to generate the SSN). The value of the convergence ratio ranges from 1.0 for sequences that are very similar (identical) to 0.0 for sequences that are unrelated at the specified alignment score. The convergence ratio can be used as a criterion to infer whether an SSN cluster is isofunctional—the convergence ratio of a cluster containing orthologous sequences is expected to be close to 1.0 even at large alignment scores.
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>

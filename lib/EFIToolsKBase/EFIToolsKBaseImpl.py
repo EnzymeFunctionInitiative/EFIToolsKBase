@@ -123,6 +123,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_EST_SSN_Utils_Neighborhood_Connectivity
 
+    def run_EFI_EST_SSN_Utils_Convergence_Ratio(self, ctx, params):
+        #BEGIN run_EFI_EST_SSN_Utils_Convergence_Ratio
+        pass
+        #END run_EFI_EST_SSN_Utils_Convergence_Ratio
+
     def run_EFI_CGFP_ShortBRED(self, ctx, params):
         #BEGIN run_EFI_CGFP_ShortBRED
         pass
