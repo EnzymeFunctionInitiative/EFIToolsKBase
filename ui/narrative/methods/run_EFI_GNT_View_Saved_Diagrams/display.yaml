@@ -1,0 +1,31 @@
+#
+# define display information
+#
+name: EFI-GNT View Saved Diagram
+
+tooltip: |
+    Enzyme Function Initiative (EFI) Tools
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related: []
+        next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+    sqlite_file:
+        ui-name: Upload a saved diagram data file for visualization
+        short-hint: |
+            The acceptable format is sqlite
+
+description: |
+    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
