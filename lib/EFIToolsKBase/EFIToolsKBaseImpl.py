@@ -128,6 +128,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_GNT_GNT_Submission
 
+    def run_EFI_GNT_View_Saved_Diagram(self, ctx, params):
+        #BEGIN run_EFI_GNT_View_Saved_Diagram
+        pass
+        #END run_EFI_GNT_View_Saved_Diagram
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
