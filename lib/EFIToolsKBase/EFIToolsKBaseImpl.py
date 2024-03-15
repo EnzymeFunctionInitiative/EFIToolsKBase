@@ -123,6 +123,11 @@ class EFIToolsKBase:
         pass
         #END run_EFI_CGFP_ShortBRED
 
+    def run_EFI_GNT_GNT_Submission(self, ctx, params):
+        #BEGIN run_EFI_GNT_GNT_Submission
+        pass
+        #END run_EFI_GNT_GNT_Submission
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
