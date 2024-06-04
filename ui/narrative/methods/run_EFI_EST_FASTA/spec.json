@@ -350,73 +350,59 @@
                 },
                 {
                     "input_parameter": "fasta_sequences",
-                    "target_property": "fasta_sequences",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "fasta_sequences"
                 },
                 {
                     "input_parameter": "fasta_sequences_file",
-                    "target_property": "fasta_sequences_file",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "fasta_sequences_file"
                 },
                 {
                     "input_parameter": "header_format",
-                    "target_property": "header_format",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "header_format"
                 },
                 {
                     "input_parameter": "fragment_option",
-                    "target_property": "fragment_option",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "fragment_option"
                 },
                 {
                     "input_parameter": "family_filter",
-                    "target_property": "family_filter",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "family_filter"
                 },
                 {
                     "input_parameter": "taxonomic_level",
-                    "target_property": "taxonomic_level",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "taxonomic_level"
                 },
                 {
                     "input_parameter": "filter_string",
-                    "target_property": "filter_string",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "filter_string"
                 },
                 {
                     "input_parameter": "families_to_add",
-                    "target_property": "families_to_add",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "families_to_add"
                 },
                 {
                     "input_parameter": "families_addition_cluster_id_format",
-                    "target_property": "families_addition_cluster_id_format",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "families_addition_cluster_id_format"
                 },
                 {
                     "input_parameter": "fraction",
-                    "target_property": "fraction",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "fraction"
                 },
                 {
                     "input_parameter": "domain",
-                    "target_property": "domain",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "domain"
                 },
                 {
                     "input_parameter": "family_domain_bound",
-                    "target_property": "family_domain_bound",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "family_domain_bound"
                 },
                 {
                     "input_parameter": "region",
-                    "target_property": "region",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "region"
                 },
                 {
                     "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "ssn_e_value"
                 }
             ],
             "output_mapping": [
