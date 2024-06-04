@@ -30,7 +30,7 @@
             "optional": true,
             "advanced": false,
             "allow_multiple": false,
-            "field_type": "file"
+            "field_type": "text"
         },
         {
             "id": "header_format",
