@@ -89,7 +89,7 @@ class EFIToolsKBase:
     def run_EFI_EST_FASTA(self, ctx, params):
         #BEGIN run_EFI_EST_FASTA
         logging.info(str(params))
-        self.flow.render_params_file(params['fasta_sequences_file_name'])
+        self.flow.render_params_file("/results/sequences.fasta")#params['fasta_sequences_file'])
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
         report_data = {}
