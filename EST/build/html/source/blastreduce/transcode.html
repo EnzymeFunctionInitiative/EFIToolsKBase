@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcode &mdash; EFI 2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=60dbed4a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Visualization" href="../visualization/index.html" />
+    <link rel="prev" title="BLAST Reduce" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            EFI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">BLAST Reduce</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-usage">Example Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#technical-details">Technical details</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#components">Components</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Transcode</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#commandline-usage">Commandline usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-blastreduce.transcode">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/index.html">Visualization</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">EFI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">BLAST Reduce</a></li>
+      <li class="breadcrumb-item active">Transcode</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/source/blastreduce/transcode.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transcode">
+<h1>Transcode<a class="headerlink" href="#transcode" title="Link to this heading"></a></h1>
+<p>Tab-delimited ASCII files are convenient to use but hurt performance. To more
+efficiently post-process BLAST results, the BLAST output files are transcoded to
+Parquet files.</p>
+<p>The conversion only includes the columns needed in later stages.</p>
+<p>In addition to the BLAST output, a FASTA file can be transcoded into a table
+which holds sequence identifiers + sequence lengths. This is also used in later analysis.</p>
+<p>Finally, this module contains code to generate, from a template, a SQL file which:</p>
+<ol class="arabic simple">
+<li><p>Deduplicates BLAST outputs</p></li>
+<li><p>Adds sequence length information</p></li>
+<li><p>Calculates an alignment score for each row</p></li>
+<li><p>Combines all output shards into one Parquet file</p></li>
+</ol>
+<section id="commandline-usage">
+<h2>Commandline usage<a class="headerlink" href="#commandline-usage" title="Link to this heading"></a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: transcode.py [-h] [--blast-output BLAST_OUTPUT] [--fasta FASTA] [--sql-template SQL_TEMPLATE]
+                    [--sql-output-file SQL_OUTPUT_FILE] [--duckdb-memory-limit DUCKDB_MEMORY_LIMIT]
+                    [--duckdb-temp-dir DUCKDB_TEMP_DIR] [--output-file OUTPUT_FILE]
+
+Transcode BLAST output files and FASTA sequence lengths to Parquet
+
+options:
+-h, --help            show this help message and exit
+--blast-output BLAST_OUTPUT
+                        Path to directory containing the BLAST output files
+--fasta FASTA         Path to the FASTA file to transcode
+--sql-template SQL_TEMPLATE
+                        Path to the template sql file for reduce operations
+--sql-output-file SQL_OUTPUT_FILE
+                        Location to write the reduce SQL commands to
+--duckdb-memory-limit DUCKDB_MEMORY_LIMIT
+                        Soft limit on DuckDB memory usage
+--duckdb-temp-dir DUCKDB_TEMP_DIR
+                        Location DuckDB should use for temporary files
+--output-file OUTPUT_FILE
+                        The final output file the aggregated BLAST output should be written to. Will be Parquet.
+</pre></div>
+</div>
+</section>
+<section id="module-blastreduce.transcode">
+<span id="functions"></span><h2>Functions<a class="headerlink" href="#module-blastreduce.transcode" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="blastreduce.transcode.csv_to_parquet_file">
+<span class="sig-name descname"><span class="pre">csv_to_parquet_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.csv.ReadOptions.html#pyarrow.csv.ReadOptions" title="(in Apache Arrow v15.0.2)"><span class="pre">ReadOptions</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.csv.ParseOptions.html#pyarrow.csv.ParseOptions" title="(in Apache Arrow v15.0.2)"><span class="pre">ParseOptions</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.csv.ConvertOptions.html#pyarrow.csv.ConvertOptions" title="(in Apache Arrow v15.0.2)"><span class="pre">ConvertOptions</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.parquet.ParquetFile.html#pyarrow.parquet.ParquetFile" title="(in Apache Arrow v15.0.2)"><span class="pre">ParquetFile</span></a></span></span><a class="headerlink" href="#blastreduce.transcode.csv_to_parquet_file" title="Link to this definition"></a></dt>
+<dd><p>Convert a single CSV file to a Parquet file using the supplied options</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The path to the CSV file</p></li>
+<li><p><strong>read_options</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.csv.ReadOptions.html#pyarrow.csv.ReadOptions" title="(in Apache Arrow v15.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReadOptions</span></code></a></span>) – Read Options</p></li>
+<li><p><strong>parse_options</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.csv.ParseOptions.html#pyarrow.csv.ParseOptions" title="(in Apache Arrow v15.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParseOptions</span></code></a></span>) – Parse Options</p></li>
+<li><p><strong>convert_options</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://arrow.apache.org/docs/python/generated/pyarrow.csv.ConvertOptions.html#pyarrow.csv.ConvertOptions" title="(in Apache Arrow v15.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvertOptions</span></code></a></span>) – Convert Options</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A ParquetFile object representing the transcoded input file. Name will be <cite>filename</cite>.parquet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blastreduce.transcode.csvs_to_parquets">
+<span class="sig-name descname"><span class="pre">csvs_to_parquets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blast_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#blastreduce.transcode.csvs_to_parquets" title="Link to this definition"></a></dt>
+<dd><p>Convert csv files to Parquet Dataset</p>
+<p>This function defines the read_options, parse_options, and convert_options
+needed to correctly interpret BLAST output. It the gathers a list of BLAST
+output files from the specified directory using a glob pattern and passes
+the resulting file paths to the <a class="reference internal" href="#blastreduce.transcode.csv_to_parquet_file" title="blastreduce.transcode.csv_to_parquet_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">csv_to_parquet_file()</span></code></a> function for
+conversion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blast_directory</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Location of BLAST output files. Should contain many <cite>.fa.tab</cite> files</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string containing a glob for the new parquet files</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Will exit if no BLAST output files are found.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blastreduce.transcode.fasta_to_parquet">
+<span class="sig-name descname"><span class="pre">fasta_to_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fasta_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#blastreduce.transcode.fasta_to_parquet" title="Link to this definition"></a></dt>
+<dd><p>Converts the provided FASTA file into a 2-column parquet file with columns <cite>seqid</cite> and <cite>sequence_length</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fasta_file</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – path to the FASTA file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filename of the new parquet files as <cite>fasta_file</cite>.parquet</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="blastreduce.transcode.render_sql_from_template">
+<span class="sig-name descname"><span class="pre">render_sql_from_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mem_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">duckdb_temp_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">blast_output_glob</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fasta_lengths_parquet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce_output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#blastreduce.transcode.render_sql_from_template" title="Link to this definition"></a></dt>
+<dd><p>Creates a .sql file for deduplication and merging using newly created
+parquet files</p>
+<p>This function uses the python stdlib
+<a class="reference external" href="https://docs.python.org/3/library/string.html#string.Template" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">string.Template</span></code></a> to fill in file paths and other
+options in a SQL file. The SQL file is executed with <a class="reference external" href="https://duckdb.org/">DuckDB</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>template_file</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path to the template sql file for reduce operations</p></li>
+<li><p><strong>mem_limit</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Soft limit for DuckDB memory usage. In bytes by default but can use common suffixes such as <cite>MB and `GB</cite></p></li>
+<li><p><strong>duckdb_temp_dir</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Location where duckdb should place its on-disk cache. Folder will be created if it does not exist</p></li>
+<li><p><strong>blast_output_glob</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Globbed path to Parquet-encoded BLAST output files to combine (from <a class="reference internal" href="#blastreduce.transcode.csvs_to_parquets" title="blastreduce.transcode.csvs_to_parquets"><code class="xref py py-func docutils literal notranslate"><span class="pre">csvs_to_parquets()</span></code></a>)</p></li>
+<li><p><strong>fasta_lengths_parquet</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path to the parquet file with columns <cite>seqid</cite> and <cite>sequence_lengths</cite> (from <a class="reference internal" href="#blastreduce.transcode.fasta_to_parquet" title="blastreduce.transcode.fasta_to_parquet"><code class="xref py py-func docutils literal notranslate"><span class="pre">fasta_to_parquet()</span></code></a>)</p></li>
+<li><p><strong>reduce_output_file</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Location to which the combined output (in Parquet format) should be written</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="BLAST Reduce" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../visualization/index.html" class="btn btn-neutral float-right" title="Visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Enzyme Function Initiative.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
