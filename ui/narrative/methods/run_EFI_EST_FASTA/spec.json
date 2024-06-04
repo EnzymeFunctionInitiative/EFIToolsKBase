@@ -354,7 +354,7 @@
                 },
                 {
                     "input_parameter": "fasta_sequences_file",
-                    "target_property": "fasta_sequences_file"
+                    "target_property": "fasta_sequences_file_name"
                 },
                 {
                     "input_parameter": "header_format",
