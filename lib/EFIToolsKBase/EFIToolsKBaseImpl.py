@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import logging
 import os
+import sys
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
@@ -87,7 +88,7 @@ class EFIToolsKBase:
 
     def run_EFI_EST_FASTA(self, ctx, params):
         #BEGIN run_EFI_EST_FASTA
-        print(params)
+        logging.info(str(params))
         self.flow.render_params_file(params['fasta_sequences_file'])
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
