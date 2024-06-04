@@ -1,14 +1,41 @@
 FROM kbase/sdkpython:3.8.0
-MAINTAINER KBase Developer
+
 # -----------------------------------------
 # In this section, you can install any system dependencies required
 # to run your App.  For instance, you could place an apt-get update or
 # install line here, a git checkout to download code, or run any other
 # installation scripts.
 
-# RUN apt-get update
-COPY ./pyEFI-0.0.1-py3-none-any.whl .
-RUN pip install pyEFI-0.0.1-py3-none-any.whl
+# install zip/unzip for duckdb and nextflow
+RUN apt install -y zip unzip
+
+# install blastall
+RUN curl -o /opt/blast-2.2.26.tar.gz https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz; \
+    tar xzf /opt/blast-2.2.26.tar.gz -C /opt; \
+    rm /opt/blast-2.2.26.tar.gz
+ENV PATH="${PATH}:/opt/blast-2.2.26/bin"
+
+# install duckdb
+RUN mkdir /opt/duckdb; \
+    curl -L -o /opt/duckdb/duckdb-0.10.1.zip https://github.com/duckdb/duckdb/releases/download/v0.10.1/duckdb_cli-linux-amd64.zip && \
+    unzip /opt/duckdb/duckdb-0.10.1.zip -d /opt/duckdb && \
+    rm /opt/duckdb/duckdb-0.10.1.zip
+ENV PATH="${PATH}:/opt/duckdb"
+
+# install nextflow
+RUN curl -s https://get.sdkman.io | bash && \
+    echo 'source /root/.sdkman/bin/sdkman-init.sh && sdk install java 17.0.10-tem' | bash
+RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/install_nextflow.sh && \
+    echo 'source /root/.sdkman/bin/sdkman-init.sh && /opt/install_nextflow.sh' | bash && \
+    mv /opt/install_nextflow.sh /usr/bin/nextflow
+
+# install EST scripts
+COPY EST/ /EST
+
+COPY sequences.fasta /results/sequences.fasta
+
+# create conda env for nextflow
+RUN conda env create -f /EST/env.yml
 
 # -----------------------------------------
 WORKDIR /kb/module

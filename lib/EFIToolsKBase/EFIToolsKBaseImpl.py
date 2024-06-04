@@ -8,6 +8,7 @@ from installed_clients.ReadsUtilsClient import ReadsUtils
 from .utils import ExampleReadsApp
 from base import Core
 
+from .nextflow import NextflowRunner
 
 #END_HEADER
 
@@ -42,8 +43,9 @@ class EFIToolsKBase:
         self.shared_folder = config['scratch']
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
+        self.flow = NextflowRunner()
+        os.environ["JAVA_HOME"] = "/root/.sdkman/candidates/java/current"
         #END_CONSTRUCTOR
-        pass
 
     def run_EFI_EST_Sequence_BLAST(self, ctx, params):
         """
@@ -85,8 +87,26 @@ class EFIToolsKBase:
 
     def run_EFI_EST_FASTA(self, ctx, params):
         #BEGIN run_EFI_EST_FASTA
-        pass
+        self.flow.render_params_file(params['fasta_sequences_file'])
+        self.flow.generate_run_command()
+        retcode, stdout, stderr = self.flow.execute()
+        report_data = {}
+        #     "retcode": retcode,
+        #     "stdout": stdout,
+        #     "stderr": stderr,
+        # }
+        kbase_report = KBaseReport(self.callback_url)
+        report = kbase_report.create({
+            'report': report_data,
+            "workspace_name": params["workspace_name"]
+        })
+        print(report)
+        output = {
+            'report_ref': report['ref'],
+            'report_name': report['name']
+        }
         #END run_EFI_EST_FASTA
+        return [output]
 
     def run_EFI_EST_Accession_IDs(self, ctx, params):
         #BEGIN run_EFI_EST_Accession_IDs

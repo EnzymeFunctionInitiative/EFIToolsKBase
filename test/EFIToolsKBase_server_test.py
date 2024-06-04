@@ -59,7 +59,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     # NOTE: According to Python unittest naming rules test method names should start from 'test'. # noqa
     # @unittest.skip("Skip test for debugging")
-    def test_your_method(self):
+    # def test_your_method(self):
         # Prepare test objects in workspace if needed using
         # self.getWsClient().save_objects({'workspace': self.getWsName(),
         #                                  'objects': []})
@@ -69,14 +69,22 @@ class EFIToolsKBaseTest(unittest.TestCase):
         #
         # Check returned data with
         # self.assertEqual(ret[...], ...) or other unittest methods
-        ret = self.serviceImpl.run_EFIToolsKBase(
-            self.ctx,
-            {
-                "workspace_name": self.wsName,
-                "reads_ref": "70257/2/1",
-                "output_name": "ReadsOutputName",
-            },
-        )
+        # ret = self.serviceImpl.run_(
+        #     self.ctx,
+        #     {
+        #         "workspace_name": self.wsName,
+        #         "reads_ref": "70257/2/1",
+        #         "output_name": "ReadsOutputName",
+        #     },
+        # )
         # next steps:
         # - download report
         # - assert that the report has expected contents
+
+    def test_run_EFI_EST_FASTA(self):
+        ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
+            "fasta_sequences_file": "/results/sequences.fasta",
+            "workspace_name": self.wsName
+        })
+        print(ret)
+        self.assertTrue(len(ret[0]["report_name"]))
