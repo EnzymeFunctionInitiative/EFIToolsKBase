@@ -9,7 +9,7 @@
     ],
     "widgets": {
         "input": null,
-        "output": null
+        "output": "no-display"
     },
     "parameters": [
         {
@@ -419,6 +419,10 @@
                         "report_ref"
                     ],
                     "target_property": "report_ref"
+                },
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
                 }
             ]
         }
