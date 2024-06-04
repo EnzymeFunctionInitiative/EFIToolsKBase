@@ -28,6 +28,8 @@ class NextflowRunner():
                                         job_id=job_id)
         os.makedirs(output_dir, exist_ok=True)
         params_output = os.path.join(output_dir, "params.yml")
+        print(params_output)
+        print()
         with open(params_output, "w") as f:
             f.write(params)
         self.params_file = params_output
