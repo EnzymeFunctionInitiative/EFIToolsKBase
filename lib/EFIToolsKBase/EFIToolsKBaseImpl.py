@@ -97,7 +97,7 @@ class EFIToolsKBase:
         report_data = {
             "message": "kbase sux",
             "workspace_name": params["workspace_name"],
-            "direct_html": f'<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src="{pident_dataurl}"><h3>Length</h3><img src="{length_dataurl}">'
+            "direct_html": f'<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src={pident_dataurl}><h3>Length</h3><img src={length_dataurl}>'
         }
         kbase_report = KBaseReport(self.callback_url)
         report = kbase_report.create_extended_report(report_data)
