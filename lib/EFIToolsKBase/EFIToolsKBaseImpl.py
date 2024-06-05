@@ -91,8 +91,9 @@ class EFIToolsKBase:
         self.flow.render_params_file("/results/sequences.fasta")#params['fasta_sequences_file'])
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
-        pident_dataurl = png_to_base64("/results/pident_sm.png")
-        length_dataurl = png_to_base64("/results/length_sm.png")
+        pident_dataurl = png_to_base64("/results/pident.png")
+        length_dataurl = png_to_base64("/results/length.png")
+        logging.info(pident_dataurl)
         report_data = {
             "message": "kbase sux",
             "workspace_name": params["workspace_name"],
