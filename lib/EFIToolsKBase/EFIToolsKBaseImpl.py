@@ -93,10 +93,11 @@ class EFIToolsKBase:
         retcode, stdout, stderr = self.flow.execute()
         pident_dataurl = png_to_base64("/results/pident.png")
         length_dataurl = png_to_base64("/results/length.png")
+        # KBaseReport expects certain keys https://kbase.github.io/kb_sdk_docs/howtos/create_a_report.html
         report_data = {
             "workspace_name": params["workspace_name"],
-            "direct_html": f"<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src={pident_dataurl} height=400><h3>Length</h3><img src={length_dataurl} height=400>",
-            "html_window_height": 333,
+            "direct_html": f"<h1>Analysis Results</h1><p>Use the information in the charts to decide where to cutoff alignment score.</p><h3>Percent Identity</h3><img src={pident_dataurl} height=400><h3>Length</h3><img src={length_dataurl} height=400>",
+            "html_window_height": 10000,
         }
         kbase_report = KBaseReport(self.callback_url)
         report = kbase_report.create_extended_report(report_data)
