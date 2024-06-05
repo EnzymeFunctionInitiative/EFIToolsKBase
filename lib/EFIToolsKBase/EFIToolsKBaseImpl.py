@@ -94,12 +94,10 @@ class EFIToolsKBase:
         print(os.listdir("/results"))
         pident_dataurl = png_to_base64("/results/pident.png")
         length_dataurl = png_to_base64("/results/length.png")
-        logging.info(pident_dataurl)
         report_data = {
-            "message": "kbase sux",
             "workspace_name": params["workspace_name"],
-            "direct_html": f'<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src={pident_dataurl} height=400><h3>Length</h3><img src={length_dataurl} height=400>',
-            "html_window_height": 1000,
+            "direct_html": f"<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src={pident_dataurl} height=400><h3>Length</h3><img src={length_dataurl} height=400>",
+            "html_window_height": 1200
         }
         kbase_report = KBaseReport(self.callback_url)
         report = kbase_report.create_extended_report(report_data)
