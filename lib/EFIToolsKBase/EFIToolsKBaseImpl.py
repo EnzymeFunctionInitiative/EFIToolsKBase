@@ -92,16 +92,13 @@ class EFIToolsKBase:
         self.flow.render_params_file("/results/sequences.fasta")#params['fasta_sequences_file'])
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
-        report_data = {}
-        #     "retcode": retcode,
-        #     "stdout": stdout,
-        #     "stderr": stderr,
-        # }
+        report_data = {
+            "message": "kbase sux",
+            "workspace_name": params["workspace_name"],
+            "direct_html": "<h1>EFI on KBase</h1>"
+        }
         kbase_report = KBaseReport(self.callback_url)
-        report = kbase_report.create({
-            'report': report_data,
-            "workspace_name": params["workspace_name"]
-        })
+        report = kbase_report.render_template.create(report_data)
         print(report)
         output = {
             'report_ref': report['ref'],
