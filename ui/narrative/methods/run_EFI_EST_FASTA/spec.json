@@ -258,7 +258,88 @@
             }
         }
     ],
-    
+    "parameter-groups": [
+        {
+            "id": "fasta_input",
+            "parameters": [
+                "fasta_sequences",
+                "fasta_sequences_file",
+                "header_format"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true,
+            "id_mapping": {
+                "fasta_sequences_file": "fasta_sequences_file"
+            }
+        },
+        {
+            "id": "fragment_options",
+            "parameters": [
+                "fragment_option"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "family_filter_option",
+            "parameters": [
+                "family_filter"
+            ],
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "taxonomy_filter_options",
+            "parameters": [
+                "taxonomic_level",
+                "filter_string"
+            ],
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": true,
+            "with_border": true
+        },
+        {
+            "id": "protein_family_addition_options",
+            "parameters": [
+                "families_to_add",
+                "families_addition_cluster_id_format",
+                "fraction"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "family_domain_boundary_option",
+            "parameters": [
+                "domain",
+                "family_domain_bound",
+                "region"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "ssn_edge_calc_options",
+            "parameters": [
+                "ssn_e_value"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        }
+    ],
     "behavior": {
         "service-mapping": {
             "url": "",
