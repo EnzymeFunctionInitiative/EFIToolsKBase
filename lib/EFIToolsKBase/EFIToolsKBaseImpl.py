@@ -98,7 +98,7 @@ class EFIToolsKBase:
             "direct_html": "<h1>EFI on KBase</h1>"
         }
         kbase_report = KBaseReport(self.callback_url)
-        report = kbase_report.render_template.create(report_data)
+        report = kbase_report.create(report_data)
         print(report)
         output = {
             'report_ref': report['ref'],
