@@ -30,7 +30,10 @@
             "optional": true,
             "advanced": false,
             "allow_multiple": false,
-            "field_type": "text"
+            "field_type": "dynamic_dropdown",
+            "dynamic_dropdown_options": {
+                "data_source": "ftp_staging"
+            }
         },
         {
             "id": "header_format",
@@ -423,6 +426,10 @@
                 {
                     "narrative_system_variable": "workspace",
                     "target_property": "workspace_name"
+                },
+                {
+                    "constant_value": "40",
+                    "target_property": "report_window_line_height"
                 }
             ]
         }
