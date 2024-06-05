@@ -107,40 +107,7 @@ parameters:
         short-hint:
             The type of ID entered in the Families text box above
 
-parameter-groups:
-    fasta_input:
-        ui-name: FASTA Input
-        short-hint: |
-            FASTA Input
 
-    fragment_options:
-        ui-name: Fragment Option
-        short-hint: |
-            Fragment Options
-    family_filter_option:
-        ui-name: Filter by Family
-        short-hint: |
-            Filter by Family
-            
-    taxonomy_filter_options:
-        ui-name: Filter by Taxonomy
-        short-hint: |
-            A taxonomy filter is applied to the list of UniProt, UniRef90, or UniRef50 cluster IDs retrieved by the BLAST
-    
-    protein_family_addition_options:
-        ui-name: Protein Family Addition Options
-        short-hint:
-            Add sequences belonging to Pfam and/or InterPro families to the sequences used to generate the SSN. 
-    
-    family_domain_boundary_option:
-        ui-name: Family Domain Boundary Option
-        short-hint: |
-            Pfam and InterPro databases define domain boundaries for members of their families
-    
-    ssn_edge_calc_options:
-        ui-name: SSN Edge Calculation Option
-        short-hint: |
-            Parameters for all-by-all BLAST
 
 description: |
     <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
