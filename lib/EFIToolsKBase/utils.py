@@ -2,6 +2,7 @@
 This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
+import base64
 import io
 import logging
 import os
@@ -21,6 +22,12 @@ from base import Core
 MODULE_DIR = "/kb/module"
 TEMPLATES_DIR = os.path.join(MODULE_DIR, "lib/templates")
 
+
+def png_to_base64(filepath):
+    content = open(filepath, 'rb').read()
+    base64_utf8_str = base64.b64encode(content).decode('utf-8')
+    dataurl = f'data:image/png;base64,{base64_utf8_str}'
+    return dataurl
 
 class ExampleReadsApp(Core):
     def __init__(self, ctx, config, clients_class=None):

@@ -2,11 +2,10 @@
 #BEGIN_HEADER
 import logging
 import os
-import sys
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
-from .utils import ExampleReadsApp
+from .utils import ExampleReadsApp, png_to_base64
 from base import Core
 
 from .nextflow import NextflowRunner
@@ -95,7 +94,7 @@ class EFIToolsKBase:
         report_data = {
             "message": "kbase sux",
             "workspace_name": params["workspace_name"],
-            "direct_html": '<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src="/results/pident.png"><h3>Length</h3><img src="/results/length.png">'
+            "direct_html": f'<h1>EFI on KBase</h1><h3>Percent Identity</h3><img src="{png_to_base64("/results/pident.png")}"><h3>Length</h3><img src="{png_to_base64("/results/length.png")}">'
         }
         kbase_report = KBaseReport(self.callback_url)
         report = kbase_report.create_extended_report(report_data)
