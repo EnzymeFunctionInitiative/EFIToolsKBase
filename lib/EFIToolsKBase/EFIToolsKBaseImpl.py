@@ -97,7 +97,7 @@ class EFIToolsKBase:
         report_data = {
             "workspace_name": params["workspace_name"],
             "direct_html": f"<h1>Analysis Results</h1><p>Use the information in the charts to decide where to cutoff alignment score.</p><h3>Percent Identity</h3><img src={pident_dataurl} height=400><h3>Length</h3><img src={length_dataurl} height=400>",
-            #"html_window_height": 10000,
+            "html_window_height": 10000,
         }
         kbase_report = KBaseReport(self.callback_url)
         report = kbase_report.create_extended_report(report_data)
