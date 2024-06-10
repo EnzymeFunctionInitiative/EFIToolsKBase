@@ -96,7 +96,7 @@ class EFIToolsKBase:
         )
         efi = EFITools(ctx, config=config)
         logging.info(params)
-        output = efi.est_fasta({"'fasta_sequences_file'": "/results/sequences.fa"})
+        output = efi.est_fasta({"fasta_sequences_file": "/results/sequences.fa"})
         
         #END run_EFI_EST_FASTA
         return [output]
