@@ -19,6 +19,10 @@ from Bio import SeqIO
 # This is the SFA base package which provides the Core app class.
 from base import Core
 
+
+from .nextflow import NextflowRunner
+
+
 MODULE_DIR = "/kb/module"
 TEMPLATES_DIR = os.path.join(MODULE_DIR, "lib/templates")
 
@@ -28,6 +32,42 @@ def png_to_base64(filepath):
     base64_utf8_str = base64.b64encode(content).decode("utf-8")
     dataurl = f"data:image/png;base64,{base64_utf8_str}"
     return dataurl
+
+class EFITools(Core):
+    def __init__(self, ctx, config, clients_class=None):
+        """
+        This is required to instantiate the Core App class with its defaults
+        and allows you to pass in more clients as needed.
+        """
+        super().__init__(ctx, config, clients_class)
+        # Here we adjust the instance attributes for our convenience.
+        self.report = self.clients.KBaseReport
+        self.flow = NextflowRunner()
+
+
+    def est_fasta(self, params):
+        self.flow.render_params_file(params['fasta_sequences_file'])
+        self.flow.generate_run_command()
+        retcode, stdout, stderr = self.flow.execute()
+        if retcode != 0:
+            raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+        pident_dataurl = png_to_base64("/results/pident.png")
+        length_dataurl = png_to_base64("/results/length.png")
+        return self.generate_report({"pident_img": pident_dataurl, "length_img": length_dataurl})
+
+    def generate_report(self, params):
+        reports_path = os.path.join(self.shared_folder, "reports")
+        template_path = os.path.join(TEMPLATES_DIR, "report.html")
+        template_variables = params
+        # The KBaseReport configuration dictionary
+        config = dict(
+            report_name=f"EFI_EST_FASTA_{str(uuid.uuid4())}",
+            reports_path=reports_path,
+            template_variables=template_variables,
+            workspace_name=params["workspace_name"],
+        )
+        return self.create_report_from_template(template_path, config)
+
 
 class ExampleReadsApp(Core):
     def __init__(self, ctx, config, clients_class=None):

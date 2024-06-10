@@ -5,7 +5,7 @@ import os
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
-from .utils import ExampleReadsApp, png_to_base64
+from .utils import ExampleReadsApp, png_to_base64, EFITools
 from base import Core
 
 from .nextflow import NextflowRunner
@@ -43,7 +43,6 @@ class EFIToolsKBase:
         self.shared_folder = config['scratch']
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
-        self.flow = NextflowRunner()
         os.environ["JAVA_HOME"] = "/root/.sdkman/candidates/java/current"
         #END_CONSTRUCTOR
 
@@ -87,25 +86,18 @@ class EFIToolsKBase:
 
     def run_EFI_EST_FASTA(self, ctx, params):
         #BEGIN run_EFI_EST_FASTA
-        logging.info(str(params))
-        self.flow.render_params_file("/results/sequences.fasta")#params['fasta_sequences_file'])
-        self.flow.generate_run_command()
-        retcode, stdout, stderr = self.flow.execute()
-        pident_dataurl = png_to_base64("/results/pident.png")
-        length_dataurl = png_to_base64("/results/length.png")
-        # KBaseReport expects certain keys https://kbase.github.io/kb_sdk_docs/howtos/create_a_report.html
-        report_data = {
-            "workspace_name": params["workspace_name"],
-            "direct_html": f"<h1>Analysis Results</h1><p>Use the information in the charts to decide where to cutoff alignment score.</p><h3>Percent Identity</h3><img src={pident_dataurl} height=400><h3>Length</h3><img src={length_dataurl} height=400>",
-            "html_window_height": 10000,
-        }
-        kbase_report = KBaseReport(self.callback_url)
-        report = kbase_report.create_extended_report(report_data)
-        print(report)
-        output = {
-            'report_ref': report['ref'],
-            'report_name': report['name']
-        }
+        config = dict(
+            callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
+            clients=dict(
+                KBaseReport=KBaseReport,
+                ReadsUtils=ReadsUtils
+            ),
+        )
+        efi = EFITools(ctx, config=config)
+        logging.info(params)
+        output = efi.est_fasta({"'fasta_sequences_file'": "/results/sequences.fa"})
+        
         #END run_EFI_EST_FASTA
         return [output]
 
