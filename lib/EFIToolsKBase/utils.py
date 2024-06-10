@@ -51,9 +51,9 @@ class EFITools(Core):
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
-        pident_dataurl = png_to_base64("/results/pident.png")
-        length_dataurl = png_to_base64("/results/length.png")
-        edge_dataurl = png_to_base64("/results/edge.png")
+        pident_dataurl = png_to_base64("/results/pident_sm.png")
+        length_dataurl = png_to_base64("/results/length_sm.png")
+        edge_dataurl = png_to_base64("/results/edge_sm.png")
         return self.generate_report({"pident_img": pident_dataurl, "length_img": length_dataurl, "edge_img": edge_dataurl, "workspace_name": params["workspace_name"]})
 
     def generate_report(self, params):
