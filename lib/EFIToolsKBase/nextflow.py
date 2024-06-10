@@ -1,8 +1,7 @@
 
 import os
 import subprocess
-
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+import string
 
 
 class NextflowRunner():
@@ -15,21 +14,21 @@ class NextflowRunner():
         self.run_command = ""
     
     def render_params_file(self, fasta_file, output_dir="/results", blast_matches=250, job_id=0):
-        env = Environment(loader=FileSystemLoader(f"{self.est_dir}/templates"), autoescape=select_autoescape())
-        params_template = env.get_template("params.yml.jinja")
-
-        params = params_template.render(est_dir=self.est_dir, 
-                                        fasta_file=fasta_file, 
-                                        output_dir=output_dir,
-                                        duckdb_threads=1,
-                                        duckdb_mem="64GB",
-                                        fasta_shards=1,
-                                        blast_matches=blast_matches,
-                                        job_id=job_id)
+        template_file = os.path.join(self.est_dir, "templates", "params-template.yml")
         os.makedirs(output_dir, exist_ok=True)
         params_output = os.path.join(output_dir, "params.yml")
+        mapping = dict(est_dir=self.est_dir, 
+             fasta_file=fasta_file, 
+             output_dir=output_dir,
+             duckdb_threads=1,
+             duckdb_mem="64GB",
+             fasta_shards=1,
+             blast_matches=blast_matches,
+             job_id=job_id)
+        with open(template_file) as f:
+            template = string.Template(f.read())
         with open(params_output, "w") as f:
-            f.write(params)
+            f.write(template.substitute(mapping))
         self.params_file = params_output
 
     def generate_run_command(self):
