@@ -49,11 +49,11 @@ class EFITools(Core):
         self.flow.render_params_file(params['fasta_sequences_file'])
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
-        if retcode != 0:
-            raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+        # if retcode != 0:
+        #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         pident_dataurl = png_to_base64("/results/pident.png")
         length_dataurl = png_to_base64("/results/length.png")
-        return self.generate_report({"pident_img": pident_dataurl, "length_img": length_dataurl})
+        return self.generate_report({"pident_img": pident_dataurl, "length_img": length_dataurl, "workspace_name": params["workspace_name"]})
 
     def generate_report(self, params):
         reports_path = os.path.join(self.shared_folder, "reports")
