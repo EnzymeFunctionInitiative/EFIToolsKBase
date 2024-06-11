@@ -6,6 +6,7 @@ import os
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
+from installed_clients.AssemblyUtilClient import AssemblyUtil
 from .utils import ExampleReadsApp, png_to_base64, EFITools
 from base import Core
 
@@ -93,7 +94,8 @@ class EFIToolsKBase:
             clients=dict(
                 KBaseReport=KBaseReport,
                 ReadsUtils=ReadsUtils,
-                DataFileUtil=DataFileUtil
+                DataFileUtil=DataFileUtil,
+                AssemblyUtil=AssemblyUtil
             ),
         )
         efi = EFITools(ctx, config=config)

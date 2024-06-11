@@ -44,21 +44,23 @@ class EFITools(Core):
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
+        self.au = self.clients.AssemblyUtil
         self.flow = NextflowRunner()
 
 
     def est_fasta(self, params):
-        self.flow.render_params_file(params['fasta_sequences_file'])
+        self.flow.render_params_file(params['fasta_sequences_file'], output_dir=self.shared_folder)
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
-        print(os.listdir("/results"))
-        pident_dataurl = png_to_base64("/results/pident_sm.png")
-        length_dataurl = png_to_base64("/results/length_sm.png")
-        edge_dataurl = png_to_base64("/results/edge_sm.png")
-        # self.save_file_to_workspace("/results/1.out.parquet", "All edges found by BLAST")
-        with open("/results/acc_counts.json") as f:
+        print(self.shared_folder, os.listdir(self.shared_folder))
+        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
+        length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
+        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
+        self.save_file_to_workspace(os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
+        # fasta_ref = self.save_sequences_to_workspace(os.path.join(self.shared_folder, "sequences.fasta"), params["workspace_name"])
+        with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
         report_data = {
             "pident_img": pident_dataurl, 
@@ -69,7 +71,9 @@ class EFITools(Core):
             "unique_seqs": acc_data["UniqueSeq"],
             "workspace_name": params["workspace_name"]
         }
-        return self.generate_report(report_data)
+        output = self.generate_report(report_data)
+        output["fasta_ref"] = "dummy_ref"#fasta_ref
+        return output
 
     def generate_report(self, params):
         reports_path = os.path.join(self.shared_folder, "reports")
@@ -91,6 +95,13 @@ class EFITools(Core):
                 "name": os.path.basename(filepath),
                 "label": os.path.basename(filepath),
                 "description": description}
+    
+    def save_sequences_to_workspace(self, filepath, workspace_name):
+        return self.au.save_assembly_from_fasta({
+            'file': {'path': filepath},
+            'workspace_name': workspace_name,
+            'assembly_name': 'all_sequences.fasta'
+        })
 
 class ExampleReadsApp(Core):
     def __init__(self, ctx, config, clients_class=None):
