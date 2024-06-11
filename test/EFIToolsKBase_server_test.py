@@ -88,3 +88,5 @@ class EFIToolsKBaseTest(unittest.TestCase):
         })
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
+        self.assertTrue(len(ret[0]["fasta_ref"]))
+        self.assertTrue(len(ret[0]["edge_ref"]))

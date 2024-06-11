@@ -12,6 +12,7 @@ module EFIToolsKBase {
         string report_name;
         string report_ref;
         string fasta_ref;
+        string edge_ref;
     } EFIFastaReportResults;
 
     /*
