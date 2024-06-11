@@ -427,12 +427,20 @@
                     "target_property": "report_ref"
                 },
                 {
-                    "narrative_system_variable": "workspace",
-                    "target_property": "workspace_name"
+                    "service_method_output_path": [
+                        0,
+                        "edge_ref"
+                    ]
                 },
                 {
-                    "constant_value": "40",
-                    "target_property": "report_window_line_height"
+                    "service_method_output_path": [
+                        0,
+                        "fasta_ref"
+                    ]
+                },
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
                 }
             ]
         }
