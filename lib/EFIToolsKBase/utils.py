@@ -3,6 +3,7 @@ This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
 import base64
+import json
 import logging
 import os
 import subprocess
@@ -56,8 +57,19 @@ class EFITools(Core):
         pident_dataurl = png_to_base64("/results/pident_sm.png")
         length_dataurl = png_to_base64("/results/length_sm.png")
         edge_dataurl = png_to_base64("/results/edge_sm.png")
-        self.save_file_to_workspace("/results/1.out.parquet", "All edges found by BLAST")
-        return self.generate_report({"pident_img": pident_dataurl, "length_img": length_dataurl, "edge_img": edge_dataurl, "workspace_name": params["workspace_name"]})
+        # self.save_file_to_workspace("/results/1.out.parquet", "All edges found by BLAST")
+        with open("/results/acc_counts.json") as f:
+            acc_data = json.load(f)
+        report_data = {
+            "pident_img": pident_dataurl, 
+            "length_img": length_dataurl, 
+            "edge_img": edge_dataurl, 
+            "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3f}",
+            "edge_count": acc_data["EdgeCount"],
+            "unique_seqs": acc_data["UniqueSeq"],
+            "workspace_name": params["workspace_name"]
+        }
+        return self.generate_report(report_data)
 
     def generate_report(self, params):
         reports_path = os.path.join(self.shared_folder, "reports")
