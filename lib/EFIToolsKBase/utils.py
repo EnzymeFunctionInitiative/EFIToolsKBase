@@ -71,12 +71,12 @@ class EFITools(Core):
             "unique_seqs": acc_data["UniqueSeq"],
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data)
+        output = self.generate_report(report_data, [edge_ref, "dummy_ref"])
         output["edge_ref"] = edge_ref["shock_id"]
         output["fasta_ref"] = "dummy_ref"#fasta_ref
         return output
 
-    def generate_report(self, params):
+    def generate_report(self, params, objects_created):
         reports_path = os.path.join(self.shared_folder, "reports")
         template_path = os.path.join(TEMPLATES_DIR, "report.html")
         template_variables = params
@@ -86,6 +86,7 @@ class EFITools(Core):
             reports_path=reports_path,
             template_variables=template_variables,
             workspace_name=params["workspace_name"],
+            objects_created=objects_created
         )
         return self.create_report_from_template(template_path, config)
 
