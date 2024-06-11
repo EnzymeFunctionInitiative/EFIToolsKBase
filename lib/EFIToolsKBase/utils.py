@@ -3,7 +3,6 @@ This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
 import base64
-import io
 import logging
 import os
 import subprocess
@@ -18,6 +17,7 @@ from Bio import SeqIO
 
 # This is the SFA base package which provides the Core app class.
 from base import Core
+from installed_clients.DataFileUtilClient import DataFileUtil
 
 
 from .nextflow import NextflowRunner
@@ -42,6 +42,7 @@ class EFITools(Core):
         super().__init__(ctx, config, clients_class)
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
+        self.dfu = self.clients.DataFileUtil
         self.flow = NextflowRunner()
 
 
@@ -51,9 +52,11 @@ class EFITools(Core):
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+        print(os.listdir("/results"))
         pident_dataurl = png_to_base64("/results/pident_sm.png")
         length_dataurl = png_to_base64("/results/length_sm.png")
         edge_dataurl = png_to_base64("/results/edge_sm.png")
+        self.save_file_to_workspace("/results/1.out.parquet", "All edges found by BLAST")
         return self.generate_report({"pident_img": pident_dataurl, "length_img": length_dataurl, "edge_img": edge_dataurl, "workspace_name": params["workspace_name"]})
 
     def generate_report(self, params):
@@ -69,6 +72,13 @@ class EFITools(Core):
         )
         return self.create_report_from_template(template_path, config)
 
+    def save_file_to_workspace(self, filepath, description):
+        output_file_shock_id = self.dfu.file_to_shock({"file_path": filepath})["shock_id"]
+        print(f"Uploaded filepath {filepath} to shock and got id {output_file_shock_id}")
+        return {"shock_id": output_file_shock_id,
+                "name": os.path.basename(filepath),
+                "label": os.path.basename(filepath),
+                "description": description}
 
 class ExampleReadsApp(Core):
     def __init__(self, ctx, config, clients_class=None):
