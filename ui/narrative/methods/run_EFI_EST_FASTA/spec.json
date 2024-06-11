@@ -430,13 +430,15 @@
                     "service_method_output_path": [
                         0,
                         "edge_ref"
-                    ]
+                    ],
+                    "target_property": "edge_ref"
                 },
                 {
                     "service_method_output_path": [
                         0,
                         "fasta_ref"
-                    ]
+                    ],
+                    "target_property": "fasta_ref"
                 },
                 {
                     "narrative_system_variable": "workspace",
