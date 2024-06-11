@@ -9,7 +9,7 @@
     ],
     "widgets": {
         "input": null,
-        "output": "no-display"
+        "output": null
     },
     "parameters": [
         {
