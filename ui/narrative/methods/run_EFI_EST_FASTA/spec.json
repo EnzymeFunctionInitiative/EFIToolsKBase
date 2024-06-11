@@ -359,7 +359,7 @@
                     "target_property": "fasta_sequences"
                 },
                 {
-                    "input_parameter": "fasta_sequences_file",
+                    "input_parameter": "fasta_input",
                     "target_property": "fasta_sequences_file"
                 },
                 {
