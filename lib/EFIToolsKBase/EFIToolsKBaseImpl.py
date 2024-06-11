@@ -32,7 +32,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "9df52a8cc63f42b1b488bb7bbb1868e8feefb3bf"
+    GIT_COMMIT_HASH = "3e3894b15fefe07338eefc4fc0b5c5e8de9a2cbd"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -47,8 +47,10 @@ class EFIToolsKBase:
                             level=logging.INFO)
         os.environ["JAVA_HOME"] = "/root/.sdkman/candidates/java/current"
         #END_CONSTRUCTOR
+        pass
 
-    def run_EFI_EST_Sequence_BLAST(self, ctx, params):
+
+    def run_EFIToolsKBase(self, ctx, params):
         """
         This example function accepts any number of parameters and returns results in a KBaseReport
         :param params: instance of mapping from String to unspecified object
@@ -57,36 +59,26 @@ class EFIToolsKBase:
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_EFI_EST_Sequence_BLAST
-
-        config = dict(
-            callback_url=self.callback_url,
-            shared_folder=self.shared_folder,
-            clients=dict(
-                KBaseReport=KBaseReport,
-                ReadsUtils=ReadsUtils
-            ),
-        )
-        # Download Reads
-
-        era = ExampleReadsApp(ctx, config=config)
-        output = era.do_analysis(params)
-
-        #END run_EFI_EST_Sequence_BLAST
+        #BEGIN run_EFIToolsKBase
+        #END run_EFIToolsKBase
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_Sequence_BLAST return value ' +
+            raise ValueError('Method run_EFIToolsKBase return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
 
-    def run_EFI_EST_Families(self, ctx, params):
-        #BEGIN run_EFI_EST_Families
-        pass
-        #END run_EFI_EST_Families
-
     def run_EFI_EST_FASTA(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "EFIFastaReportResults" -> structure:
+           parameter "report_name" of String, parameter "report_ref" of
+           String, parameter "fasta_ref" of String, parameter "edge_ref" of
+           String
+        """
+        # ctx is the context object
+        # return variables are: output
         #BEGIN run_EFI_EST_FASTA
         config = dict(
             callback_url=self.callback_url,
@@ -105,63 +97,13 @@ class EFIToolsKBase:
         output = efi.est_fasta(params)
         
         #END run_EFI_EST_FASTA
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_EST_FASTA return value ' +
+                             'output is not type dict as required.')
+        # return the results
         return [output]
-
-    def run_EFI_EST_Accession_IDs(self, ctx, params):
-        #BEGIN run_EFI_EST_Accession_IDs
-        pass
-        #END run_EFI_EST_accession_IDs
-
-    def run_EFI_GNT_GND_Single_Sequence_BLAST(self, ctx, params):
-        #BEGIN run_EFI_GNT_GND_Single_Sequence_BLAST
-        pass
-        #END run_EFI_GNT_GND_Single_Sequence_BLAST
-
-    def run_EFI_GNT_GND_Sequence_ID_Lookup(self, ctx, params):
-        #BEGIN run_EFI_GNT_GND_Sequence_ID_Lookup
-        pass
-        #END run_EFI_GNT_GND_Sequence_ID_Lookup
-
-    def run_EFI_GNT_GND_FASTA_Sequence_Lookup(self, ctx, params):
-        #BEGIN run_EFI_GNT_GND_FASTA_Sequence_Lookup
-        pass
-        #END run_EFI_GNT_GND_FASTA_Sequence_Lookup
-
-    def run_EFI_EST_SSN_Utils_Color_SSNs(self, ctx, params):
-        #BEGIN run_EFI_EST_SSN_Utils_Color_SSNs
-        pass
-        #END run_EFI_EST_SSN_Utils_Color_SSNs
-
-    def run_EFI_EST_SSN_Utils_Cluster_Analysis(self, ctx, params):
-        #BEGIN run_EFI_EST_SSN_Utils_Cluster_Analysis
-        pass
-        #END run_EFI_EST_SSN_Utils_Cluster_Analysis
-
-    def run_EFI_EST_SSN_Utils_Neighborhood_Connectivity(self, ctx, params):
-        #BEGIN run_EFI_EST_SSN_Utils_Neighborhood_Connectivity
-        pass
-        #END run_EFI_EST_SSN_Utils_Neighborhood_Connectivity
-
-    def run_EFI_EST_SSN_Utils_Convergence_Ratio(self, ctx, params):
-        #BEGIN run_EFI_EST_SSN_Utils_Convergence_Ratio
-        pass
-        #END run_EFI_EST_SSN_Utils_Convergence_Ratio
-
-    def run_EFI_CGFP_ShortBRED(self, ctx, params):
-        #BEGIN run_EFI_CGFP_ShortBRED
-        pass
-        #END run_EFI_CGFP_ShortBRED
-
-    def run_EFI_GNT_GNT_Submission(self, ctx, params):
-        #BEGIN run_EFI_GNT_GNT_Submission
-        pass
-        #END run_EFI_GNT_GNT_Submission
-
-    def run_EFI_GNT_View_Saved_Diagram(self, ctx, params):
-        #BEGIN run_EFI_GNT_View_Saved_Diagram
-        pass
-        #END run_EFI_GNT_View_Saved_Diagram
-
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

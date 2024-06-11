@@ -342,6 +342,10 @@ class Application(object):
                              name='EFIToolsKBase.run_EFIToolsKBase',
                              types=[dict])
         self.method_authentication['EFIToolsKBase.run_EFIToolsKBase'] = 'required'  # noqa
+        self.rpc_service.add(impl_EFIToolsKBase.run_EFI_EST_FASTA,
+                             name='EFIToolsKBase.run_EFI_EST_FASTA',
+                             types=[dict])
+        self.method_authentication['EFIToolsKBase.run_EFI_EST_FASTA'] = 'required'  # noqa
         self.rpc_service.add(impl_EFIToolsKBase.status,
                              name='EFIToolsKBase.status',
                              types=[dict])
