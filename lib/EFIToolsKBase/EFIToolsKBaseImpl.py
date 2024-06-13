@@ -96,7 +96,8 @@ class EFIToolsKBase:
            params["fasta_sequences_file"] = "/results/sequences.fasta"
         else:
             download_staging_file_params = {'staging_file_subdir_path': params["fasta_sequences_file"]}
-            efi.dfu.download_staging_file(download_staging_file_params)
+            retval = efi.dfu.download_staging_file(download_staging_file_params)
+            params["fasta_sequences_file"] = retval["copy_file_path"]
         output = efi.est_fasta(params)
         
         #END run_EFI_EST_FASTA
