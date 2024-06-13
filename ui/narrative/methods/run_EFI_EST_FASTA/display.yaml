@@ -108,10 +108,7 @@ parameters:
             The type of ID entered in the Families text box above
 
 parameter-groups:
-    fasta_input:
-        ui-name: FASTA Input
-        short-hint: |
-            FASTA Input
+
 
     fragment_options:
         ui-name: Fragment Option

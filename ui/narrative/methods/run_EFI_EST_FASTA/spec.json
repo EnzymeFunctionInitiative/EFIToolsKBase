@@ -259,23 +259,7 @@
         }
     ],
     "parameter-groups": [
-        {
-            "id": "fasta_input",
-            "parameters": [
-                "fasta_sequences",
-                "fasta_sequences_file",
-                "header_format"
-            ],
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "with_border": true,
-            "id_mapping": {
-                "fasta_sequences": "fasta_sequences",
-                "fasta_sequences_file": "fasta_sequences_file",
-                "header_format": "header_format"
-            }
-        },
+        
         {
             "id": "fragment_options",
             "parameters": [
