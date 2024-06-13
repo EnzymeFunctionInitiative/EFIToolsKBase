@@ -323,12 +323,8 @@
                     "target_property": "family_filter"
                 },
                 {
-                    "input_parameter": "taxonomic_level",
-                    "target_property": "taxonomic_level"
-                },
-                {
-                    "input_parameter": "filter_string",
-                    "target_property": "filter_string"
+                    "input_parameter": "taxonomy_filter_options",
+                    "target_property": "taxonomy_filter_options"
                 },
                 {
                     "input_parameter": "families_to_add",
