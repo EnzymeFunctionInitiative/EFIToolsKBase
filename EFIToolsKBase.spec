@@ -3,6 +3,26 @@ A KBase module: EFIToolsKBase
 */
 
 module EFIToolsKBase {
+
+    typedef structure {
+        /*
+            these are parallel arrays storing data about the number of sequences
+            at each alignment score
+        */
+        list<int> alignment_scores; 
+        list<int> alsc_count; 
+        list<int> alsc_count_cumsum;
+    } evaluetab;
+
+    typedef structure {
+        string shock_id;
+        int edge_count;
+        int unique_seq;
+        float convergence_ratio;
+        evaluetab evalues;
+    } EdgeFileBLAST;
+
+
     typedef structure {
         string report_name;
         string report_ref;
