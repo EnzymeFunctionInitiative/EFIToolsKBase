@@ -13,19 +13,6 @@
     },
     "parameters": [
         {
-            "id": "fasta_sequences",
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "textarea",
-            "textarea_options": {
-                "n_rows": 10
-            }
-        },
-        {
             "id": "fasta_sequences_file",
             "optional": true,
             "advanced": false,
@@ -339,10 +326,6 @@
                 {
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
-                },
-                {
-                    "input_parameter": "fasta_sequences",
-                    "target_property": "fasta_sequences"
                 },
                 {
                     "input_parameter": "fasta_sequences_file",

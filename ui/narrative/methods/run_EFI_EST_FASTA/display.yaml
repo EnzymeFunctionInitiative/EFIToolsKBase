@@ -22,11 +22,6 @@ suggestions:
 # Configure the display and description of parameters
 #
 parameters:
-    fasta_sequences:
-        ui-name: Sequences (paste)
-        short-hint: |
-            Input FASTA-formatted sequences with the selected accession IDs in the header. 
-            
     fasta_sequences_file:
         ui-name: Sequences (upload)
         short-hint: |
