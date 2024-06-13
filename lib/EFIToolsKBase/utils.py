@@ -58,7 +58,7 @@ class EFITools(Core):
         pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
         length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
         edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
-        edge_ref = self.save_file_to_workspace(os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
+        edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
         # fasta_ref = self.save_sequences_to_workspace(os.path.join(self.shared_folder, "sequences.fasta"), params["workspace_name"])
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
@@ -90,10 +90,21 @@ class EFITools(Core):
         )
         return self.create_report_from_template(template_path, config)
 
-    def save_file_to_workspace(self, filepath, description):
+    def save_file_to_workspace(self, workspace_name, filepath, description):
+        workspace_id = self.dfu.ws_name_to_id(workspace_name)
         output_file_shock_id = self.dfu.file_to_shock({"file_path": filepath})["shock_id"]
         print(f"Uploaded filepath {filepath} to shock and got id {output_file_shock_id}")
-        return {"shock_id": output_file_shock_id,
+        save_object_params = {
+            'id': workspace_id,
+            'objects': [{
+                'type': 'EFIToolsKBase.EdgeFileBLAST',
+                'data': output_file_shock_id,
+                'name': f"{os.path.basename(filepath)}_shock_id"
+            }]
+        }
+        dfu_oi = self.dfu.save_objects(save_object_params)[0]
+        object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        return {"shock_id": object_reference,
                 "name": os.path.basename(filepath),
                 "label": os.path.basename(filepath),
                 "description": description}
