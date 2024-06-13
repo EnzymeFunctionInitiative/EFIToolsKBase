@@ -271,7 +271,9 @@
             "allow_multiple": false,
             "with_border": true,
             "id_mapping": {
-                "fasta_sequences_file": "fasta_sequences_file"
+                "fasta_sequences": "fasta_sequences",
+                "fasta_sequences_file": "fasta_sequences_file",
+                "header_format": "header_format"
             }
         },
         {
