@@ -103,11 +103,6 @@ parameters:
             The type of ID entered in the Families text box above
 
 parameter-groups:
-    family_filter_option:
-        ui-name: Filter by Family
-        short-hint: |
-            Filter by Family
-            
     taxonomy_filter_options:
         ui-name: Filter by Taxonomy
         short-hint: |
