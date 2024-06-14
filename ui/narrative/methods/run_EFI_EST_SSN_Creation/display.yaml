@@ -31,7 +31,7 @@ parameters :
             The name of the output SSN
         long-hint : |
             The name of the output SSN
-    ascore :
+    alignment_score :
         ui-name : |
             Alignment score
         short-hint : |

@@ -5,26 +5,19 @@ import string
 
 
 class NextflowRunner():
-    def __init__(self, est_dir="/EST", config_name="kbase.config"):
+    def __init__(self, workflow_def, est_dir="/EST", config_name="kbase.config"):
         assert os.path.exists(est_dir)
         self.est_dir = est_dir
-        self.workflow_def = f"{est_dir}/est.nf"
-        self.config_file = f"{est_dir}/conf/{config_name}"
+        self.workflow_def = os.path.join(est_dir, workflow_def)
+        self.config_file = os.path.join(est_dir, "conf", config_name)
         self.params_file = ""
         self.run_command = ""
     
-    def render_params_file(self, fasta_file, output_dir="/results", blast_matches=250, job_id=0):
-        template_file = os.path.join(self.est_dir, "templates", "est-params-template.yml")
-        os.makedirs(output_dir, exist_ok=True)
-        params_output = os.path.join(output_dir, "params.yml")
-        mapping = dict(est_dir=self.est_dir, 
-             fasta_file=fasta_file, 
-             output_dir=output_dir,
-             duckdb_threads=1,
-             duckdb_mem="64GB",
-             fasta_shards=1,
-             blast_matches=blast_matches,
-             job_id=job_id)
+    def render_params_file(self, mapping, parameter_file):
+        template_file = os.path.join(self.est_dir, "templates", parameter_file)
+        os.makedirs(mapping["output_dir"], exist_ok=True)
+        params_output = os.path.join(mapping["output_dir"], "params.yml")
+
         with open(template_file) as f:
             template = string.Template(f.read())
         with open(params_output, "w") as f:

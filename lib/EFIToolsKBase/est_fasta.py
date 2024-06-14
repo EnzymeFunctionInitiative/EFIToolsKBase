@@ -36,11 +36,20 @@ class EFITools(Core):
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
         self.au = self.clients.AssemblyUtil
-        self.flow = NextflowRunner()
+        self.flow = NextflowRunner("est.nf")
 
 
     def do_analysis(self, params):
-        self.flow.render_params_file(params['fasta_sequences_file'], output_dir=self.shared_folder)
+        mapping = {
+            "fasta_file": params["fasta_sequences_file"],
+            "output_dir": self.shared_folder,
+            "duckdb_mem": "64GB",
+            "duckdb_threads": 1,
+            "fasta_shards": 1,
+            "blast_matches": 250,
+            "job_id": 0,
+        }
+        self.flow.render_params_file(mapping, "est-params-template.yml")
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
@@ -49,7 +58,7 @@ class EFITools(Core):
         pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
         length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
         edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
-        edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
+        # edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
         # fasta_ref = self.save_sequences_to_workspace(os.path.join(self.shared_folder, "sequences.fasta"), params["workspace_name"])
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
@@ -62,9 +71,9 @@ class EFITools(Core):
             "unique_seqs": acc_data["UniqueSeq"],
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data, [edge_ref, "dummy_ref"])
-        output["edge_ref"] = edge_ref["shock_id"]
-        output["fasta_ref"] = "dummy_ref"#fasta_ref
+        output = self.generate_report(report_data, ["edge_ref", "fasta_ref"])
+        output["edge_ref"] = "edge_ref"#edge_ref["shock_id"]
+        output["fasta_ref"] = "fasta_ref"#fasta_ref
         return output
 
     def generate_report(self, params, objects_created):

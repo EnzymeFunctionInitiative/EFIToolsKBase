@@ -1,6 +1,7 @@
 {
-    "ver": "0.1.8",
+    "ver": "0.0.1",
     "authors": [
+        "hdemeyer",
         "nilsoberg"
     ],
     "contact": "",
@@ -19,7 +20,7 @@
             "field_type": "text"
         },
         {
-            "id": "ascore",
+            "id": "alignment_score",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -58,8 +59,8 @@
                     "target_property": "ssn_name"
                 },
                 {
-                    "input_parameter": "ascore",
-                    "target_property": "ascore"
+                    "input_parameter": "alignment_score",
+                    "target_property": "alignment_score"
                 },
                 {
                     "input_parameter": "compute_dataset_ref",
