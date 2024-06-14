@@ -31,7 +31,8 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
 
 # install EST scripts
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
-    cd EST && git checkout nextflow-test && \
+    cd EST && \
+    git checkout nextflow-test && \
     cpanm --installdeps /EST/
 
 # data for testing, will be removed
