@@ -42,5 +42,6 @@ module EFIToolsKBase {
 
     funcdef run_EFI_EST_FASTA(mapping<string,UnspecifiedObject> params) returns (EFIFastaReportResults output) authentication required;
 
+    funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
 };

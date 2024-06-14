@@ -1,0 +1,87 @@
+{
+    "ver": "0.1.8",
+    "authors": [
+        "nilsoberg"
+    ],
+    "contact": "",
+    "categories": ["active"],
+    "widgets": {
+        "input": null,
+        "output": null
+    },
+    "parameters": [
+        {
+            "id": "ssn_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text"
+        },
+        {
+            "id": "ascore",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options": {
+                "validate_as": "int",
+                "min_integer": 0
+            }
+        },
+        {
+            "id": "compute_dataset_ref",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text"
+        }
+    ],
+    "behavior": {
+        "service-mapping": {
+            "url": "",
+            "name": "EFIToolsKBase",
+            "method": "run_EFI_EST_SSN_Creation",
+            "input_mapping": [
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                },
+                {
+                    "narrative_system_variable": "workspace_id",
+                    "target_property": "workspace_id"
+                },
+                {
+                    "input_parameter": "ssn_name",
+                    "target_property": "ssn_name"
+                },
+                {
+                    "input_parameter": "ascore",
+                    "target_property": "ascore"
+                },
+                {
+                    "input_parameter": "compute_dataset_ref",
+                    "target_property": "compute_dataset_ref",
+                    "target_type_transform": "resolved-ref"
+                }
+            ],
+            "output_mapping": [
+                {
+                    "service_method_output_path": [0,"report_name"],
+                    "target_property": "report_name"
+                },
+                {
+                    "service_method_output_path": [0,"report_ref"],
+                    "target_property": "report_ref"
+                },
+                {
+                    "narrative_system_variable": "workspace",
+                    "target_property": "workspace_name"
+                }
+            ]
+        }
+    },
+    "job_id_output_field": "docker"
+}

@@ -4,6 +4,8 @@ import time
 import unittest
 from configparser import ConfigParser
 
+from installed_clients.DataFileUtilClient import DataFileUtil
+
 from EFIToolsKBase.EFIToolsKBaseImpl import EFIToolsKBase
 from EFIToolsKBase.EFIToolsKBaseServer import MethodContext
 from EFIToolsKBase.authclient import KBaseAuth as _KBaseAuth

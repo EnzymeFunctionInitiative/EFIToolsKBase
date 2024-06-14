@@ -7,7 +7,7 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.AssemblyUtilClient import AssemblyUtil
-from .utils import ExampleReadsApp, png_to_base64, EFITools
+from .est_fasta import EFITools
 from base import Core
 
 from .nextflow import NextflowRunner
@@ -32,7 +32,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "d677e41148c34955aa67fe0f8bc8750b1fa5f9f9"
+    GIT_COMMIT_HASH = "aee730d7642ccba17d6937ea24194ab7832f822c"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -98,13 +98,32 @@ class EFIToolsKBase:
             download_staging_file_params = {'staging_file_subdir_path': params["fasta_sequences_file"]}
             retval = efi.dfu.download_staging_file(download_staging_file_params)
             params["fasta_sequences_file"] = retval["copy_file_path"]
-        output = efi.est_fasta(params)
+        output = efi.do_analysis(params)
         
         #END run_EFI_EST_FASTA
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method run_EFI_EST_FASTA return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
+    def run_EFI_EST_SSN_Creation(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_EST_SSN_Creation
+        output = ""
+        #END run_EFI_EST_SSN_Creation
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_EST_SSN_Creation return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]

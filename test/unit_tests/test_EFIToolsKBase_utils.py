@@ -3,8 +3,6 @@ import subprocess
 
 import pytest
 
-from EFIToolsKBase.utils import ExampleReadsApp
-
 @pytest.fixture
 def process():
     return subprocess.Popen(

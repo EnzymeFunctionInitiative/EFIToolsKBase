@@ -1,0 +1,54 @@
+#
+# define display information
+#
+name: EFI-EST SSN Creation
+
+tooltip: |
+    Create an SSN from EFI-EST ComputedProteinSims workspace object
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+#suggestions:
+#    apps:
+#        related:
+#            [app1, app2]
+#        next:
+#            [app3, app4]
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    ssn_name :
+        ui-name : |
+            SSN name
+        short-hint : |
+            The name of the output SSN
+        long-hint : |
+            The name of the output SSN
+    ascore :
+        ui-name : |
+            Alignment score
+        short-hint : |
+            The alignment score used to group sequences into clusters
+        long-hint : |
+            The alignment score used to group sequences into clusters
+    compute_dataset_ref :
+        ui-name : |
+            Dataset
+        short-hint: |
+            A precomputed dataset from the initial computation step
+        long-hint: |
+            A precomputed dataset from the initial computation step
+
+
+parameter-groups :
+
+
+description : |
+    <p>Creates an SSN from a dataset from the initial computation step.</p>:w
