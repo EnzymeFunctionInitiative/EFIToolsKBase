@@ -2,14 +2,9 @@
 This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
-import base64
-import json
-import logging
 import os
-import subprocess
 import uuid
 
-from collections import Counter
 from shutil import copyfile
 
 import pandas as pd
@@ -21,11 +16,10 @@ from base import Core
 from installed_clients.DataFileUtilClient import DataFileUtil
 
 
-from .nextflow import NextflowRunner
-from .utils import png_to_base64
-from .const import *
+from ..nextflow import NextflowRunner
+from ..const import *
 
-class EFITools(Core):
+class SSNCreation(Core):
     def __init__(self, ctx, config, clients_class=None):
         """
         This is required to instantiate the Core App class with its defaults
@@ -34,41 +28,34 @@ class EFITools(Core):
         super().__init__(ctx, config, clients_class)
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
-        self.dfu = self.clients.DataFileUtil
-        self.au = self.clients.AssemblyUtil
-        self.flow = NextflowRunner("est.nf")
+        self.flow = NextflowRunner("ssn.nf")
 
 
     def do_analysis(self, params):
         mapping = {
-            "fasta_file": params["fasta_sequences_file"],
+            "blast_parquet": "/results/1.out.parquet",
+            "fasta_file": "/results/sequences.fasta",
             "output_dir": self.shared_folder,
-            "duckdb_mem": "64GB",
-            "duckdb_threads": 1,
-            "fasta_shards": 1,
-            "blast_matches": 250,
-            "job_id": 0,
+            "filter_parameter": "alignment_score",
+            "filter_min_val": params["alignment_score"],
+            "min_length": 0,
+            "max_length": 50000,
+            "ssn_name": params["ssn_name"],
+            "ssn_title": "kbase_ssn",
+            "maxfull": 0,
+            "uniref_version": 90,
+            "efi_config": "",
+            "db_version": 100
         }
-        self.flow.render_params_file(mapping, "est-params-template.yml")
-        self.flow.generate_run_command()
+        self.flow.render_params_file(mapping, "ssn-params-template.yml")
+        self.flow.generate_run_command(stub=True)
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         print(self.shared_folder, os.listdir(self.shared_folder))
-        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
-        length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
-        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
-        # edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
-        # fasta_ref = self.save_sequences_to_workspace(os.path.join(self.shared_folder, "sequences.fasta"), params["workspace_name"])
-        with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
-            acc_data = json.load(f)
+        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.tab"), sep="\t").to_html()
         report_data = {
-            "pident_img": pident_dataurl, 
-            "length_img": length_dataurl, 
-            "edge_img": edge_dataurl, 
-            "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3f}",
-            "edge_count": acc_data["EdgeCount"],
-            "unique_seqs": acc_data["UniqueSeq"],
+            "stats": stats,
             "workspace_name": params["workspace_name"]
         }
         output = self.generate_report(report_data, ["edge_ref", "fasta_ref"])
@@ -78,7 +65,7 @@ class EFITools(Core):
 
     def generate_report(self, params, objects_created):
         reports_path = os.path.join(self.shared_folder, "reports")
-        template_path = os.path.join(TEMPLATES_DIR, "report.html")
+        template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
         template_variables = params
         # The KBaseReport configuration dictionary
         config = dict(

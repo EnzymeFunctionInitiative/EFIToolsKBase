@@ -7,7 +7,7 @@ FROM kbase/sdkpython:3.8.0
 # installation scripts.
 
 # install zip/unzip for duckdb and nextflow
-RUN apt install -y zip unzip
+RUN apt update && apt install -y zip unzip cpanminus libdbd-mysql-perl zip
 
 # install blastall
 RUN curl -o /opt/blast-2.2.26.tar.gz https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz; \
@@ -30,9 +30,15 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
     mv /opt/install_nextflow.sh /usr/bin/nextflow
 
 # install EST scripts
-RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && cd EST && git checkout nextflow-test
+RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
+    cd EST && \
+    git checkout nextflow-test && \
+    cpanm --installdeps /EST/
 
+# data for testing, will be removed
 COPY sequences.fasta /results/sequences.fasta
+COPY 1.out.parquet /results/1.out.parquet
+COPY struct.filtered.out /EST/cheat/struct.filtered.out
 
 # create conda env for nextflow
 RUN conda env create -f /EST/env.yml

@@ -11,6 +11,3 @@ def process():
         stderr=subprocess.PIPE
     )
 
-def test_process(process):
-    logging.info("Running a test")
-    assert 1 == 1

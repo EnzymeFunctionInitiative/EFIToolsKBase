@@ -92,3 +92,10 @@ class EFIToolsKBaseTest(unittest.TestCase):
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["fasta_ref"]))
         self.assertTrue(len(ret[0]["edge_ref"]))
+
+    def test_run_EFI_EST_SSN_Creation(self):
+        ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
+            "alignment_score": 120,
+            "ssn_name": "testssn",
+            "workspace_name": self.wsName
+        })

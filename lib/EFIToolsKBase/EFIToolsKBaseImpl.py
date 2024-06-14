@@ -7,7 +7,8 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.AssemblyUtilClient import AssemblyUtil
-from .est_fasta import EFITools
+from .est_wrappers.est_fasta import EFIFasta
+from .est_wrappers.ssn_creation import SSNCreation
 from base import Core
 
 from .nextflow import NextflowRunner
@@ -90,7 +91,7 @@ class EFIToolsKBase:
                 AssemblyUtil=AssemblyUtil
             ),
         )
-        efi = EFITools(ctx, config=config)
+        efi = EFIFasta(ctx, config=config)
         logging.info(params)
         if params["fasta_sequences_file"] is None:
            params["fasta_sequences_file"] = "/results/sequences.fasta"
@@ -114,7 +115,16 @@ class EFIToolsKBase:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_EFI_EST_SSN_Creation
-        output = ""
+        config = dict(
+            callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
+            clients=dict(
+                KBaseReport=KBaseReport,
+            ),
+        )
+        ssnc = SSNCreation(ctx, config=config)
+        logging.info(params)
+        output = ssnc.do_analysis(params)
         #END run_EFI_EST_SSN_Creation
 
         # At some point might do deeper type checking...

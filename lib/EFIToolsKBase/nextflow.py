@@ -24,7 +24,7 @@ class NextflowRunner():
             f.write(template.substitute(mapping))
         self.params_file = params_output
 
-    def generate_run_command(self):
+    def generate_run_command(self, stub=False):
         if self.params_file == "":
             raise ValueError("Must render params with `render_params_file()` before generating run command")
         cmd = [
@@ -35,6 +35,8 @@ class NextflowRunner():
                 "-offline ",
                 "-params-file", f"{self.params_file}"
         ]
+        if stub:
+            cmd.append("-stub")
         self.run_command = cmd
 
     def execute(self):
