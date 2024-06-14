@@ -30,14 +30,6 @@
                 "validate_as": "int",
                 "min_integer": 0
             }
-        },
-        {
-            "id": "compute_dataset_ref",
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [ "" ],
-            "field_type": "text"
         }
     ],
     "behavior": {
@@ -61,11 +53,6 @@
                 {
                     "input_parameter": "alignment_score",
                     "target_property": "alignment_score"
-                },
-                {
-                    "input_parameter": "compute_dataset_ref",
-                    "target_property": "compute_dataset_ref",
-                    "target_type_transform": "resolved-ref"
                 }
             ],
             "output_mapping": [

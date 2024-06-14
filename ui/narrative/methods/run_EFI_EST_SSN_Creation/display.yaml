@@ -38,17 +38,6 @@ parameters :
             The alignment score used to group sequences into clusters
         long-hint : |
             The alignment score used to group sequences into clusters
-    compute_dataset_ref :
-        ui-name : |
-            Dataset
-        short-hint: |
-            A precomputed dataset from the initial computation step
-        long-hint: |
-            A precomputed dataset from the initial computation step
-
-
-parameter-groups :
-
-
+            
 description : |
     <p>Creates an SSN from a dataset from the initial computation step.</p>:w
