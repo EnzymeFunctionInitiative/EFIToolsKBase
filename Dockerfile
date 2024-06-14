@@ -29,6 +29,8 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
     echo 'source /root/.sdkman/bin/sdkman-init.sh && /opt/install_nextflow.sh' | bash && \
     mv /opt/install_nextflow.sh /usr/bin/nextflow
 
+RUN echo "asdf"
+
 # install EST scripts
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
     cd EST && \
