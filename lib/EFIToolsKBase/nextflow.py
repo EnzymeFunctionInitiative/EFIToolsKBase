@@ -14,7 +14,7 @@ class NextflowRunner():
         self.run_command = ""
     
     def render_params_file(self, fasta_file, output_dir="/results", blast_matches=250, job_id=0):
-        template_file = os.path.join(self.est_dir, "templates", "params-template.yml")
+        template_file = os.path.join(self.est_dir, "templates", "est-params-template.yml")
         os.makedirs(output_dir, exist_ok=True)
         params_output = os.path.join(output_dir, "params.yml")
         mapping = dict(est_dir=self.est_dir, 
