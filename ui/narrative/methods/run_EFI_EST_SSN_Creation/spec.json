@@ -7,8 +7,8 @@
     "contact": "",
     "categories": ["active"],
     "widgets": {
-        "input": null,
-        "output": null
+        "input": "",
+        "output": "no-display"
     },
     "parameters": [
         {
