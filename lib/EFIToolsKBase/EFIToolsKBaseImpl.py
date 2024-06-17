@@ -7,6 +7,7 @@ from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.AssemblyUtilClient import AssemblyUtil
+from installed_clients.WorkspaceClient import Workspace
 from .est_wrappers.est_fasta import EFIFasta
 from .est_wrappers.ssn_creation import SSNCreation
 from base import Core
@@ -33,7 +34,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "aee730d7642ccba17d6937ea24194ab7832f822c"
+    GIT_COMMIT_HASH = "19b7dd992cdea6b23611dcebf8bad8166eb89496"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -47,6 +48,7 @@ class EFIToolsKBase:
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
         os.environ["JAVA_HOME"] = "/root/.sdkman/candidates/java/current"
+        self.wsc = Workspace(self.callback_url)
         #END_CONSTRUCTOR
         pass
 
@@ -131,6 +133,48 @@ class EFIToolsKBase:
         if not isinstance(output, dict):
             raise ValueError('Method run_EFI_EST_SSN_Creation return value ' +
                              'output is not type dict as required.')
+        # return the results
+        return [output]
+
+    def run_requestOwnership(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_requestOwnership
+        self.wsc.request_module_ownership("EFIToolsKBase")
+        output = {"output": 0}
+        #END run_requestOwnership
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, str):
+            raise ValueError('Method run_requestOwnership return value ' +
+                             'output is not type str as required.')
+        # return the results
+        return [output]
+
+    def run_registerTypespec(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_registerTypespec
+        register_typespec_params = {
+            "mod": "EFIToolsKBase",
+            "new_types": ["BLASTEdgeFile"]
+        }
+        self.wsc.register_typespec(register_typespec_params)
+        output = {"output": 0}
+        #END run_registerTypespec
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, str):
+            raise ValueError('Method run_registerTypespec return value ' +
+                             'output is not type str as required.')
         # return the results
         return [output]
     def status(self, ctx):

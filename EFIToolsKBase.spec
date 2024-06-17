@@ -20,7 +20,7 @@ module EFIToolsKBase {
         int unique_seq;
         float convergence_ratio;
         evaluetab evalues;
-    } EdgeFileBLAST;
+    } BLASTEdgeFile;
 
 
     typedef structure {
@@ -43,5 +43,8 @@ module EFIToolsKBase {
     funcdef run_EFI_EST_FASTA(mapping<string,UnspecifiedObject> params) returns (EFIFastaReportResults output) authentication required;
 
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
+
+    funcdef run_requestOwnership(mapping<string, UnspecifiedObject> params) returns (string output) authentication required;
+    funcdef run_registerTypespec(mapping<string, UnspecifiedObject> params) returns (string output) authentication required;
 
 };
