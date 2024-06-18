@@ -243,32 +243,20 @@
                     "target_property": "fragment_option"
                 },
                 {
-                    "input_parameter": "taxonomic_level",
-                    "target_property": "taxonomic_level"
+                    "input_parameter": "taxonomy_filter_options",
+                    "target_property": "taxonomy_filter_options"
                 },
                 {
-                    "input_parameter": "filter_string",
-                    "target_property": "filter_string"
-                },
-                {
-                    "input_parameter": "domain",
-                    "target_property": "domain"
-                },
-                {
-                    "input_parameter": "region",
-                    "target_property": "region"
+                    "input_parameter": "family_domain_boundary_option",
+                    "target_property": "family_domain_boundary_option"
                 },
                 {
                     "input_parameter": "ssn_e_value",
                     "target_property": "ssn_e_value"
                 },
                 {
-                    "input_parameter": "families_to_add",
-                    "target_property": "families_to_add"
-                },
-                {
-                    "input_parameter": "families_addition_cluster_id_format",
-                    "target_property": "families_addition_cluster_id_format"
+                    "input_parameter": "protein_family_addition_options",
+                    "target_property": "protein_family_addition_options"
                 },
                 {
                     "input_parameter": "fraction",
