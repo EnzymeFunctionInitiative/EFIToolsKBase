@@ -34,7 +34,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "f271d1cc113f81d08d140430b5a9c7931a954538"
+    GIT_COMMIT_HASH = "da994bd90620d627b543297f7b6227ac641c23cc"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -152,48 +152,6 @@ class EFIToolsKBase:
         if not isinstance(output, dict):
             raise ValueError('Method run_EFI_EST_SSN_Creation return value ' +
                              'output is not type dict as required.')
-        # return the results
-        return [output]
-
-    def run_requestOwnership(self, ctx, params):
-        """
-        :param params: instance of mapping from String to unspecified object
-        :returns: instance of String
-        """
-        # ctx is the context object
-        # return variables are: output
-        #BEGIN run_requestOwnership
-        self.wsc.request_module_ownership("EFIToolsKBase")
-        output = {"output": 0}
-        #END run_requestOwnership
-
-        # At some point might do deeper type checking...
-        if not isinstance(output, str):
-            raise ValueError('Method run_requestOwnership return value ' +
-                             'output is not type str as required.')
-        # return the results
-        return [output]
-
-    def run_registerTypespec(self, ctx, params):
-        """
-        :param params: instance of mapping from String to unspecified object
-        :returns: instance of String
-        """
-        # ctx is the context object
-        # return variables are: output
-        #BEGIN run_registerTypespec
-        register_typespec_params = {
-            "mod": "EFIToolsKBase",
-            "new_types": ["BLASTEdgeFile"]
-        }
-        self.wsc.register_typespec(register_typespec_params)
-        output = {"output": 0}
-        #END run_registerTypespec
-
-        # At some point might do deeper type checking...
-        if not isinstance(output, str):
-            raise ValueError('Method run_registerTypespec return value ' +
-                             'output is not type str as required.')
         # return the results
         return [output]
     def status(self, ctx):

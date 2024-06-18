@@ -47,8 +47,4 @@ module EFIToolsKBase {
     funcdef run_EFI_EST_Families(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
 
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
-
-    funcdef run_requestOwnership(mapping<string, UnspecifiedObject> params) returns (string output) authentication required;
-    funcdef run_registerTypespec(mapping<string, UnspecifiedObject> params) returns (string output) authentication required;
-
 };
