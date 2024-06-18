@@ -4,12 +4,12 @@ A KBase module: EFIToolsKBase
 
 module EFIToolsKBase {
 
-    /* @id handle */
-    typedef string handle_id;
+    /* @id bytestream */
+    typedef string blobstore_id;
 
     typedef structure {
         /*
-            these are parallel arrays storing data about the number of sequences
+            These are parallel arrays storing data about the number of sequences
             at each alignment score
         */
         list<int> alignment_scores; 
@@ -18,13 +18,12 @@ module EFIToolsKBase {
     } EValueTab;
 
     typedef structure {
-        handle_id handle_id;
+        blobstore_id blobstore_id;
         int edge_count;
         int unique_seq;
         float convergence_ratio;
         EValueTab evalues;
-    } BLASTEdgeFile;
-
+    } BlastEdgeFile;
 
     typedef structure {
         string report_name;
