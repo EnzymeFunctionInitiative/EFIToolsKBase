@@ -4,6 +4,9 @@ A KBase module: EFIToolsKBase
 
 module EFIToolsKBase {
 
+    /* @id handle */
+    typedef string HandleId;
+
     typedef structure {
         /*
             these are parallel arrays storing data about the number of sequences
@@ -12,14 +15,14 @@ module EFIToolsKBase {
         list<int> alignment_scores; 
         list<int> alsc_count; 
         list<int> alsc_count_cumsum;
-    } evaluetab;
+    } EValueTab;
 
     typedef structure {
-        string shock_id;
+        HandleId blobstore_id;
         int edge_count;
         int unique_seq;
         float convergence_ratio;
-        evaluetab evalues;
+        EValueTab evalues;
     } BLASTEdgeFile;
 
 
