@@ -34,7 +34,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "ddbc74e602ba589a4769057734ce7bbe8bc70350"
+    GIT_COMMIT_HASH = "f271d1cc113f81d08d140430b5a9c7931a954538"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -75,10 +75,9 @@ class EFIToolsKBase:
     def run_EFI_EST_FASTA(self, ctx, params):
         """
         :param params: instance of mapping from String to unspecified object
-        :returns: instance of type "EFIFastaReportResults" -> structure:
-           parameter "report_name" of String, parameter "report_ref" of
-           String, parameter "fasta_ref" of String, parameter "edge_ref" of
-           String
+        :returns: instance of type "ESTReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String,
+           parameter "fasta_ref" of String, parameter "edge_ref" of String
         """
         # ctx is the context object
         # return variables are: output
@@ -104,6 +103,26 @@ class EFIToolsKBase:
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method run_EFI_EST_FASTA return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
+    def run_EFI_EST_Families(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ESTReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String,
+           parameter "fasta_ref" of String, parameter "edge_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_EST_Families
+        output = ""
+        #END run_EFI_EST_Families
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_EST_Families return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]

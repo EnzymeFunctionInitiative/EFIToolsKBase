@@ -202,16 +202,6 @@
             "with_border": true
         },
         {
-            "id": "fragment_options",
-            "parameters": [
-                "fragment_option"
-            ],
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "with_border": true
-        },
-        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
@@ -220,16 +210,6 @@
             "optional": true,
             "advanced": false,
             "allow_multiple": true,
-            "with_border": true
-        },
-        {
-            "id": "protein_family_size_options",
-            "parameters": [
-                "fraction"
-            ],
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
             "with_border": true
         },
         {
@@ -242,23 +222,13 @@
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
-        },
-        {
-            "id": "ssn_edge_calc_options",
-            "parameters": [
-                "ssn_e_value"
-            ],
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
-            "with_border": true
         }
     ],
     "behavior": {
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_EST_Families",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
@@ -270,48 +240,39 @@
                 },
                 {
                     "input_parameter": "fragment_option",
-                    "target_property": "fragment_option",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "fragment_option"
                 },
                 {
                     "input_parameter": "taxonomic_level",
-                    "target_property": "taxonomic_level",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "taxonomic_level"
                 },
                 {
                     "input_parameter": "filter_string",
-                    "target_property": "filter_string",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "filter_string"
                 },
                 {
                     "input_parameter": "domain",
-                    "target_property": "domain",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "domain"
                 },
                 {
                     "input_parameter": "region",
-                    "target_property": "region",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "region"
                 },
                 {
                     "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "ssn_e_value"
                 },
                 {
                     "input_parameter": "families_to_add",
-                    "target_property": "families_to_add",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "families_to_add"
                 },
                 {
                     "input_parameter": "families_addition_cluster_id_format",
-                    "target_property": "families_addition_cluster_id_format",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "families_addition_cluster_id_format"
                 },
                 {
                     "input_parameter": "fraction",
-                    "target_property": "fraction",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "fraction"
                 }
             ],
             "output_mapping": [

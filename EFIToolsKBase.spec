@@ -5,7 +5,7 @@ A KBase module: EFIToolsKBase
 module EFIToolsKBase {
 
     /* @id handle */
-    typedef string HandleId;
+    typedef string handle_id;
 
     typedef structure {
         /*
@@ -18,7 +18,7 @@ module EFIToolsKBase {
     } EValueTab;
 
     typedef structure {
-        HandleId blobstore_id;
+        handle_id handle_id;
         int edge_count;
         int unique_seq;
         float convergence_ratio;
@@ -36,14 +36,15 @@ module EFIToolsKBase {
         string report_ref;
         string fasta_ref;
         string edge_ref;
-    } EFIFastaReportResults;
+    } ESTReportResults;
 
     /*
         This example function accepts any number of parameters and returns results in a KBaseReport
     */
     funcdef run_EFIToolsKBase(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
-    funcdef run_EFI_EST_FASTA(mapping<string,UnspecifiedObject> params) returns (EFIFastaReportResults output) authentication required;
+    funcdef run_EFI_EST_FASTA(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
+    funcdef run_EFI_EST_Families(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
 
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
