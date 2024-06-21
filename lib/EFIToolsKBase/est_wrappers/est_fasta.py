@@ -68,6 +68,26 @@ class EFIFasta(Core):
         output = self.generate_report(report_data, ["edge_ref", "fasta_ref"])
         output["edge_ref"] = "edge_ref"#edge_ref["shock_id"]
         output["fasta_ref"] = "fasta_ref"#fasta_ref
+        evalue_tab = {
+            "alignment_scores": [],
+            "alsc_count": [],
+            "alsc_count_cumsum": []
+        }
+
+        edge_file_data = {
+            "blobstore_id": "",
+            "edge_count": 0,
+            "unique_seq": 0,
+            "convergence_ratio": 0.0,
+            "evalues": evalue_tab
+        }
+
+        new_obj_info = self.wsClient.save_objects({'workspace': params["workspace_name"],
+                                                        'objects': [{'type': 'EFIToolsKBase.BlastEdgeFile',
+                                                                    'data': edge_file_data,
+                                                                    'name': "blast_edge_file",
+                                                                    'meta': {}}]})[0]
+
         return output
 
     def generate_report(self, params, objects_created):
