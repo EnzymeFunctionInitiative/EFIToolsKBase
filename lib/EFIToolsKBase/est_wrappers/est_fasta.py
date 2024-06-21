@@ -35,7 +35,7 @@ class EFIFasta(Core):
 
     def do_analysis(self, params):
         mapping = {
-            "fasta_file": params["fasta_sequences_file"],
+            "fasta_file": "/results/sequences.fasta",#params["fasta_sequences_file"],
             "output_dir": self.shared_folder,
             "duckdb_mem": "64GB",
             "duckdb_threads": 1,
