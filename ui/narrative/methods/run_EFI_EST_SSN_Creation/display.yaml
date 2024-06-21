@@ -24,13 +24,13 @@ icon: icon.png
 # Configure the display and description of parameters
 #
 parameters :
-    ssn_name :
+    blast_edge_file :
         ui-name : |
-            SSN name
+            Edge File
         short-hint : |
-            The name of the output SSN
+            The workspace object representing the SSN edges
         long-hint : |
-            The name of the output SSN
+            The workspace object representing the SSN edges
     alignment_score :
         ui-name : |
             Alignment score

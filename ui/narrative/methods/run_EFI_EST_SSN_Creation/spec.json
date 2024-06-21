@@ -12,12 +12,15 @@
     },
     "parameters": [
         {
-            "id": "ssn_name",
+            "id": "blast_edge_file",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "" ],
-            "field_type": "text"
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": ["EFIToolsKBase.BlastEdgeFile"]
+            }
         },
         {
             "id": "alignment_score",
@@ -47,8 +50,8 @@
                     "target_property": "workspace_id"
                 },
                 {
-                    "input_parameter": "ssn_name",
-                    "target_property": "ssn_name"
+                    "input_parameter": "blast_edge_file",
+                    "target_property": "blast_edge_file"
                 },
                 {
                     "input_parameter": "alignment_score",
