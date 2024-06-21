@@ -30,6 +30,7 @@ class EFIFasta(Core):
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
         self.au = self.clients.AssemblyUtil
+        self.wsClient = self.clients.Workspace
         self.flow = NextflowRunner("est.nf")
 
 
@@ -69,9 +70,9 @@ class EFIFasta(Core):
         output["edge_ref"] = "edge_ref"#edge_ref["shock_id"]
         output["fasta_ref"] = "fasta_ref"#fasta_ref
         evalue_tab = {
-            "alignment_scores": [],
-            "alsc_count": [],
-            "alsc_count_cumsum": []
+            "alignment_scores": [0],
+            "alsc_count": [0],
+            "alsc_count_cumsum": [0]
         }
 
         edge_file_data = {
@@ -87,7 +88,7 @@ class EFIFasta(Core):
                                                                     'data': edge_file_data,
                                                                     'name': "blast_edge_file",
                                                                     'meta': {}}]})[0]
-
+        logging.info(new_obj_info)
         return output
 
     def generate_report(self, params, objects_created):

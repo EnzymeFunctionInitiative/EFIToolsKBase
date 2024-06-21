@@ -89,7 +89,8 @@ class EFIToolsKBase:
                 KBaseReport=KBaseReport,
                 ReadsUtils=ReadsUtils,
                 DataFileUtil=DataFileUtil,
-                AssemblyUtil=AssemblyUtil
+                AssemblyUtil=AssemblyUtil,
+                Workspace=Workspace
             ),
         )
         efi = EFIFasta(ctx, config=config)
