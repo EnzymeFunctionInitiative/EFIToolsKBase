@@ -3,6 +3,7 @@ This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
 import json
+import logging
 import os
 import uuid
 
@@ -83,6 +84,7 @@ class EFIFasta(Core):
             "evalues": evalue_tab
         }
 
+        logging.info("trying to save BlastEdgeFile")
         new_obj_info = self.wsClient.save_objects({'workspace': params["workspace_name"],
                                                         'objects': [{'type': 'EFIToolsKBase.BlastEdgeFile',
                                                                     'data': edge_file_data,
@@ -112,7 +114,7 @@ class EFIFasta(Core):
         save_object_params = {
             'id': workspace_id,
             'objects': [{
-                'type': 'EFIToolsKBase.EdgeFileBLAST',
+                'type': 'EFIToolsKBase.BlastEdgeFile',
                 'data': output_file_shock_id,
                 'name': f"{os.path.basename(filepath)}_shock_id"
             }]
