@@ -57,11 +57,18 @@ class EFIFasta(Core):
         # edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
         
         logging.info("trying to save BlastEdgeFile")
-        edge_ref = self.wsClient.save_objects({'workspace': params["workspace_name"],
-                                                        'objects': [{'type': 'EFIToolsKBase.BlastEdgeFile',
-                                                                    'data': edge_file_data,
-                                                                    'name': "blast_edge_file",
-                                                                    'meta': {}}]})[0]
+        edge_file_data = {
+            "edgefile_blobstore_id": "",
+            "evaluetab_blobstore_id": "",
+            "edge_count": 0,
+            "unique_seq": 0,
+            "convergence_ratio": 0.0,
+        }
+        edge_ref = self.wsClient.save_objects({'id': self.dfu.ws_name_to_id(params["workspace_name"]),
+                                                'objects': [{'type': 'BlastEdgeFile',
+                                                            'data': edge_file_data,
+                                                            'name': "EFIToolsKBase",
+                                                            'meta': {}}]})[0]
         
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
@@ -77,19 +84,6 @@ class EFIFasta(Core):
         output = self.generate_report(report_data, ["edge_ref"])
         output["edge_ref"] = edge_ref["shock_id"]
         # output["fasta_ref"] = "fasta_ref"#fasta_ref
-        evalue_tab = {
-            "alignment_scores": [0],
-            "alsc_count": [0],
-            "alsc_count_cumsum": [0]
-        }
-
-        edge_file_data = {
-            "blobstore_id": "",
-            "edge_count": 0,
-            "unique_seq": 0,
-            "convergence_ratio": 0.0,
-            "evalues": evalue_tab
-        }
 
         return output
 
