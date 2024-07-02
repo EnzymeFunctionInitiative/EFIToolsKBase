@@ -29,14 +29,28 @@ class SSNCreation(Core):
         super().__init__(ctx, config, clients_class)
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
+        self.dfu = self.clients.DataFileUtil
         self.flow = NextflowRunner("ssn.nf")
 
 
     def do_analysis(self, params):
         logging.info(params)
+        edge_file_obj = self.dfu.get_objects({"object_refs": [params["blast_edge_file"]]})
+        logging.info("edge file obj", edge_file_obj)
+        self.dfu.shock_to_file({
+            "shock_id": edge_file_obj["edgefile_handle"], 
+            "file_path": os.path.join(self.shared_folder, "1.out.parquet"), 
+            "unpack": "unpack"}
+        )
+        self.dfu.shock_to_file({
+            "shock_id": edge_file_obj["fasta_handle"], 
+            "file_path": os.path.join(self.shared_folder, "sequences.fa"), 
+            "unpack": "unpack"}
+        )
+
         mapping = {
-            "blast_parquet": "/results/1.out.parquet",
-            "fasta_file": "/results/sequences.fasta",
+            "blast_parquet": os.path.join(self.shared_folder, "1.out.parquet"),
+            "fasta_file": os.path.join(self.shared_folder, "sequences.fa"),
             "output_dir": self.shared_folder,
             "filter_parameter": "alignment_score",
             "filter_min_val": params["alignment_score"],

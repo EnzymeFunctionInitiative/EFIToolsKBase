@@ -142,6 +142,7 @@ class EFIToolsKBase:
             shared_folder=self.shared_folder,
             clients=dict(
                 KBaseReport=KBaseReport,
+                DataFileUtil=DataFileUtil
             ),
         )
         ssnc = SSNCreation(ctx, config=config)
