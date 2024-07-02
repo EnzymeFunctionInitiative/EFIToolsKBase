@@ -34,7 +34,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "3ec1558220941c2f7b3a9e10456cd7356bfa8060"
+    GIT_COMMIT_HASH = "1d5a7b72eef0cd535189c906dffcc4764665d203"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -77,7 +77,7 @@ class EFIToolsKBase:
         :param params: instance of mapping from String to unspecified object
         :returns: instance of type "ESTReportResults" -> structure: parameter
            "report_name" of String, parameter "report_ref" of String,
-           parameter "fasta_ref" of String, parameter "edge_ref" of String
+           parameter "edge_ref" of String
         """
         # ctx is the context object
         # return variables are: output
@@ -113,7 +113,7 @@ class EFIToolsKBase:
         :param params: instance of mapping from String to unspecified object
         :returns: instance of type "ESTReportResults" -> structure: parameter
            "report_name" of String, parameter "report_ref" of String,
-           parameter "fasta_ref" of String, parameter "edge_ref" of String
+           parameter "edge_ref" of String
         """
         # ctx is the context object
         # return variables are: output

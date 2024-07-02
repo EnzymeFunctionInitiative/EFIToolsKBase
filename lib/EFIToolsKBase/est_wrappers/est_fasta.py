@@ -54,24 +54,15 @@ class EFIFasta(Core):
         pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
         length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
         edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
-        # edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
-        
-        logging.info("trying to save BlastEdgeFile")
-        edge_file_data = {
-            "edgefile_blobstore_id": "",
-            "evaluetab_blobstore_id": "",
-            "edge_count": 0,
-            "unique_seq": 0,
-            "convergence_ratio": 0.0,
-        }
-        edge_ref = self.wsClient.save_objects({'id': self.dfu.ws_name_to_id(params["workspace_name"]),
-                                                'objects': [{'type': 'BlastEdgeFile',
-                                                            'data': edge_file_data,
-                                                            'name': "EFIToolsKBase",
-                                                            'meta': {}}]})[0]
-        
+
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
+
+        data_ref = self.save_edge_file_to_workspace(params["workspace_name"], 
+                                                    os.path.join(self.shared_folder, "1.out.parquet"), 
+                                                    os.path.join(self.shared_folder, "sequences.fa"),
+                                                    os.path.join(self.shared_folder, "evalue.tab"),
+                                                    acc_data)
         report_data = {
             "pident_img": pident_dataurl, 
             "length_img": length_dataurl, 
@@ -82,8 +73,7 @@ class EFIFasta(Core):
             "workspace_name": params["workspace_name"]
         }
         output = self.generate_report(report_data, ["edge_ref"])
-        output["edge_ref"] = edge_ref["shock_id"]
-        # output["fasta_ref"] = "fasta_ref"#fasta_ref
+        output["edge_ref"] = data_ref
 
         return output
 
@@ -101,28 +91,26 @@ class EFIFasta(Core):
         )
         return self.create_report_from_template(template_path, config)
 
-    def save_file_to_workspace(self, workspace_name, filepath, description):
+    def save_edge_file_to_workspace(self, workspace_name, edge_filepath, fasta_filepath, evalue_filepath, acc_data):
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        output_file_shock_id = self.dfu.file_to_shock({"file_path": filepath})["shock_id"]
-        print(f"Uploaded filepath {filepath} to shock and got id {output_file_shock_id}")
+        edge_file_shock_id = self.dfu.file_to_shock({"file_path": edge_filepath})["shock_id"]
+        fasta_handle_shock_id = self.dfu.file_to_shock({"file_path": fasta_filepath})["shock_id"]
+        evalue_shock_id = self.dfu.file_to_shock({"file_path": evalue_filepath})["shock_id"]
         save_object_params = {
             'id': workspace_id,
             'objects': [{
                 'type': 'EFIToolsKBase.BlastEdgeFile',
-                'data': output_file_shock_id,
-                'name': f"{os.path.basename(filepath)}_shock_id"
+                'data': {
+                    "edgefile_handle": edge_file_shock_id,
+                    "fasta_handle": fasta_handle_shock_id,
+                    "evalue_handle": evalue_shock_id,
+                    "edge_count": acc_data["EdgeCount"],
+                    "unique_seq": acc_data["UniqueSeq"],
+                    "convergence_ratio": acc_data['ConvergenceRatio'],
+                },
+                'name': f"{os.path.basename(edge_filepath)}_shock_id"
             }]
         }
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
         object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
-        return {"shock_id": object_reference,
-                "name": os.path.basename(filepath),
-                "label": os.path.basename(filepath),
-                "description": description}
-    
-    def save_sequences_to_workspace(self, filepath, workspace_name):
-        return self.au.save_assembly_from_fasta({
-            'file': {'path': filepath},
-            'workspace_name': workspace_name,
-            'assembly_name': 'all_sequences.fasta'
-        })
+        return object_reference
