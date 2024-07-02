@@ -55,7 +55,14 @@ class EFIFasta(Core):
         length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
         edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
         # edge_ref = self.save_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "1.out.parquet"), "All edges found by BLAST")
-        # fasta_ref = self.save_sequences_to_workspace(os.path.join(self.shared_folder, "sequences.fasta"), params["workspace_name"])
+        
+        logging.info("trying to save BlastEdgeFile")
+        edge_ref = self.wsClient.save_objects({'workspace': params["workspace_name"],
+                                                        'objects': [{'type': 'EFIToolsKBase.BlastEdgeFile',
+                                                                    'data': edge_file_data,
+                                                                    'name': "blast_edge_file",
+                                                                    'meta': {}}]})[0]
+        
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
         report_data = {
@@ -67,9 +74,9 @@ class EFIFasta(Core):
             "unique_seqs": acc_data["UniqueSeq"],
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data, ["edge_ref", "fasta_ref"])
-        output["edge_ref"] = "edge_ref"#edge_ref["shock_id"]
-        output["fasta_ref"] = "fasta_ref"#fasta_ref
+        output = self.generate_report(report_data, ["edge_ref"])
+        output["edge_ref"] = edge_ref["shock_id"]
+        # output["fasta_ref"] = "fasta_ref"#fasta_ref
         evalue_tab = {
             "alignment_scores": [0],
             "alsc_count": [0],
@@ -84,13 +91,6 @@ class EFIFasta(Core):
             "evalues": evalue_tab
         }
 
-        logging.info("trying to save BlastEdgeFile")
-        new_obj_info = self.wsClient.save_objects({'workspace': params["workspace_name"],
-                                                        'objects': [{'type': 'EFIToolsKBase.BlastEdgeFile',
-                                                                    'data': edge_file_data,
-                                                                    'name': "blast_edge_file",
-                                                                    'meta': {}}]})[0]
-        logging.info(new_obj_info)
         return output
 
     def generate_report(self, params, objects_created):
