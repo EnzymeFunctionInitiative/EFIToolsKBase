@@ -108,7 +108,7 @@ class EFIFasta(Core):
                     "unique_seq": acc_data["UniqueSeq"],
                     "convergence_ratio": acc_data['ConvergenceRatio'],
                 },
-                'name': f"{os.path.basename(edge_filepath)}_shock_id"
+                'name': "blast_edge_file"
             }]
         }
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
