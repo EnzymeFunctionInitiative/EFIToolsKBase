@@ -4,7 +4,7 @@ A KBase module: EFIToolsKBase
 
 module EFIToolsKBase {
 
-    /* @id bytestream */
+    /* @id handle */
     typedef string handle;
 
   

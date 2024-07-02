@@ -51,7 +51,9 @@
                 },
                 {
                     "input_parameter": "blast_edge_file",
-                    "target_property": "blast_edge_file"
+                    "target_property": "blast_edge_file",
+                    "target_type_transform": "resolved-ref"
+
                 },
                 {
                     "input_parameter": "alignment_score",
