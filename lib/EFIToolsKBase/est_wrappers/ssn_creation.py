@@ -35,8 +35,8 @@ class SSNCreation(Core):
 
     def do_analysis(self, params):
         logging.info(params)
-        edge_file_obj = self.dfu.get_objects({"object_refs": [params["blast_edge_file"]]})
-        logging.info("edge file obj", edge_file_obj)
+        edge_file_obj = self.dfu.get_objects({"object_refs": [params["blast_edge_file"]]})["data"][0]
+        logging.info(edge_file_obj)
         self.dfu.shock_to_file({
             "shock_id": edge_file_obj["edgefile_handle"], 
             "file_path": os.path.join(self.shared_folder, "1.out.parquet"), 
