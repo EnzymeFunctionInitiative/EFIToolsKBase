@@ -3,6 +3,7 @@ This ExampleReadsApp demonstrates how to use best practices for KBase App
 development using the SFA base package.
 """
 import os
+import logging
 import uuid
 
 from shutil import copyfile
@@ -32,6 +33,7 @@ class SSNCreation(Core):
 
 
     def do_analysis(self, params):
+        logging.info(params)
         mapping = {
             "blast_parquet": "/results/1.out.parquet",
             "fasta_file": "/results/sequences.fasta",
@@ -40,7 +42,7 @@ class SSNCreation(Core):
             "filter_min_val": params["alignment_score"],
             "min_length": 0,
             "max_length": 50000,
-            "ssn_name": params["ssn_name"],
+            "ssn_name": "kbase_ssn",
             "ssn_title": "kbase_ssn",
             "maxfull": 0,
             "uniref_version": 90,
