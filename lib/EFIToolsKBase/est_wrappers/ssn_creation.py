@@ -50,7 +50,7 @@ class SSNCreation(Core):
         mapping = {
             "blast_parquet": os.path.join(self.shared_folder, "1.out.parquet"),
             "fasta_file": os.path.join(self.shared_folder, "sequences.fa"),
-            "output_dir": self.shared_folder,
+            "final_output_dir": self.shared_folder,
             "filter_parameter": "alignment_score",
             "filter_min_val": params["alignment_score"],
             "min_length": 0,
@@ -59,7 +59,7 @@ class SSNCreation(Core):
             "ssn_title": "kbase_ssn",
             "maxfull": 0,
             "uniref_version": 90,
-            "efi_config": "",
+            "efi_config": "/EST/efi.config",
             "db_version": 100
         }
         self.flow.write_params_file(mapping)
