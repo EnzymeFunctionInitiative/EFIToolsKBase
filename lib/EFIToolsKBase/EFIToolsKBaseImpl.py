@@ -8,6 +8,8 @@ from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.WorkspaceClient import Workspace
+
+from .est_wrappers.est_families import EFIFamilies
 from .est_wrappers.est_fasta import EFIFasta
 from .est_wrappers.ssn_creation import SSNCreation
 from base import Core
@@ -118,7 +120,20 @@ class EFIToolsKBase:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_EFI_EST_Families
-        output = ""
+        config = dict(
+            callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
+            clients=dict(
+                KBaseReport=KBaseReport,
+                ReadsUtils=ReadsUtils,
+                DataFileUtil=DataFileUtil,
+                AssemblyUtil=AssemblyUtil,
+                Workspace=Workspace
+            ),
+        )
+        efi = EFIFamilies(ctx, config=config)
+        logging.info(params)
+        output = efi.do_analysis(params)
         #END run_EFI_EST_Families
 
         # At some point might do deeper type checking...

@@ -59,9 +59,9 @@ parameters:
     families_to_add:
         ui-name: Families
         short-hint: |
-            The input format is a single family or comma/space separated list of families
+            The input format is a single family or comma-separated list of families
         long-hint: |
-            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
+            The input format is a single family or comma-separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
 
     use_alternate_cluster_id_format:
         ui-name: Use alternate cluster ID format

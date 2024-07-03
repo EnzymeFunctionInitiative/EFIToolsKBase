@@ -1,8 +1,7 @@
 
 import os
+import json
 import subprocess
-import string
-
 
 class NextflowRunner():
     def __init__(self, workflow_def, est_dir="/EST", config_name="kbase.config"):
@@ -13,26 +12,23 @@ class NextflowRunner():
         self.params_file = ""
         self.run_command = ""
     
-    def render_params_file(self, mapping, parameter_file):
-        template_file = os.path.join(self.est_dir, "templates", parameter_file)
-        os.makedirs(mapping["output_dir"], exist_ok=True)
-        params_output = os.path.join(mapping["output_dir"], "params.yml")
+    def write_params_file(self, mapping):
+        os.makedirs(mapping["final_output_dir"], exist_ok=True)
+        params_output = os.path.join(mapping["final_output_dir"], "params.yml")
 
-        with open(template_file) as f:
-            template = string.Template(f.read())
         with open(params_output, "w") as f:
-            f.write(template.substitute(mapping))
+            json.dump(mapping, f, indent=4)
         self.params_file = params_output
 
     def generate_run_command(self, stub=False):
         if self.params_file == "":
-            raise ValueError("Must render params with `render_params_file()` before generating run command")
+            raise ValueError("Must render params with `write_params_file()` before generating run command")
         cmd = [
                 "nextflow",
                 "-C",  f"{self.config_file}",
                 "run", f"{self.workflow_def}",
-                "-ansi-log", "false ",
-                "-offline ",
+                "-ansi-log", "false",
+                "-offline",
                 "-params-file", f"{self.params_file}"
         ]
         if stub:

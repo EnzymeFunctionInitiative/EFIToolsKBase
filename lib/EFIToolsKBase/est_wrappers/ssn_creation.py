@@ -62,8 +62,8 @@ class SSNCreation(Core):
             "efi_config": "",
             "db_version": 100
         }
-        self.flow.render_params_file(mapping, "ssn-params-template.yml")
-        self.flow.generate_run_command(stub=True)
+        self.flow.write_params_file(mapping)
+        self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")

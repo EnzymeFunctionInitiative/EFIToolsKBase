@@ -11,7 +11,6 @@ module EFIToolsKBase {
     typedef structure {
         handle edgefile_handle;
         handle fasta_handle;
-        handle evalue_handle;
         int edge_count;
         int unique_seq;
         float convergence_ratio;
@@ -35,6 +34,7 @@ module EFIToolsKBase {
     funcdef run_EFIToolsKBase(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
     funcdef run_EFI_EST_FASTA(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
+    
     funcdef run_EFI_EST_Families(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
 
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
