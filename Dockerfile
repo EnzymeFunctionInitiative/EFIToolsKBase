@@ -29,18 +29,14 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
     echo 'source /root/.sdkman/bin/sdkman-init.sh && /opt/install_nextflow.sh' | bash && \
     mv /opt/install_nextflow.sh /usr/bin/nextflow
 
-RUN echo "asdf"
-
 # install EST scripts
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
     cd EST && \
     git checkout nextflow-test && \
     cpanm --installdeps /EST/
 
-# data for testing, will be removed
-COPY sequences.fasta /results/sequences.fasta
-COPY 1.out.parquet /results/1.out.parquet
-COPY struct.filtered.out /EST/cheat/struct.filtered.out
+# install efi.config
+COPY efi.config /EST
 
 # create conda env for nextflow
 RUN conda env create -f /EST/env.yml
