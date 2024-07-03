@@ -8,7 +8,7 @@ class EFIFamilies(EFIEST):
             "final_output_dir": self.shared_folder,
             "duckdb_memory_limit": "64GB",
             "duckdb_threads": 1,
-            "num_fasta_shards": 1,
+            "num_fasta_shards": 64,
             "num_accession_shards": 16,
             "num_blast_matches": 250,
             "multiplex": False,
