@@ -60,7 +60,9 @@ class SSNCreation(Core):
             "maxfull": 0,
             "uniref_version": 90,
             "efi_config": "/EST/efi.config",
-            "db_version": 100
+            "db_version": 100,
+            "job_id": 131,
+            "efi_db": "/data/efi_db.sqlite"
         }
         self.flow.write_params_file(mapping)
         self.flow.generate_run_command()

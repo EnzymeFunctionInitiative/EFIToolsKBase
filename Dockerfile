@@ -7,7 +7,7 @@ FROM kbase/sdkpython:3.8.0
 # installation scripts.
 
 # install zip/unzip for duckdb and nextflow
-RUN apt update && apt install -y zip unzip cpanminus libdbd-mysql-perl zip cowsay
+RUN apt update && apt install -y zip unzip cpanminus libdbd-mysql-perl zip sl
 
 # install blastall
 RUN curl -o /opt/blast-2.2.26.tar.gz https://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz; \

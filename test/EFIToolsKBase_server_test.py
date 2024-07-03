@@ -83,9 +83,22 @@ class EFIToolsKBaseTest(unittest.TestCase):
         # - download report
         # - assert that the report has expected contents
 
-    def test_run_EFI_EST_FASTA(self):
-        ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
-            "fasta_sequences_file": "/results/sequences.fasta",
+    # def test_run_EFI_EST_FASTA(self):
+    #     ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
+    #         "fasta_sequences_file": "/results/sequences.fasta",
+    #         "workspace_name": self.wsName
+    #     })
+    #     print(ret)
+    #     self.assertTrue(len(ret[0]["report_name"]))
+    #     self.assertTrue(len(ret[0]["edge_ref"]))
+
+    def test_run_EFI_EST_Families(self):
+        ret = self.serviceImpl.run_EFI_EST_Families(self.ctx, {
+            "fragment_option": False,
+            "protein_family_addition_options": {
+                "families_addition_cluster_id_format": "UniProt",
+                "families_to_add": "PF07476"
+            },
             "workspace_name": self.wsName
         })
         print(ret)
@@ -94,7 +107,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_SSN_Creation(self):
         ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
-            "blast_edge_file": "73509/75/1",
-            "alignment_score": 120,
+            "blast_edge_file": "73509/84/1",
+            "alignment_score": 87,
             "workspace_name": self.wsName
         })
