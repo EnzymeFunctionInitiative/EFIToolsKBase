@@ -5,7 +5,7 @@ from .est import EFIEST
 class EFIFasta(EFIEST):
     def do_analysis(self, params):
         seq_obj = self.dfu.get_objects({"object_refs": [params["fasta_sequences_file"]]})["data"][0]
-        sequences = seq_obj["sequences"]
+        sequences = seq_obj["data"]["sequences"]
         uploaded_fasta_file = os.path.join(self.shared_folder, "input_sequences.fasta")
         with open(uploaded_fasta_file, "w") as f:
             for record in sequences:
