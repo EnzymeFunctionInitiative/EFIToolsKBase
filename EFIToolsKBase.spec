@@ -33,9 +33,13 @@ module EFIToolsKBase {
     */
     funcdef run_EFIToolsKBase(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
+    funcdef run_EFI_EST_Sequence_BLAST(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
+    
     funcdef run_EFI_EST_FASTA(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
     
     funcdef run_EFI_EST_Families(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
+    
+    funcdef run_EFI_EST_Accession_IDs(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
 
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
 };
