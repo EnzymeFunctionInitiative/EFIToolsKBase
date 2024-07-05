@@ -85,8 +85,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_FASTA(self):
         ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
-            "fasta_sequences_file": "73509/88/1",
-            "fragment_option": 0,
+            "fasta_sequences_file": "73509/90/1",
             "workspace_name": self.wsName
         })
         print(ret)
