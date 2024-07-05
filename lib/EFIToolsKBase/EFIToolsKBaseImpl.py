@@ -12,6 +12,7 @@ from installed_clients.WorkspaceClient import Workspace
 from .est_wrappers.est_sequence_blast import EFISequenceBLAST
 from .est_wrappers.est_families import EFIFamilies
 from .est_wrappers.est_fasta import EFIFasta
+from .est_wrappers.est_accession_ids import EFIAccessionIDs
 from .est_wrappers.ssn_creation import SSNCreation
 from base import Core
 
@@ -148,6 +149,28 @@ class EFIToolsKBase:
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method run_EFI_EST_Families return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
+    def run_EFI_EST_Accession_IDs(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ESTReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String,
+           parameter "edge_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_EST_FASTA
+        efi = EFIAccessionIDs(ctx, config=self.config)
+        output = efi.do_analysis(params)
+
+        #END run_EFI_EST_FASTA
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_EST_FASTA return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
