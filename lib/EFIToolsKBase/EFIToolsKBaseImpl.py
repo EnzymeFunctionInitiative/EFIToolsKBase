@@ -9,6 +9,7 @@ from installed_clients.DataFileUtilClient import DataFileUtil
 from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.WorkspaceClient import Workspace
 
+from .est_wrappers.est_sequence_blast import EFISequenceBLAST
 from .est_wrappers.est_families import EFIFamilies
 from .est_wrappers.est_fasta import EFIFasta
 from .est_wrappers.ssn_creation import SSNCreation
@@ -81,6 +82,28 @@ class EFIToolsKBase:
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method run_EFIToolsKBase return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
+    def run_EFI_EST_Sequence_BLAST(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ESTReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String,
+           parameter "edge_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_EST_FASTA
+        efi = EFISequenceBLAST(ctx, config=self.config)
+        output = efi.do_analysis(params)
+
+        #END run_EFI_EST_FASTA
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_EST_FASTA return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
