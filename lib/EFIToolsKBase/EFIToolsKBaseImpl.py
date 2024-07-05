@@ -96,9 +96,6 @@ class EFIToolsKBase:
             ),
         )
         efi = EFIFasta(ctx, config=config)
-        logging.info(params)
-        if params["fasta_sequences_file"] is None:
-           params["fasta_sequences_file"] = "/results/sequences.fasta"
         output = efi.do_analysis(params)
         
         #END run_EFI_EST_FASTA

@@ -17,9 +17,9 @@
             "optional": true,
             "advanced": false,
             "allow_multiple": false,
-            "field_type": "dynamic_dropdown",
-            "dynamic_dropdown_options": {
-                "data_source": "ftp_staging"
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": ["KBaseSequences.ProteinSequenceSet"]
             }
         },
         {
@@ -298,7 +298,8 @@
                 },
                 {
                     "input_parameter": "fasta_sequences_file",
-                    "target_property": "fasta_sequences_file"
+                    "target_property": "fasta_sequences_file",
+                    "target_type_transform": "resolved-ref"
                 },
                 {
                     "input_parameter": "header_format",
