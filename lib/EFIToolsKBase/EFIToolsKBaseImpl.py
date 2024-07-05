@@ -51,6 +51,17 @@ class EFIToolsKBase:
                             level=logging.INFO)
         os.environ["JAVA_HOME"] = "/root/.sdkman/candidates/java/current"
         self.wsc = Workspace(self.callback_url)
+        self.config = dict(
+            callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
+            clients=dict(
+                KBaseReport=KBaseReport,
+                ReadsUtils=ReadsUtils,
+                DataFileUtil=DataFileUtil,
+                AssemblyUtil=AssemblyUtil,
+                Workspace=Workspace
+            ),
+        )
         #END_CONSTRUCTOR
         pass
 
@@ -84,18 +95,7 @@ class EFIToolsKBase:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_EFI_EST_FASTA
-        config = dict(
-            callback_url=self.callback_url,
-            shared_folder=self.shared_folder,
-            clients=dict(
-                KBaseReport=KBaseReport,
-                ReadsUtils=ReadsUtils,
-                DataFileUtil=DataFileUtil,
-                AssemblyUtil=AssemblyUtil,
-                Workspace=Workspace
-            ),
-        )
-        efi = EFIFasta(ctx, config=config)
+        efi = EFIFasta(ctx, config=self.config)
         output = efi.do_analysis(params)
         
         #END run_EFI_EST_FASTA
@@ -117,18 +117,7 @@ class EFIToolsKBase:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_EFI_EST_Families
-        config = dict(
-            callback_url=self.callback_url,
-            shared_folder=self.shared_folder,
-            clients=dict(
-                KBaseReport=KBaseReport,
-                ReadsUtils=ReadsUtils,
-                DataFileUtil=DataFileUtil,
-                AssemblyUtil=AssemblyUtil,
-                Workspace=Workspace
-            ),
-        )
-        efi = EFIFamilies(ctx, config=config)
+        efi = EFIFamilies(ctx, config=self.config)
         logging.info(params)
         output = efi.do_analysis(params)
         #END run_EFI_EST_Families
