@@ -280,7 +280,7 @@
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_EST_Sequence_BLAST",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
