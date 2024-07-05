@@ -15,6 +15,7 @@ class EFIFamilies(EFIEST):
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": "/data/efi_db.sqlite",
             "exclude_fragments": True if params["fragment_option"] == 1 else False,
+            "blast_evalue": 1e-5,
             "import_mode": "family",
             "families": params["protein_family_addition_options"]["families_to_add"],
             "family_addition_format": params["protein_family_addition_options"]["families_addition_cluster_id_format"]

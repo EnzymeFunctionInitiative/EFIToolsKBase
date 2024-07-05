@@ -14,8 +14,8 @@ class EFISequenceBLAST(EFIEST):
             "efi_config": "/EST/efi.config",
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": "/data/efi_db.sqlite",
-            "exclude_fragments": True if params["fragment_option"] == 1 else False,
-            "import_mode": "BLAST",
+            "blast_evalue": 1e-5,
+            "import_mode": "blast",
             # TODO fill in parameters for single sequence BLAST import
         }
         return self.run_est_pipeline(mapping, params["workspace_name"])
