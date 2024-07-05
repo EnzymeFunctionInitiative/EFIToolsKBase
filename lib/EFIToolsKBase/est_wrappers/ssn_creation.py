@@ -92,7 +92,7 @@ class SSNCreation(Core):
             template_variables=template_variables,
             workspace_name=params["workspace_name"],
             objects_created=objects_created,
-            links=export_files
+            file_links=export_files
         )
         return self.create_report_from_template(template_path, config)
 
