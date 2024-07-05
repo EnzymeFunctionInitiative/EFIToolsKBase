@@ -342,6 +342,10 @@ class Application(object):
                              name='EFIToolsKBase.run_EFIToolsKBase',
                              types=[dict])
         self.method_authentication['EFIToolsKBase.run_EFIToolsKBase'] = 'required'  # noqa
+        self.rpc_service.add(impl_EFIToolsKBase.run_EFI_EST_Sequence_BLAST,
+                             name='EFIToolsKBase.run_EFI_EST_Sequence_BLAST',
+                             types=[dict])
+        self.method_authentication['EFIToolsKBase.run_EFI_EST_Sequence_BLAST'] = 'required'  # noqa
         self.rpc_service.add(impl_EFIToolsKBase.run_EFI_EST_FASTA,
                              name='EFIToolsKBase.run_EFI_EST_FASTA',
                              types=[dict])
@@ -350,6 +354,10 @@ class Application(object):
                              name='EFIToolsKBase.run_EFI_EST_Families',
                              types=[dict])
         self.method_authentication['EFIToolsKBase.run_EFI_EST_Families'] = 'required'  # noqa
+        self.rpc_service.add(impl_EFIToolsKBase.run_EFI_EST_Accession_IDs,
+                             name='EFIToolsKBase.run_EFI_EST_Accession_IDs',
+                             types=[dict])
+        self.method_authentication['EFIToolsKBase.run_EFI_EST_Accession_IDs'] = 'required'  # noqa
         self.rpc_service.add(impl_EFIToolsKBase.run_EFI_EST_SSN_Creation,
                              name='EFIToolsKBase.run_EFI_EST_SSN_Creation',
                              types=[dict])
