@@ -83,14 +83,15 @@ class EFIToolsKBaseTest(unittest.TestCase):
         # - download report
         # - assert that the report has expected contents
 
-    # def test_run_EFI_EST_FASTA(self):
-    #     ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
-    #         "fasta_sequences_file": "/results/sequences.fasta",
-    #         "workspace_name": self.wsName
-    #     })
-    #     print(ret)
-    #     self.assertTrue(len(ret[0]["report_name"]))
-    #     self.assertTrue(len(ret[0]["edge_ref"]))
+    def test_run_EFI_EST_FASTA(self):
+        ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
+            "fasta_sequences_file": "73509/88/1",
+            "fragment_option": 0,
+            "workspace_name": self.wsName
+        })
+        print(ret)
+        self.assertTrue(len(ret[0]["report_name"]))
+        self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_Families(self):
         ret = self.serviceImpl.run_EFI_EST_Families(self.ctx, {
