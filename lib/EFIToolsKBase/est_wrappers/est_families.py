@@ -1,5 +1,3 @@
-from shutil import copyfile
-
 from .est import EFIEST
 
 class EFIFamilies(EFIEST):
