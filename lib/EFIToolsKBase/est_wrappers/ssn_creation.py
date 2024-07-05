@@ -85,12 +85,14 @@ class SSNCreation(Core):
         template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
         template_variables = params
         # The KBaseReport configuration dictionary
+        export_files = [os.path.join(self.shared_folder, "full_ssn.xgmml")]
         config = dict(
             report_name=f"EFI_EST_FASTA_{str(uuid.uuid4())}",
             reports_path=reports_path,
             template_variables=template_variables,
             workspace_name=params["workspace_name"],
-            objects_created=objects_created
+            objects_created=objects_created,
+            links=export_files
         )
         return self.create_report_from_template(template_path, config)
 
