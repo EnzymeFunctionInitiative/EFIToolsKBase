@@ -38,7 +38,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "e8fca153d4ba1a086e8ffeb0de9ea86a1bf072c2"
+    GIT_COMMIT_HASH = "9d24b3365632b5478c898e4da6fd0a2f51a204b1"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -96,15 +96,15 @@ class EFIToolsKBase:
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_EFI_EST_FASTA
+        #BEGIN run_EFI_EST_Sequence_BLAST
         efi = EFISequenceBLAST(ctx, config=self.config)
         output = efi.do_analysis(params)
 
-        #END run_EFI_EST_FASTA
+        #END run_EFI_EST_Sequence_BLAST
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_FASTA return value ' +
+            raise ValueError('Method run_EFI_EST_Sequence_BLAST return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
@@ -162,15 +162,15 @@ class EFIToolsKBase:
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_EFI_EST_FASTA
+        #BEGIN run_EFI_EST_Accession_IDs
         efi = EFIAccessionIDs(ctx, config=self.config)
         output = efi.do_analysis(params)
 
-        #END run_EFI_EST_FASTA
+        #END run_EFI_EST_Accession_IDs
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_FASTA return value ' +
+            raise ValueError('Method run_EFI_EST_Accession_IDs return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]
