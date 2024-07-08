@@ -107,7 +107,9 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_SSN_Creation(self):
         ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
-            "blast_edge_file": "73509/84/1",
+            "blast_edge_file": "73509/94/5",
             "alignment_score": 87,
+            "min_length": 75,
+            "max_length": 50000,
             "workspace_name": self.wsName
         })

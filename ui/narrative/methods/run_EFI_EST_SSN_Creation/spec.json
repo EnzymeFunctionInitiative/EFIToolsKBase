@@ -33,6 +33,30 @@
                 "validate_as": "int",
                 "min_integer": 0
             }
+        },
+        {
+            "id": "min_length",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "0" ],
+            "field_type": "text",
+            "text_options": {
+                "validate_as": "int",
+                "min_integer": 0
+            }
+        },
+        {
+            "id": "max_length",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "50000" ],
+            "field_type": "text",
+            "text_options": {
+                "validate_as": "int",
+                "min_integer": 0
+            }
         }
     ],
     "behavior": {
@@ -58,6 +82,14 @@
                 {
                     "input_parameter": "alignment_score",
                     "target_property": "alignment_score"
+                },
+                {
+                    "input_parameter": "min_length",
+                    "target_property": "min_length"
+                },
+                {
+                    "input_parameter": "max_length",
+                    "target_property": "max_length"
                 }
             ],
             "output_mapping": [
