@@ -38,14 +38,20 @@ parameters :
             The alignment score used to group sequences into clusters
         long-hint : |
             The alignment score used to group sequences into clusters
-    min_length:
-        ui-name: Minimum Sequence Length
-        short-hint: The minimum length required for a sequence to be included in the SSN
-        long-hint: The minimum length required for a sequence to be included in the SSN
-    max_length:
-        ui-name: Maximum Sequence Length
-        short-hint: The maximum length required for a sequence to be included in the SSN
-        long-hint: The maximum length required for a sequence to be included in the SSN
+    min_length :
+        ui-name : |
+            Minimum Sequence Length
+        short-hint : |
+            The minimum length required for a sequence to be included in the SSN
+        long-hint : |
+            The minimum length required for a sequence to be included in the SSN
+    max_length :
+        ui-name : |
+            Maximum Sequence Length
+        short-hint : |
+            The maximum length required for a sequence to be included in the SSN
+        long-hint : |
+            The maximum length required for a sequence to be included in the SSN
 
 description : |
     <p>Creates an SSN from a dataset from the initial computation step.</p>:w
