@@ -1,6 +1,9 @@
 import os
 import json
+import logging
 import uuid
+
+from jinja2 import DictLoader, Environment, select_autoescape
 
 from ..nextflow import NextflowRunner
 from ..utils import png_to_base64
@@ -71,25 +74,129 @@ class EFIEST(Core):
             "unique_seqs": acc_data["UniqueSeq"],
             "workspace_name": workspace_name
         }
-        output = self.generate_report(report_data, ["edge_ref"])
+        output = self.generate_report(report_data, [data_ref])
         output["edge_ref"] = data_ref
 
         return output
 
+    def _create_file_links(self):
+        output_file_names = [
+            "1.out.parquet",
+            "all_sequences.fasta",
+            "evalue.tab",
+            "sequence_metadata.tab",
+            "sunburst_ids.tab",
+            "length.png",
+            "pident.png",
+            "edge.png"
+        ]
+        file_links = [
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[0]),
+                "name": output_file_names[0],
+                "label": output_file_names[0],
+                "description": "Parquet file containing edges"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[1]),
+                "name": output_file_names[1],
+                "label": output_file_names[1],
+                "description": "All sequences used in analysis"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[2]),
+                "name": output_file_names[2],
+                "label": output_file_names[2],
+                "description": "Table of E values"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[3]),
+                "name": output_file_names[3],
+                "label": output_file_names[3],
+                "description": "Sequence metadata"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[4]),
+                "name": output_file_names[4],
+                "label": output_file_names[4],
+                "description": "Sunburst IDs in all 3 databases"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[5]),
+                "name": output_file_names[5],
+                "label": output_file_names[5],
+                "description": "Full resolution Length plot"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[6]),
+                "name": output_file_names[6],
+                "label": output_file_names[6],
+                "description": "Full resolution Percent Identity plot"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[7]),
+                "name": output_file_names[7],
+                "label": output_file_names[7],
+                "description": "Full resolution Edge plot"
+            },
+        ]
+        return file_links
 
     def generate_report(self, params, objects_created):
         reports_path = os.path.join(self.shared_folder, "reports")
-        template_path = os.path.join(TEMPLATES_DIR, "est_fasta_report.html")
+        template_path = os.path.join(TEMPLATES_DIR, "est_report.html")
         template_variables = params
         # The KBaseReport configuration dictionary
         config = dict(
-            report_name=f"EFI_EST_FASTA_{str(uuid.uuid4())}",
+            report_name=f"EFI_EST_{str(uuid.uuid4())}",
             reports_path=reports_path,
             template_variables=template_variables,
             workspace_name=params["workspace_name"],
             objects_created=objects_created
         )
-        return self.create_report_from_template(template_path, config)
+
+        logging.info("Creating report...")
+        # Create report from template
+        with open(template_path) as tpf:
+            template_source = tpf.read()
+        env = Environment(
+            loader=DictLoader(dict(template=template_source)),
+            autoescape=select_autoescape(default=False)
+        )
+        template = env.get_template("template")
+        report = template.render(**config["template_variables"])
+        # Create report object including report
+        report_name = config["report_name"]
+        reports_path = config["reports_path"]
+        workspace_name = config["workspace_name"]
+        os.makedirs(reports_path, exist_ok=True)
+        report_path = os.path.join(reports_path, "index.html")
+        with open(report_path, "w") as report_file:
+            report_file.write(report)
+        html_links = [
+            {
+                "description": "report",
+                "name": "index.html",
+                "path": reports_path,
+            },
+        ]
+
+        output_files = self._create_file_links()
+
+        report_info = self.report.create_extended_report(
+            {
+                "direct_html_link_index": 0,
+                "html_links": html_links,
+                "message": "A sample report.",
+                "report_object_name": report_name,
+                "workspace_name": workspace_name,
+                "file_links": output_files
+            }
+        )
+        return {
+            "report_name": report_info["name"],
+            "report_ref": report_info["ref"],
+        }
 
     def save_edge_file_to_workspace(self, workspace_name, edge_filepath, fasta_filepath, evalue_filepath, acc_data):
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
