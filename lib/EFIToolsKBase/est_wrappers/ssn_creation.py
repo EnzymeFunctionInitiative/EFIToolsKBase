@@ -45,6 +45,7 @@ class SSNCreation(Core):
             "unpack": "unpack"}
         )
 
+        print(params)
         mapping = {
             "blast_parquet": os.path.join(self.shared_folder, "1.out.parquet"),
             "fasta_file": os.path.join(self.shared_folder, "sequences.fa"),
