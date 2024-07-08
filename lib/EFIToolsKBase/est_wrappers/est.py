@@ -42,10 +42,6 @@ class EFIEST(Core):
         used to do string substitution on the yml parameter template
         workspace_name: string
         passed in from params dict in runner (params["workspace_name"])
-        self.shared_folder: string
-        passed in from params dict in runner (self.shared_folder)
-        generate_report: function
-        passed in from params dict in runner (self.generate_report)
         """
         self.flow.write_params_file(mapping)
         self.flow.generate_run_command()
@@ -74,7 +70,7 @@ class EFIEST(Core):
             "unique_seqs": acc_data["UniqueSeq"],
             "workspace_name": workspace_name
         }
-        output = self.generate_report(report_data, [data_ref])
+        output = self.generate_report(report_data, [{"ref": data_ref, "description": "Edge file and other metadata"}])
         output["edge_ref"] = data_ref
 
         return output
@@ -146,6 +142,7 @@ class EFIEST(Core):
         reports_path = os.path.join(self.shared_folder, "reports")
         template_path = os.path.join(TEMPLATES_DIR, "est_report.html")
         template_variables = params
+
         # The KBaseReport configuration dictionary
         config = dict(
             report_name=f"EFI_EST_{str(uuid.uuid4())}",
