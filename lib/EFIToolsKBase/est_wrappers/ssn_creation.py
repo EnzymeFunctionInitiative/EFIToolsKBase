@@ -5,12 +5,10 @@ development using the SFA base package.
 import os
 import logging
 import uuid
+import zipfile
 
-from shutil import copyfile
-
+from jinja2 import DictLoader, Environment, select_autoescape
 import pandas as pd
-
-from Bio import SeqIO
 
 # This is the SFA base package which provides the Core app class.
 from base import Core
@@ -75,26 +73,116 @@ class SSNCreation(Core):
             "stats": stats,
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data, ["edge_ref", "fasta_ref"])
-        output["edge_ref"] = "edge_ref"#edge_ref["shock_id"]
-        output["fasta_ref"] = "fasta_ref"#fasta_ref
+        output = self.generate_report(report_data)
         return output
 
-    def generate_report(self, params, objects_created):
+    def _create_file_links(self, inlcude_zip=True):
+        output_file_names = [
+            "2.out",
+            "filtered_sequences.fasta",
+            "full_ssn.xgmml",
+            "struct.filtered.out"
+        ]
+
+        file_links = [
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[0]),
+                "name": output_file_names[0],
+                "label": output_file_names[0],
+                "description": "File containing filtered edges"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[1]),
+                "name": output_file_names[1],
+                "label": output_file_names[1],
+                "description": "Filtered FASTA file containing sequences present int network"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[2]),
+                "name": output_file_names[2],
+                "label": output_file_names[2],
+                "description": "The Sequence Similarity Network"
+            },
+            {
+                "path": os.path.join(self.shared_folder, output_file_names[3]),
+                "name": output_file_names[3],
+                "label": output_file_names[3],
+                "description": "Taxonomy and other metadata about each sequence in filtered_sequences.fasta"
+            }
+        ]
+
+        if inlcude_zip:
+            zip_path = os.path.join(self.shared_folder, "all_files.zip")
+            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+                for name in output_file_names:
+                    zf.write(os.path.join(self.shared_folder, name), name)
+
+            zip_file_link = {
+                "path": zip_path,
+                "name": "all_files.zip",
+                "label": "all_files.zip",
+                "description": "All files created by the analysis collected in a zip zrchive"
+            }
+            file_links = [zip_file_link] + file_links
+
+        return file_links
+
+
+    def generate_report(self, params):
         reports_path = os.path.join(self.shared_folder, "reports")
         template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
         template_variables = params
         # The KBaseReport configuration dictionary
-        export_files = [os.path.join(self.shared_folder, "full_ssn.xgmml")]
+
         config = dict(
-            report_name=f"EFI_EST_FASTA_{str(uuid.uuid4())}",
+            report_name=f"SSN_Creation_{str(uuid.uuid4())}",
             reports_path=reports_path,
             template_variables=template_variables,
             workspace_name=params["workspace_name"],
-            objects_created=objects_created,
-            file_links=export_files
         )
-        return self.create_report_from_template(template_path, config)
+
+        logging.info("Creating report...")
+        # Create report from template
+        with open(template_path) as tpf:
+            template_source = tpf.read()
+        env = Environment(
+            loader=DictLoader(dict(template=template_source)),
+            autoescape=select_autoescape(default=False)
+        )
+        template = env.get_template("template")
+        report = template.render(**config["template_variables"])
+        # Create report object including report
+        report_name = config["report_name"]
+        reports_path = config["reports_path"]
+        workspace_name = config["workspace_name"]
+        os.makedirs(reports_path, exist_ok=True)
+        report_path = os.path.join(reports_path, "index.html")
+        with open(report_path, "w") as report_file:
+            report_file.write(report)
+        html_links = [
+            {
+                "description": "report",
+                "name": "index.html",
+                "path": reports_path,
+            },
+        ]
+
+        output_files = self._create_file_links()
+
+        report_info = self.report.create_extended_report(
+            {
+                "direct_html_link_index": 0,
+                "html_links": html_links,
+                "message": "A sample report.",
+                "report_object_name": report_name,
+                "workspace_name": workspace_name,
+                "file_links": output_files
+            }
+        )
+        return {
+            "report_name": report_info["name"],
+            "report_ref": report_info["ref"],
+        }
 
     def save_file_to_workspace(self, workspace_name, filepath, description):
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
