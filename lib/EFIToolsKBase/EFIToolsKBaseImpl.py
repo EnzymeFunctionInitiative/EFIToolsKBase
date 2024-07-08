@@ -38,7 +38,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "9d24b3365632b5478c898e4da6fd0a2f51a204b1"
+    GIT_COMMIT_HASH = "2467021a33009887c2f580a2d22e511cef6c4663"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
