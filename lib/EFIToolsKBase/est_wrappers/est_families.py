@@ -18,6 +18,6 @@ class EFIFamilies(EFIEST):
             "blast_evalue": 1e-5,
             "import_mode": "family",
             "families": params["protein_family_addition_options"]["families_to_add"],
-            "family_addition_format": params["protein_family_addition_options"]["families_addition_cluster_id_format"]
+            "family_id_format": params["protein_family_addition_options"]["families_addition_cluster_id_format"]
         }
         return self.run_est_pipeline(mapping, params["workspace_name"])
