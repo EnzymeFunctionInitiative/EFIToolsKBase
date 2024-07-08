@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import uuid
+import zipfile
 
 from jinja2 import DictLoader, Environment, select_autoescape
 
@@ -75,7 +76,7 @@ class EFIEST(Core):
 
         return output
 
-    def _create_file_links(self):
+    def _create_file_links(self, inlcude_zip=True):
         output_file_names = [
             "1.out.parquet",
             "all_sequences.fasta",
@@ -86,6 +87,7 @@ class EFIEST(Core):
             "pident.png",
             "edge.png"
         ]
+
         file_links = [
             {
                 "path": os.path.join(self.shared_folder, output_file_names[0]),
@@ -136,6 +138,21 @@ class EFIEST(Core):
                 "description": "Full resolution Edge plot"
             },
         ]
+
+        if inlcude_zip:
+            zip_path = os.path.join(self.shared_folder, "all_files.zip")
+            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+                for name in output_file_names:
+                    zf.write(os.path.join(self.shared_folder, name), name)
+
+            zip_file_link = {
+                "path": zip_path,
+                "name": "all_files.zip",
+                "label": "all_files.zip",
+                "description": "All files created by the analysis collected in a zip zrchive"
+            }
+            file_links = [zip_file_link] + file_links
+
         return file_links
 
     def generate_report(self, params, objects_created):
