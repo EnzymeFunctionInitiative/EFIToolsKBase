@@ -22,7 +22,7 @@
             ],
             "field_type": "text",
             "text_options": {
-                "valid_ws_types": ["KBaseSequences.SequenceSimilarityNetwork"]
+                "valid_ws_types": ["EFIToolsKBase.SequenceSimilarityNetwork"]
             }
         }
     ],
