@@ -15,7 +15,7 @@ from .est_wrappers.est_fasta import EFIFasta
 from .est_wrappers.est_accession_ids import EFIAccessionIDs
 from .est_wrappers.ssn_creation import SSNCreation
 
-# from .ssnutil_wrappers.colorssn import ColorSSN
+from .ssnutil_wrappers.colorssn import ColorSSN
 
 from base import Core
 
@@ -214,6 +214,17 @@ class EFIToolsKBase:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_EFI_SSN_Utils_Color_SSN
+        config = dict(
+            callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
+            clients=dict(
+                KBaseReport=KBaseReport,
+                DataFileUtil=DataFileUtil
+            ),
+        )
+        cssn = ColorSSN(ctx, config=config)
+        logging.info(params)
+        output = cssn.do_analysis(params)
         #END run_EFI_SSN_Utils_Color_SSN
 
         # At some point might do deeper type checking...
