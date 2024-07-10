@@ -20,14 +20,17 @@
             "default_values": [
                 ""
             ],
-            "field_type": "file"
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": ["KBaseSequences.SequenceSimilarityNetwork"]
+            }
         }
     ],
     "behavior": {
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_SSN_Utils_Color_SSN",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
