@@ -341,56 +341,32 @@
                     "target_property": "workspace_id"
                 },
                 {
-                    "input_parameter": "accession_ids",
-                    "target_property": "accession_ids"
+                    "input_parameter": "accession_id_input",
+                    "target_property": "accession_id_input"
                 },
                 {
-                    "input_parameter": "accession_id_format",
-                    "target_property": "accession_id_format"
+                    "input_parameter": "fragment_options",
+                    "target_property": "fragment_options"
                 },
                 {
-                    "input_parameter": "fragment_option",
-                    "target_property": "fragment_option"
+                    "input_parameter": "family_filter_option",
+                    "target_property": "family_filter_option"
                 },
                 {
-                    "input_parameter": "family_filter",
-                    "target_property": "family_filter"
+                    "input_parameter": "taxonomy_filter_options",
+                    "target_property": "taxonomy_filter_options"
                 },
                 {
-                    "input_parameter": "taxonomic_level",
-                    "target_property": "taxonomic_level"
+                    "input_parameter": "protein_family_addition_options",
+                    "target_property": "protein_family_addition_options"
                 },
                 {
-                    "input_parameter": "filter_string",
-                    "target_property": "filter_string"
+                    "input_parameter": "family_domain_boundary_option",
+                    "target_property": "family_domain_boundary_option"
                 },
                 {
-                    "input_parameter": "families_to_add",
-                    "target_property": "families_to_add"
-                },
-                {
-                    "input_parameter": "families_addition_cluster_id_format",
-                    "target_property": "families_addition_cluster_id_format"
-                },
-                {
-                    "input_parameter": "fraction",
-                    "target_property": "fraction"
-                },
-                {
-                    "input_parameter": "domain",
-                    "target_property": "domain"
-                },
-                {
-                    "input_parameter": "family_domain_bound",
-                    "target_property": "family_domain_bound"
-                },
-                {
-                    "input_parameter": "region",
-                    "target_property": "region"
-                },
-                {
-                    "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value"
+                    "input_parameter": "ssn_edge_calc_options",
+                    "target_property": "ssn_edge_calc_options"
                 }
             ],
             "output_mapping": [
