@@ -1,7 +1,14 @@
+import os
+
 from .est import EFIEST
 
 class EFIAccessionIDs(EFIEST):
     def do_analysis(self, params):
+        accession_file = os.path.join(self.shared_folder, "pasted_accessions.txt")
+        accessions = params["accession_id_input"]["accession_ids"].splitlines(keepends=True)
+        with open(accession_file, "w") as f:
+            f.writelines(accessions)
+        print(f"Wrote {len(accessions)} accession IDs to file")
         mapping = {
             "final_output_dir": self.shared_folder,
             "duckdb_memory_limit": "64GB",
@@ -15,7 +22,7 @@ class EFIAccessionIDs(EFIEST):
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": "/data/efi_db.sqlite",
             "blast_evalue": 1e-5,
-            "import_mode": "accession",
-            # TODO fill in parameters for accession import type
+            "import_mode": "accessions",
+            "accessions_file": accession_file
         }
         return self.run_est_pipeline(mapping, params["workspace_name"])
