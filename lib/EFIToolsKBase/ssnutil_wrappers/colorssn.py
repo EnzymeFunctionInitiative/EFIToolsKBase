@@ -38,6 +38,8 @@ class ColorSSN(Core):
         self.flow.generate_run_command()
 
         retcode, stdout, stderr = self.flow.execute()
+        print(self.shared_folder, os.listdir(self.shared_folder))
+        print(stderr)
 
         output = self.generate_report({
             "workspace_name": params["workspace_name"]
