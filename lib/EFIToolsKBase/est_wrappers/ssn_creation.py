@@ -75,7 +75,7 @@ class SSNCreation(Core):
             "stats": stats.to_html(),
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data, {"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"})
+        output = self.generate_report(report_data, [{"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"}])
         return output
 
     def _create_file_links(self, inlcude_zip=True):
