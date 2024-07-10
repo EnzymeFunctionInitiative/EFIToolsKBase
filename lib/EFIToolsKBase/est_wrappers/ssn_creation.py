@@ -69,12 +69,13 @@ class SSNCreation(Core):
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         print(self.shared_folder, os.listdir(self.shared_folder))
-        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.tab"), sep="\t").to_html()
+        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.tab"), sep="\t")
+        data_ref = self.save_ssn_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "full_ssn.xgmml"), int(stats["Nodes"][0]), int(stats["Edges"][0]), "An SSN file and metadata")
         report_data = {
-            "stats": stats,
+            "stats": stats.to_html(),
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data)
+        output = self.generate_report(report_data, {"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"})
         return output
 
     def _create_file_links(self, inlcude_zip=True):
@@ -129,7 +130,7 @@ class SSNCreation(Core):
         return file_links
 
 
-    def generate_report(self, params):
+    def generate_report(self, params, objects_created):
         reports_path = os.path.join(self.shared_folder, "reports")
         template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
         template_variables = params
@@ -140,6 +141,7 @@ class SSNCreation(Core):
             reports_path=reports_path,
             template_variables=template_variables,
             workspace_name=params["workspace_name"],
+            objects_created=objects_created
         )
 
         logging.info("Creating report...")
@@ -185,17 +187,21 @@ class SSNCreation(Core):
             "report_ref": report_info["ref"],
         }
 
-    def save_file_to_workspace(self, workspace_name, filepath, description):
+    def save_ssn_file_to_workspace(self, workspace_name, filepath, nodes, edges, description):
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
         output_file_shock_id = self.dfu.file_to_shock({"file_path": filepath})["shock_id"]
         print(f"Uploaded filepath {filepath} to shock and got id {output_file_shock_id}")
         save_object_params = {
-            'id': workspace_id,
-            'objects': [{
-                'type': 'EFIToolsKBase.EdgeFileBLAST',
-                'data': output_file_shock_id,
-                'name': f"{os.path.basename(filepath)}_shock_id"
-            }]
+        'id': workspace_id,
+        'objects': [{
+            'type': 'EFIToolsKBase.SequenceSimilarityNetwork',
+            'data': {
+                "ssn_xgmml_handle": output_file_shock_id,
+                "node_count": nodes,
+                "edge_count": edges,
+            },
+            'name': "ssn_file"
+        }]
         }
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
         object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
@@ -204,9 +210,3 @@ class SSNCreation(Core):
                 "label": os.path.basename(filepath),
                 "description": description}
     
-    def save_sequences_to_workspace(self, filepath, workspace_name):
-        return self.au.save_assembly_from_fasta({
-            'file': {'path': filepath},
-            'workspace_name': workspace_name,
-            'assembly_name': 'all_sequences.fasta'
-        })

@@ -362,6 +362,10 @@ class Application(object):
                              name='EFIToolsKBase.run_EFI_EST_SSN_Creation',
                              types=[dict])
         self.method_authentication['EFIToolsKBase.run_EFI_EST_SSN_Creation'] = 'required'  # noqa
+        self.rpc_service.add(impl_EFIToolsKBase.run_EFI_SSN_Utils_Color_SSN,
+                             name='EFIToolsKBase.run_EFI_SSN_Utils_Color_SSN',
+                             types=[dict])
+        self.method_authentication['EFIToolsKBase.run_EFI_SSN_Utils_Color_SSN'] = 'required'  # noqa
         self.rpc_service.add(impl_EFIToolsKBase.status,
                              name='EFIToolsKBase.status',
                              types=[dict])

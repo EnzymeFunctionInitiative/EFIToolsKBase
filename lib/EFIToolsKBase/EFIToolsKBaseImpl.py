@@ -14,6 +14,9 @@ from .est_wrappers.est_families import EFIFamilies
 from .est_wrappers.est_fasta import EFIFasta
 from .est_wrappers.est_accession_ids import EFIAccessionIDs
 from .est_wrappers.ssn_creation import SSNCreation
+
+from .ssnutil_wrappers.colorssn import ColorSSN
+
 from base import Core
 
 from .nextflow import NextflowRunner
@@ -38,7 +41,7 @@ class EFIToolsKBase:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "4f70c2b5d7c6afac16e78be30638a0cbd3c3bf99"
+    GIT_COMMIT_HASH = "8de270df255ab86b92853ecab4a395278c054367"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -200,6 +203,24 @@ class EFIToolsKBase:
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
             raise ValueError('Method run_EFI_EST_SSN_Creation return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
+    def run_EFI_SSN_Utils_Color_SSN(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_SSN_Utils_Color_SSN
+        #END run_EFI_SSN_Utils_Color_SSN
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_SSN_Utils_Color_SSN return value ' +
                              'output is not type dict as required.')
         # return the results
         return [output]

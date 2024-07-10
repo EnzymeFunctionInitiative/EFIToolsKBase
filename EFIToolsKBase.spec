@@ -16,6 +16,11 @@ module EFIToolsKBase {
         float convergence_ratio;
     } BlastEdgeFile;
     
+    typedef structure {
+        handle ssn_xgmml_handle;
+        int node_count;
+        int edge_count;
+    } SequenceSimilarityNetwork;
     
     typedef structure {
         string report_name;
@@ -42,4 +47,6 @@ module EFIToolsKBase {
     funcdef run_EFI_EST_Accession_IDs(mapping<string,UnspecifiedObject> params) returns (ESTReportResults output) authentication required;
 
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
+
+    funcdef run_EFI_SSN_Utils_Color_SSN(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
 };
