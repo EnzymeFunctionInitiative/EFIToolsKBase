@@ -15,11 +15,9 @@ from .est_wrappers.est_fasta import EFIFasta
 from .est_wrappers.est_accession_ids import EFIAccessionIDs
 from .est_wrappers.ssn_creation import SSNCreation
 
-from .ssnutil_wrappers.colorssn import ColorSSN
+# from .ssnutil_wrappers.colorssn import ColorSSN
 
 from base import Core
-
-from .nextflow import NextflowRunner
 
 #END_HEADER
 
