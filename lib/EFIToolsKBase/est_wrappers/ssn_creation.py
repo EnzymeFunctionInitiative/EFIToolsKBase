@@ -179,7 +179,8 @@ class SSNCreation(Core):
                 "message": "A sample report.",
                 "report_object_name": report_name,
                 "workspace_name": workspace_name,
-                "file_links": output_files
+                "file_links": output_files,
+                "objects_created": objects_created
             }
         )
         return {
