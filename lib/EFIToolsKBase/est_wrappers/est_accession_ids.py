@@ -4,6 +4,7 @@ from .est import EFIEST
 
 class EFIAccessionIDs(EFIEST):
     def do_analysis(self, params):
+        print(params)
         accession_file = os.path.join(self.shared_folder, "pasted_accessions.txt")
         accessions = params["accession_id_input"]["accession_ids"].splitlines(keepends=True)
         with open(accession_file, "w") as f:
