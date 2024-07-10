@@ -9,7 +9,7 @@
     ],
     "widgets": {
         "input": null,
-        "output": null
+        "output": "no-display"
     },
     "parameters": [
         {
@@ -24,16 +24,6 @@
             "textarea_options": {
                 "n_rows": 10
             }
-        },
-        {
-            "id": "accession_ids_file",
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "file"
         },
         {
             "id": "accession_id_format",
@@ -263,7 +253,6 @@
             "id": "accession_id_input",
             "parameters": [
                 "accession_ids",
-                "accession_ids_file",
                 "accession_id_format"
             ],
             "optional": false,
@@ -354,10 +343,6 @@
                 {
                     "input_parameter": "accession_ids",
                     "target_property": "accession_ids"
-                },
-                {
-                    "input_parameter": "accession_ids_file",
-                    "target_property": "accession_ids_file"
                 },
                 {
                     "input_parameter": "accession_id_format",

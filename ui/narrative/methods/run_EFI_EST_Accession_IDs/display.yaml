@@ -25,12 +25,7 @@ parameters:
     accession_ids:
         ui-name: Accession IDs (paste)
         short-hint: |
-            Input accession IDs in the specified format. 
-            
-    accession_ids_file:
-        ui-name: Accession IDs (upload)
-        short-hint: |
-            Upload accession IDs in the specified format.
+            Input accession IDs in the specified format, one per line. 
             
     accession_id_format:
         ui-name: Accession ID format
@@ -78,7 +73,6 @@ parameters:
         long-hint: |
             Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
 
-
     domain:
         ui-name: Sequences trimmed to the domain boundaries defined by the input family will be used for the calculations
         short-hint: |
@@ -117,6 +111,7 @@ parameter-groups:
         ui-name: Fragment Option
         short-hint: |
             Fragment Options
+
     family_filter_option:
         ui-name: Filter by Family
         short-hint: |
