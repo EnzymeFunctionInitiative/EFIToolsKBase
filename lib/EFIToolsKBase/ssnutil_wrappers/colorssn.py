@@ -4,6 +4,7 @@ import logging
 import uuid
 
 from jinja2 import DictLoader, Environment, select_autoescape
+import pandas as pd
 
 from base import Core
 from ..nextflow import NextflowRunner
@@ -41,7 +42,14 @@ class ColorSSN(Core):
         print(self.shared_folder, os.listdir(self.shared_folder))
         print(stderr)
 
+        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t")
+        cluster_sizes = pd.read_csv(os.path.join(self.shared_folder, "cluster_sizes.txt"), sep="\t")
+        conv_ratios = pd.read_csv(os.path.join(self.shared_folder, "conv_ratio.txt"), sep="\t")
+
         output = self.generate_report({
+            "stats_tab": stats.to_html(),
+            "cluster_sizes_tab": cluster_sizes.to_html(),
+            "conv_ratios_tab": conv_ratios.to_html(),
             "workspace_name": params["workspace_name"]
         })
 
