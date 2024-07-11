@@ -23,7 +23,29 @@
             }
         },
         {
-            "id": "alignment_score",
+            "id": "filter_parameter",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "alignment_score" ],
+            "field_type": "dropdown",
+            "dropdown-options": {
+                "options": [{
+                    "value": "alignment_score",
+                    "display": "Alignment Score"
+                },
+                {
+                    "value": "pident",
+                    "display": "Percent Identity (0-100)"
+                },
+                {
+                    "value": "bitscore",
+                    "display": "Bit Score"
+                }]
+            }
+        },
+        {
+            "id": "filter_value",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -59,6 +81,19 @@
             }
         }
     ],
+    "parameter-groups": [
+        {
+            "id": "filter_options",
+            "parameters": [
+                "filter_parameter",
+                "filter_value"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        }
+    ],
     "behavior": {
         "service-mapping": {
             "url": "",
@@ -80,8 +115,8 @@
 
                 },
                 {
-                    "input_parameter": "alignment_score",
-                    "target_property": "alignment_score"
+                    "input_parameter": "filter_options",
+                    "target_property": "filter_options"
                 },
                 {
                     "input_parameter": "min_length",

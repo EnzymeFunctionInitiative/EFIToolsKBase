@@ -37,9 +37,9 @@ class EFIToolsKBase:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "0.0.1"
+    VERSION = "0.2.0"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "8de270df255ab86b92853ecab4a395278c054367"
+    GIT_COMMIT_HASH = "181c801fc6fc8873d78ec6a6a76531c1e15bede9"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER

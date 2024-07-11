@@ -31,13 +31,20 @@ parameters :
             The workspace object representing the SSN edges
         long-hint : |
             The workspace object representing the SSN edges
-    alignment_score :
+    filter_parameter :
         ui-name : |
-            Alignment score
+            Filter Parameter
         short-hint : |
-            The alignment score used to group sequences into clusters
+            The column on which to filter edges
         long-hint : |
-            The alignment score used to group sequences into clusters
+            The column on which to filter edges
+    filter_value :
+        ui-name : |
+            Filter Value
+        short-hint : |
+            The cutoff value for the specified value
+        long-hint: |
+            Edges whose filter_parameter are below this value are discarded
     min_length :
         ui-name : |
             Minimum Sequence Length
@@ -52,6 +59,13 @@ parameters :
             The maximum length required for a sequence to be included in the SSN
         long-hint : |
             The maximum length required for a sequence to be included in the SSN
+
+parameter-groups :
+    filter_options : 
+        ui-name : |
+            Filter Options
+        short-hint : |
+            Specify how to filter the edges
 
 description : |
     <p>Creates an SSN from a dataset from the initial computation step.</p>:w
