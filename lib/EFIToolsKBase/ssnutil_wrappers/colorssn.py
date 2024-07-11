@@ -43,17 +43,17 @@ class ColorSSN(Core):
 
         stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t")
         try:
-            cluster_sizes = pd.read_csv(os.path.join(self.shared_folder, "cluster_sizes.txt"), sep="\t").to_html()
+            cluster_sizes = pd.read_csv(os.path.join(self.shared_folder, "cluster_sizes.txt"), sep="\t").to_html(index=False)
         except:
             cluster_sizes = "No data"
         
         try:
-            conv_ratios = pd.read_csv(os.path.join(self.shared_folder, "conv_ratio.txt"), sep="\t").to_html()
+            conv_ratios = pd.read_csv(os.path.join(self.shared_folder, "conv_ratio.txt"), sep="\t").to_html(index=False)
         except:
             conv_ratios = "No data"
 
         output = self.generate_report({
-            "stats_tab": stats.to_html(),
+            "stats_tab": stats.to_html(index=False),
             "cluster_sizes_tab": cluster_sizes,
             "conv_ratios_tab": conv_ratios,
             "workspace_name": params["workspace_name"]
