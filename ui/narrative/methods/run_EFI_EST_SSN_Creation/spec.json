@@ -29,7 +29,7 @@
             "allow_multiple": false,
             "default_values": [ "alignment_score" ],
             "field_type": "dropdown",
-            "dropdown-options": {
+            "dropdown_options": {
                 "options": [{
                     "value": "alignment_score",
                     "display": "Alignment Score"
