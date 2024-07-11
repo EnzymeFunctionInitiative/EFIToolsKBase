@@ -123,7 +123,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
     #         "workspace_name": self.wsName
     #     })
 
-    def test_run_EFI_EST_SSN_Creation(self):
+    def test_run_SSN_Utils_Color_SSN(self):
         ret = self.serviceImpl.run_EFI_SSN_Utils_Color_SSN(self.ctx, {
             "ssn_file": "73509/108/3",
             "workspace_name": self.wsName
