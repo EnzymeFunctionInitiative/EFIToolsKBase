@@ -41,7 +41,7 @@ class ColorSSN(Core):
         retcode, stdout, stderr = self.flow.execute()
         print(self.shared_folder, os.listdir(self.shared_folder))
 
-        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t")
+        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t", header=None)
         try:
             cluster_sizes = pd.read_csv(os.path.join(self.shared_folder, "cluster_sizes.txt"), sep="\t").to_html(index=False)
         except:
