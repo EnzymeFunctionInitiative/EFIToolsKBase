@@ -35,6 +35,7 @@ class EFIFasta(EFIEST):
             "multiplex": False,
             "job_id": 131,
             "blast_evalue": "1e-5",
+            "sequence_version": "uniprot",
             "uploaded_fasta_file": uploaded_fasta_file
         }
         return self.run_est_pipeline(mapping, params["workspace_name"])

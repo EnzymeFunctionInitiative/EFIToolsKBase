@@ -2,6 +2,7 @@ from .est import EFIEST
 
 class EFISequenceBLAST(EFIEST):
     def do_analysis(self, params):
+
         mapping = {
             "final_output_dir": self.shared_folder,
             "duckdb_memory_limit": "64GB",
@@ -15,6 +16,7 @@ class EFISequenceBLAST(EFIEST):
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": "/data/efi_db.sqlite",
             "blast_evalue": 1e-5,
+            "sequence_version": "uniprot",
             "import_mode": "blast",
             # TODO fill in parameters for single sequence BLAST import
         }
