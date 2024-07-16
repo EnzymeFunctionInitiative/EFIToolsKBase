@@ -314,16 +314,6 @@
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
-        },
-        {
-            "id": "ssn_edge_calc_options",
-            "parameters": [
-                "ssn_e_value"
-            ],
-            "optional": false,
-            "advanced": true,
-            "allow_multiple": false,
-            "with_border": true
         }
     ],
     "behavior": {
@@ -365,8 +355,8 @@
                     "target_property": "family_domain_boundary_option"
                 },
                 {
-                    "input_parameter": "ssn_edge_calc_options",
-                    "target_property": "ssn_edge_calc_options"
+                    "input_parameter": "ssn_e_value",
+                    "target_property": "ssn_e_value"
                 }
             ],
             "output_mapping": [

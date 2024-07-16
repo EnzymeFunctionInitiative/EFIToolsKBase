@@ -131,11 +131,6 @@ parameter-groups:
         ui-name: Family Domain Boundary Option
         short-hint: |
             Pfam and InterPro databases define domain boundaries for members of their families
-    
-    ssn_edge_calc_options:
-        ui-name: SSN Edge Calculation Option
-        short-hint: |
-            Parameters for all-by-all BLAST
 
 description: |
     <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
