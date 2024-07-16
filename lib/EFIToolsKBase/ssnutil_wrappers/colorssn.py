@@ -53,7 +53,7 @@ class ColorSSN(Core):
             conv_ratios = "No data"
 
         output = self.generate_report({
-            "stats_tab": stats.to_html(index=False),
+            "stats_tab": stats.to_html(index=False, header=False),
             "cluster_sizes_tab": cluster_sizes,
             "conv_ratios_tab": conv_ratios,
             "workspace_name": params["workspace_name"]
