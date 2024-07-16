@@ -34,7 +34,7 @@ class EFIFasta(EFIEST):
             "import_mode": "fasta",
             "multiplex": False,
             "job_id": 131,
-            "blast_evalue": "1e-5",
+            "blast_evalue": f"1e-{params['ssn_e_value']}",
             "sequence_version": "uniprot",
             "uploaded_fasta_file": uploaded_fasta_file
         }

@@ -15,7 +15,7 @@ class EFIFamilies(EFIEST):
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": "/data/efi_db.sqlite",
             "exclude_fragments": True if params["fragment_option"] == 1 else False,
-            "blast_evalue": 1e-5,
+            "blast_evalue": f"1e-{params['ssn_e_value']}",
             "sequence_version": "uniprot",
             "import_mode": "family",
             "families": params["protein_family_addition_options"]["families_to_add"],

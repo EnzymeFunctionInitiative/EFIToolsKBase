@@ -22,7 +22,7 @@ class EFIAccessionIDs(EFIEST):
             "efi_config": "/EST/efi.config",
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": "/data/efi_db.sqlite",
-            "blast_evalue": 1e-5,
+            "blast_evalue": f"1e-{params['ssn_e_value']}",
             "sequence_version": "uniprot",
             "import_mode": "accessions",
             "accessions_file": accession_file
