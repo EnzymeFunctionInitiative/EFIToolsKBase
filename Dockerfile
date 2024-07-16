@@ -30,7 +30,7 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
     mv /opt/install_nextflow.sh /usr/bin/nextflow
 
 # install EST scripts
-RUN echo "Force rebuild: CCC"
+RUN echo "Force rebuild: CCCC"
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
     cd EST && \
     git checkout nextflow-test && \
