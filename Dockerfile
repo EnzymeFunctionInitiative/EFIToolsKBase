@@ -33,7 +33,7 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
 RUN echo "Force rebuild: CCCC"
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
     cd EST && \
-    git checkout nextflow-test && \
+    git checkout ad0d17fc746faee48e54ad89d571fa088eadd129 && \
     cpanm --installdeps /EST/
 
 # install efi.config
