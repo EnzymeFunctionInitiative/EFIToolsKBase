@@ -68,7 +68,7 @@
         {
             "id": "family_filter",
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""

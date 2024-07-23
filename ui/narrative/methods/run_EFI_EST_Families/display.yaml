@@ -91,7 +91,7 @@ parameters:
 
 parameter-groups:
     protein_family_addition_options:
-        ui-name: Protein Family Addition Options
+        ui-name: Protein Families to Analyze
         short-hint:
             Add sequences belonging to Pfam and/or InterPro families to the sequences used to generate the SSN. 
     
