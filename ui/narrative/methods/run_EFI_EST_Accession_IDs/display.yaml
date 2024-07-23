@@ -15,8 +15,15 @@ icon: icon.png
 #
 suggestions:
     apps:
-        related: []
-        next: []
+        related: [run_EFI_EST_Sequence_BLAST, run_EFI_EST_Families, run_EFI_EST_FASTA, run_EFI_EST_Accession_IDs]
+        next: [run_EFI_EST_SSN_Creation]
+
+publications:
+    - display-text: 'Rémi Zallot, Nils Oberg, and John A. Gerlt, The EFI Web Resource for Genomic Enzymology Tools: Leveraging Protein, Genome, and Metagenome Databases to Discover Novel Enzymes and Metabolic Pathways. Biochemistry 2019 58 (41), 4169-4182'
+      link: https://doi.org/10.1021/acs.biochem.9b00735
+
+    - display-text: 'Nils Oberg, Rémi Zallot, and John A. Gerlt, EFI-EST, EFI-GNT, and EFI-CGFP: Enzyme Function Initiative (EFI) Web Resource for Genomic Enzymology Tools. J Mol Biol 2023.'
+      link: https://doi.org/10.1016/j.jmb.2023.168018
 
 #
 # Configure the display and description of parameters
