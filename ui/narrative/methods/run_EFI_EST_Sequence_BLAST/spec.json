@@ -155,7 +155,7 @@
         {
             "id": "ssn_e_value",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"

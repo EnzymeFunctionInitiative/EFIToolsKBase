@@ -51,7 +51,7 @@
         {
             "id": "fragment_option",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 false
@@ -120,8 +120,8 @@
         },
         {
             "id": "fraction",
-            "optional": true,
-            "advanced": false,
+            "optional": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "1"

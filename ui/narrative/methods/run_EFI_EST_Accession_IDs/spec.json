@@ -54,7 +54,7 @@
         {
             "id": "fragment_option",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 false
@@ -134,7 +134,7 @@
         {
             "id": "families_to_add",
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""
