@@ -22,7 +22,7 @@ class EFISequenceBLAST(EFIEST):
             "efi_config": EFI_CONFIG_PATH,
             "fasta_db": "/data/blastdb/combined.fasta",
             "efi_db": EFI_DB_PATH,
-            "blast_evalue": params["blast_options"]["e_value"],
+            "blast_evalue": f"1e-{params['blast_options']['e_value']}",
             "sequence_version": "uniprot",
             "import_mode": "blast",
             "blast_query_file": query_sequence_path
