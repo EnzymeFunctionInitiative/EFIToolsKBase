@@ -85,7 +85,7 @@
         {
             "id": "fragment_option",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 false
@@ -233,34 +233,14 @@
             "with_border": true
         },
         {
-            "id": "fragment_options",
-            "parameters": [
-                "fragment_option"
-            ],
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "with_border": true
-        },
-        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
                 "filter_string"
             ],
             "optional": true,
-            "advanced": false,
-            "allow_multiple": true,
-            "with_border": true
-        },
-        {
-            "id": "ssn_edge_calc_options",
-            "parameters": [
-                "ssn_e_value"
-            ],
-            "optional": false,
             "advanced": true,
-            "allow_multiple": false,
+            "allow_multiple": true,
             "with_border": true
         },
         {
@@ -299,16 +279,16 @@
                     "target_property": "blast_options"
                 },
                 {
-                    "input_parameter": "fragment_options",
-                    "target_property": "fragment_options"
+                    "input_parameter": "fragment_option",
+                    "target_property": "fragment_option"
                 },
                 {
                     "input_parameter": "taxonomy_filter_options",
                     "target_property": "taxonomy_filter_options"
                 },
                 {
-                    "input_parameter": "ssn_edge_calc_options",
-                    "target_property": "ssn_edge_calc_options"
+                    "input_parameter": "ssn_e_value",
+                    "target_property": "ssn_e_value"
                 },
                 {
                     "input_parameter": "protein_family_addition_options",

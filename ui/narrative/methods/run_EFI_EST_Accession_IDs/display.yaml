@@ -113,16 +113,6 @@ parameter-groups:
         ui-name: Accession ID Input
         short-hint: |
             Accession ID Input
-
-    fragment_options:
-        ui-name: Fragment Option
-        short-hint: |
-            Fragment Options
-
-    family_filter_option:
-        ui-name: Filter by Family
-        short-hint: |
-            Filter by Family
             
     taxonomy_filter_options:
         ui-name: Filter by Taxonomy

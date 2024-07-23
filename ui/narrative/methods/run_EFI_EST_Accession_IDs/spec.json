@@ -235,7 +235,7 @@
         {
             "id": "ssn_e_value",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"
@@ -261,33 +261,13 @@
             "with_border": true
         },
         {
-            "id": "fragment_options",
-            "parameters": [
-                "fragment_option"
-            ],
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "with_border": true
-        },
-        {
-            "id": "family_filter_option",
-            "parameters": [
-                "family_filter"
-            ],
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "with_border": true
-        },
-        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
                 "filter_string"
             ],
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": true,
             "with_border": true
         },
@@ -335,12 +315,12 @@
                     "target_property": "accession_id_input"
                 },
                 {
-                    "input_parameter": "fragment_options",
-                    "target_property": "fragment_options"
+                    "input_parameter": "fragment_option",
+                    "target_property": "fragment_option"
                 },
                 {
-                    "input_parameter": "family_filter_option",
-                    "target_property": "family_filter_option"
+                    "input_parameter": "family_filter",
+                    "target_property": "family_filter"
                 },
                 {
                     "input_parameter": "taxonomy_filter_options",

@@ -107,21 +107,11 @@ parameter-groups:
         ui-name: BLAST Retrieval Options
         short-hint: |
             Parameters for BLAST
-            
-    fragment_options:
-        ui-name: Fragment Option
-        short-hint: |
-            Fragment Options
     
     taxonomy_filter_options:
         ui-name: Filter by Taxonomy
         short-hint: |
             A taxonomy filter is applied to the list of UniProt, UniRef90, or UniRef50 cluster IDs retrieved by the BLAST
-    
-    ssn_edge_calc_options:
-        ui-name: SSN Edge Calculation Option
-        short-hint: |
-            Parameters for all-by-all BLAST
             
     protein_family_addition_options:
         ui-name: Protein Family Addition Options

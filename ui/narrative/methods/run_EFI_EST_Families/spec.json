@@ -120,7 +120,7 @@
         },
         {
             "id": "fraction",
-            "optional": false,
+            "optional": true,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
@@ -136,7 +136,7 @@
         {
             "id": "domain",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 false
@@ -150,7 +150,7 @@
         {
             "id": "region",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "Domain"
@@ -176,7 +176,7 @@
         {
             "id": "ssn_e_value",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"
@@ -208,7 +208,7 @@
                 "filter_string"
             ],
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": true,
             "with_border": true
         },

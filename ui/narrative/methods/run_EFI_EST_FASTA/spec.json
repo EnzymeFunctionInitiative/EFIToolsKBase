@@ -51,7 +51,7 @@
         {
             "id": "fragment_option",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 false
@@ -65,7 +65,7 @@
         {
             "id": "family_filter",
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""
@@ -232,7 +232,7 @@
         {
             "id": "ssn_e_value",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"
@@ -253,7 +253,7 @@
                 "filter_string"
             ],
             "optional": true,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": true,
             "with_border": true
         },
