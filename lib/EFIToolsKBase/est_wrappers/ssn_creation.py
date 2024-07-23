@@ -58,10 +58,10 @@ class SSNCreation(Core):
             "ssn_title": "kbase_ssn",
             "maxfull": 0,
             "uniref_version": 90,
-            "efi_config": "/EST/efi.config",
+            "efi_config": EFI_CONFIG_PATH,
             "db_version": 100,
             "job_id": 131,
-            "efi_db": "/data/efi_db.sqlite"
+            "efi_db": EFI_DB_PATH
         }
         self.flow.write_params_file(mapping)
         self.flow.generate_run_command()

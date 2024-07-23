@@ -1,6 +1,8 @@
 import os
 
 from .est import EFIEST
+from ..const import *
+
 
 class EFIAccessionIDs(EFIEST):
     def do_analysis(self, params):
@@ -19,9 +21,9 @@ class EFIAccessionIDs(EFIEST):
             "num_blast_matches": 250,
             "multiplex": False,
             "job_id": 131,
-            "efi_config": "/EST/efi.config",
+            "efi_config": EFI_CONFIG_PATH,
             "fasta_db": "/data/blastdb/combined.fasta",
-            "efi_db": "/data/efi_db.sqlite",
+            "efi_db": EFI_DB_PATH,
             "blast_evalue": f"1e-{params['ssn_e_value']}",
             "sequence_version": "uniprot",
             "import_mode": "accessions",

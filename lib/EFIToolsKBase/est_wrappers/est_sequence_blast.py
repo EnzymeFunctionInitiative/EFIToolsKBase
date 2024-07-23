@@ -1,6 +1,8 @@
 import os
 
 from .est import EFIEST
+from ..const import *
+
 
 class EFISequenceBLAST(EFIEST):
     def do_analysis(self, params):
@@ -17,9 +19,9 @@ class EFISequenceBLAST(EFIEST):
             "num_blast_matches": params["blast_options"]["max_sequences_retrieved"],
             "multiplex": False,
             "job_id": 131,
-            "efi_config": "/EST/efi.config",
+            "efi_config": EFI_CONFIG_PATH,
             "fasta_db": "/data/blastdb/combined.fasta",
-            "efi_db": "/data/efi_db.sqlite",
+            "efi_db": EFI_DB_PATH,
             "blast_evalue": params["blast_options"]["e_value"],
             "sequence_version": "uniprot",
             "import_mode": "blast",

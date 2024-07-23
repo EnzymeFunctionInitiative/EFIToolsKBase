@@ -1,6 +1,8 @@
 import os
 
 from .est import EFIEST
+from ..const import *
+
 
 class EFIFasta(EFIEST):
     def do_analysis(self, params):
@@ -28,9 +30,9 @@ class EFIFasta(EFIEST):
             "num_accession_shards": 16,
             "num_blast_matches": 250,
             "muliplex": False,
-            "efi_config": "/EST/efi.config",
+            "efi_config": EFI_CONFIG_PATH,
             "fasta_db": "/data/blastdb/combined.fasta",
-            "efi_db": "/data/efi_db.sqlite",
+            "efi_db": EFI_DB_PATH,
             "import_mode": "fasta",
             "multiplex": False,
             "job_id": 131,
