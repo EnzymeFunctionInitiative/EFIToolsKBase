@@ -4,7 +4,7 @@ import json
 import subprocess
 
 class NextflowRunner():
-    def __init__(self, workflow_def, est_dir="/EST", config_name="kbase.config"):
+    def __init__(self, workflow_def, config_name, est_dir="/EST"):
         assert os.path.exists(est_dir)
         self.est_dir = est_dir
         self.workflow_def = os.path.join(est_dir, workflow_def)

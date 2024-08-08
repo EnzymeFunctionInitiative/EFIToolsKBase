@@ -25,7 +25,7 @@ class EFIEST(Core):
         self.dfu = self.clients.DataFileUtil
         self.au = self.clients.AssemblyUtil
         self.wsClient = self.clients.Workspace
-        self.flow = NextflowRunner("est.nf")
+        self.flow = NextflowRunner("pipelines/est/est.nf", "est/kbase.config")
 
     def do_analysis(self, params):
         """

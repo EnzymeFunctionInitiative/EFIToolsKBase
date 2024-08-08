@@ -28,7 +28,7 @@ class SSNCreation(Core):
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
-        self.flow = NextflowRunner("ssn.nf")
+        self.flow = NextflowRunner("pipelines/generatessn/generatessn.nf", "generatessn/kbase.config")
 
 
     def do_analysis(self, params):

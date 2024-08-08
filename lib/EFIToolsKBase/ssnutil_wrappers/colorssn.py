@@ -20,7 +20,7 @@ class ColorSSN(Core):
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
-        self.flow = NextflowRunner("colorssn.nf")
+        self.flow = NextflowRunner("pipelines/colorssn/colorssn.nf", "generatessn/kbase.config")
 
     def do_analysis(self, params):
         ssn_file_obj = self.dfu.get_objects({"object_refs": [params["ssn_file"]]})["data"][0]
