@@ -17,12 +17,24 @@ elif [ "${1}" = "async" ] ; then
   sh ./scripts/run_async.sh
 elif [ "${1}" = "init" ] ; then
   echo "Initialize module"
-  CURL_RETURN_CODE=0
-  curl -o /data/efidata.tar.gz https://efi.igb.illinois.edu/downloads/sample_data/kb_test_all.tar.gz
-  if [ $CURL_RETURN_CODE -eq 0 ] ; then
-    tar xzf /data/efidata.tar.gz -C /data
-    touch /data/__READY__
-  fi
+  remote_base="https://efi.igb.illinois.edu/downloads/databases/latest"
+
+  file="blastdb.tar.gz"
+  python scripts/download_file.py --remote-dir $remote_base --remote-file $file --local-dir /data/temp_$file --local-file /data/$file
+  rm -rf /data/temp_$file
+  tar xzf /data/$file -C /data
+
+  file="diamonddb.tar.gz"
+  python scripts/download_file.py --remote-dir $remote_base --remote-file $file --local-dir /data/temp_$file --local-file /data/$file
+  rm -rf /data/temp_$file
+  tar xzf /data/$file -C /data
+
+  file="efi_db.sqlite.gz"
+  python scripts/download_file.py --remote-dir $remote_base --remote-file $file --local-dir /data/temp_$file --local-file /data/$file
+  rm -rf /data/temp_$file
+  gunzip /data/$file
+
+  touch /data/__READY__
 elif [ "${1}" = "bash" ] ; then
   bash
 elif [ "${1}" = "report" ] ; then
