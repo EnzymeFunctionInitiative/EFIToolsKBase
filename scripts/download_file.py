@@ -30,6 +30,7 @@ def get_remote_file_contents(remote_file):
     try:
         response = urllib.request.urlopen(remote_file)
     except urllib.error.HTTPError as e:
+        print(f"Unable to urlopen {remote_file}: {e}")
         return False
     file_contents = response.read()
     file_contents = str(file_contents.decode('utf-8'))
@@ -78,7 +79,11 @@ def download_file(url, dest_file):
     """ 
     Download and save a file specified by url to the destination file
     """
-    u = urllib.request.urlopen(url)
+    try:
+        u = urllib.request.urlopen(url)
+    except urllib.error.HTTPError as e:
+        print(f"Unable to urlopen {url}: {e}")
+        return False
 
     with open(dest_file, "wb") as f:
         block_sz = 8192
@@ -105,11 +110,10 @@ def compare_md5(remote_md5, local_md5):
     String comparison of local and remote MD5 checksums
     """
     if remote_md5 != local_md5:
-        print(f"Remote MD5 {remote_md5} doesn't match local MD5 {local_md5}\n")
+        print(f"Remote MD5 {remote_md5} doesn't match local MD5 {local_md5}")
         return False
     else:
         return True
-
 
 
 
@@ -122,12 +126,13 @@ if len(file_list) > 0:
         temp_local_file = os.path.join(args.local_dir, fname)
         temp_files.append(temp_local_file)
         remote_url = args.remote_dir + "/" + fname
+        print(f"Downloading {remote_url}")
 
         #TODO: error check
         download_file(remote_url, temp_local_file)
         local_md5 = calculate_md5(temp_local_file)
         if not compare_md5(checksums[fname], local_md5):
-            print(f"File {fname} was not downloaded correctly; checksums do not match\n")
+            print(f"File {fname} was not downloaded correctly; checksums do not match")
             sys.exit(1)
 
     with open(args.local_file, "wb") as afh:
@@ -136,15 +141,16 @@ if len(file_list) > 0:
                 for chunk in iter(lambda: fh.read(4096), b""):
                     afh.write(chunk)
 
-    remote_md5 = get_remote_checksum(args)
-    local_md5 = calculate_md5(args.local_file)
+    #remote_md5 = get_remote_checksum(args)
+    #local_md5 = calculate_md5(args.local_file)
 
 else:
     remote_url = args.remote_dir + "/" + args.remote_file
+    print(f"Downloading {remote_url}")
     download_file(remote_url, args.local_file)
     remote_md5 = get_remote_checksum(args)
     local_md5 = calculate_md5(args.local_file)
     if not compare_md5(remote_md5, local_md5):
-        print(f"File {remote_url} -> {args.local_file} was not downloaded correctly; checksums do not match\n")
+        print(f"File {remote_url} -> {args.local_file} was not downloaded correctly; checksums do not match")
         sys.exit(1)
 
