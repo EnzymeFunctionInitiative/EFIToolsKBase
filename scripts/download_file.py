@@ -11,6 +11,7 @@ import urllib.error
 import os
 import hashlib
 import sys
+import io
 
 
 BLOCK_SIZE = 8192
@@ -51,14 +52,13 @@ def get_remote_file_contents(remote_file: str) -> str:
     try:
         response = urllib.request.urlopen(remote_file)
     except urllib.error.HTTPError as e:
-        print(f"Unable to urlopen {remote_file}: {e}")
-        return False
+        return None
+
     file_contents = response.read()
-    file_contents = str(file_contents.decode('utf-8'))
-    return file_contents
+    return io.StringIO(str(file_contents.decode('utf-8')))
 
 
-def get_file_list(remote_dir: str, remote_file: str) -> tuple[list, dict]:
+def get_file_list(remote_dir: str, remote_file: str) -> dict:
     """
     Retrieve a list of files created by 'split' on the remote that need to be fetched.
     If a file 'remote_dir/remote_file.file_list' is present on the server, that means
@@ -77,26 +77,21 @@ def get_file_list(remote_dir: str, remote_file: str) -> tuple[list, dict]:
     Returns
     -------
         files
-            list of file names (not URL) on remote that are split
-        checksums
-            checksum (MD5) for each file on the remote
+            dictionary of files to checksum (MD5) for each file on the remote
     """
 
     remote_file = remote_dir + "/" + remote_file + ".file_list"
 
-    file_contents = get_remote_file_contents(remote_file)
-    if not file_contents:
-        return [], {} 
+    remote_listing = get_remote_file_contents(remote_file)
+    if remote_listing is None:
+        return None
 
-    lines = file_contents.splitlines()
-    checksums = {}
-    files = []
-    for line in lines:
-        parts = line.split(" *")
-        files.append(parts[1])
-        checksums[parts[1]] = parts[0]
+    files = {}
+    while line := remote_listing.readline():
+        parts = line.strip().split(" *")
+        files[parts[1]] = parts[0]
 
-    return files, checksums
+    return files
 
 
 def get_remote_checksum(remote_dir: str, remote_file: str) -> str:
@@ -111,19 +106,19 @@ def get_remote_checksum(remote_dir: str, remote_file: str) -> str:
 
     Returns
     -------
-        MD5 hash of the remote file
+        MD5 hash of the remote file as provided by the remote
     """
     remote_file = remote_dir + "/" + remote_file + ".md5"
 
-    file_contents = get_remote_file_contents(remote_file)
-    if not file_contents:
-        return ""
+    checksum_data = get_remote_file_contents(remote_file)
+    if checksum_data is None:
+        return None
 
-    parts = file_contents.split(" ")
+    parts = checksum_data.read().strip().split(" ")
     if parts[0]:
         return parts[0]
     else:
-        return ""
+        return None
 
 
 def download_file(url: str, dest_file: str) -> bool:
@@ -198,16 +193,16 @@ if __name__ == '__main__':
 
     args = parse_args()
 
-    if not os.path.isdir(args.local_dir):
-        os.mkdir(args.local_dir)
-
     # Check if the remote file is actually a collection of files that were split up
-    file_list, checksums = get_file_list(args.remote_dir, args.remote_file)
+    file_list = get_file_list(args.remote_dir, args.remote_file)
 
     # If the remote was split, then download all of the split files
-    if len(file_list) > 0:
+    if file_list is not None:
+        if not os.path.isdir(args.local_dir):
+            os.mkdir(args.local_dir)
+
         temp_files = []
-        for fname in file_list:
+        for fname in file_list.keys():
             temp_local_file = os.path.join(args.local_dir, fname)
             temp_files.append(temp_local_file)
             remote_url = args.remote_dir + "/" + fname
@@ -218,7 +213,7 @@ if __name__ == '__main__':
                 sys.exit(1)
 
             local_md5 = calculate_md5(temp_local_file)
-            if not compare_md5(checksums[fname], local_md5):
+            if not compare_md5(file_list[fname], local_md5):
                 print(f"File {fname} was not downloaded correctly from {remote_url}; checksums do not match")
                 sys.exit(1)
 
@@ -237,7 +232,11 @@ if __name__ == '__main__':
             print(f"Unable to download {remote_url} to {args.local_file}")
             sys.exit(1)
 
-        remote_md5 = get_remote_checksum(args)
+        remote_md5 = get_remote_checksum(args.remote_dir, args.remote_file)
+        if remote_md5 is None:
+            print(f"File {args.local_file} checksum was not downloaded correctly from {remote_url}")
+            sys.exit(1)
+
         local_md5 = calculate_md5(args.local_file)
         if not compare_md5(remote_md5, local_md5):
             print(f"File {args.local_file} was not downloaded correctly from {remote_url}; checksums do not match")
