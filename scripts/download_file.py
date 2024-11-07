@@ -87,7 +87,7 @@ def get_file_list(remote_dir: str, remote_file: str) -> dict:
         return None
 
     files = {}
-    while line := remote_listing.readline():
+    for line in remote_listing:
         parts = line.strip().split(" *")
         files[parts[1]] = parts[0]
 
@@ -164,8 +164,10 @@ def calculate_md5(file_path: str) -> str:
 
     hash_md5 = hashlib.md5()
     with open(file_path, "rb") as fh:
-        while chunk := fh.read(BLOCK_SIZE):
+        chunk = fh.read(BLOCK_SIZE)
+        while chunk:
             hash_md5.update(chunk)
+            chunk = fh.read(BLOCK_SIZE)
     return hash_md5.hexdigest()
 
 
@@ -221,8 +223,10 @@ if __name__ == '__main__':
         with open(args.local_file, "wb") as merged:
             for fname in temp_files:
                 with open(fname, "rb") as fh:
-                    while chunk := fh.read(BLOCK_SIZE):
+                    chunk = fh.read(BLOCK_SIZE)
+                    while chunk:
                         merged.write(chunk)
+                        chunk = fh.read(BLOCK_SIZE)
 
     else:
         remote_url = args.remote_dir + "/" + args.remote_file
