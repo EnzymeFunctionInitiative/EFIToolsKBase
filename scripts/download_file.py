@@ -6,12 +6,13 @@ account when processing the downloaded file.
 """
 
 import argparse
+import collections
+import hashlib
+import io
+import pathlib
+import sys
 import urllib.request
 import urllib.error
-import os
-import hashlib
-import sys
-import io
 
 
 BLOCK_SIZE = 8192
@@ -86,7 +87,7 @@ def get_file_list(remote_dir_url: str, remote_file: str) -> dict:
     if remote_listing is None:
         return None
 
-    files = {}
+    files = collections.OrderedDict()
     for line in remote_listing:
         parts = line.strip().split(" *")
         files[parts[1]] = parts[0]
@@ -202,12 +203,12 @@ if __name__ == '__main__':
 
     # If the remote was split, then download all of the split files
     if file_list is not None:
-        if not os.path.isdir(args.local_dir):
-            os.mkdir(args.local_dir)
+        local_dir = pathlib.Path(args.local_dir)
+        local_dir.mkdir(parents = True, exist_ok = True)
 
         temp_files = []
         for fname in file_list.keys():
-            temp_local_file = os.path.join(args.local_dir, fname)
+            temp_local_file = local_dir / fname
             temp_files.append(temp_local_file)
             remote_url = args.remote_dir + "/" + fname
 
