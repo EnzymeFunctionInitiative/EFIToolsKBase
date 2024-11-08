@@ -23,6 +23,10 @@ module EFIToolsKBase {
     } SequenceSimilarityNetwork;
     
     typedef structure {
+        handle gnd_sql_handle;
+    } GNDFile;
+    
+    typedef structure {
         string report_name;
         string report_ref;
     } ReportResults;
@@ -32,6 +36,12 @@ module EFIToolsKBase {
         string report_ref;
         string edge_ref;
     } ESTReportResults;
+
+    typedef structure {
+        string report_name;
+        string report_ref;
+        string gnd_widget_ref; /* temp placeholder for some widget information */
+    } GNDViewerResults;
 
     /*
         This example function accepts any number of parameters and returns results in a KBaseReport
@@ -49,4 +59,6 @@ module EFIToolsKBase {
     funcdef run_EFI_EST_SSN_Creation(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
     funcdef run_EFI_SSN_Utils_Color_SSN(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
+
+    funcdef run_EFI_GNT_View_Saved_Diagrams(mapping<string, UnspecifiedObject> params) returns (GNDViewerResults output) authentication required;
 };
