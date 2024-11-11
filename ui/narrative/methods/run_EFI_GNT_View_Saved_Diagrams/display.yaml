@@ -18,6 +18,13 @@ suggestions:
         related: []
         next: []
 
+publications:
+    - display-text: 'Rémi Zallot, Nils Oberg, and John A. Gerlt, The EFI Web Resource for Genomic Enzymology Tools: Leveraging Protein, Genome, and Metagenome Databases to Discover Novel Enzymes and Metabolic Pathways. Biochemistry 2019 58 (41), 4169-4182'
+      link: https://doi.org/10.1021/acs.biochem.9b00735
+
+    - display-text: 'Nils Oberg, Rémi Zallot, and John A. Gerlt, EFI-EST, EFI-GNT, and EFI-CGFP: Enzyme Function Initiative (EFI) Web Resource for Genomic Enzymology Tools. J Mol Biol 2023.'
+      link: https://doi.org/10.1016/j.jmb.2023.168018
+
 #
 # Configure the display and description of parameters
 #
@@ -26,6 +33,11 @@ parameters:
         ui-name: Upload a saved diagram data file for visualization
         short-hint: |
             The acceptable format is sqlite
+            # in spec.json, this input parameter is labeled as 
+            # `"target_type_transform": "resolved-ref"` which "indicates
+            # to the narrative that this parameter needs to be a valid reference
+            # to an object in the workspace."
+            # https://kbase.github.io/kb_sdk_docs/tutorial/6_inputsoutputs.html#update-spec-json
 
 description: |
     <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>

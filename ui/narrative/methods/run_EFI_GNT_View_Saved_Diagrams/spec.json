@@ -1,12 +1,8 @@
 {
     "ver": "0.0.1",
-    "authors": [
-        "hdemeyer"
-    ],
+    "authors": ["hdemeyer"],
     "contact": "",
-    "categories": [
-        "active"
-    ],
+    "categories": ["active"],
     "widgets": {
         "input": null,
         "output": null
@@ -17,10 +13,11 @@
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "file"
+            "default_values": [""],
+            "field_type": "dynamic_dropdown", 
+	    "dynamic_dropdown_options" : {
+		    "data_source": "ftp_staging"
+	    }
         }
     ],
     "behavior": {
