@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import logging
 import os
+import json
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.ReadsUtilsClient import ReadsUtils
@@ -233,6 +234,69 @@ class EFIToolsKBase:
                              'output is not type dict as required.')
         # return the results
         return [output]
+   
+
+    def import_sql_as_gnd_from_staging(self, ctx, params):
+        """
+        :param params: instance of type "SQLToGNDParams" -> structure:
+          parameter "staging_file_subdir_path", type string
+          parameter "workspace_name", type string
+          parameter "description", type string
+        :returns: instance of type "UploadMethodResult" -> structure:
+          parameter "obj_ref", type string
+          parameter "report_name", type string 
+          parameter "report_ref", type string
+        
+        this code is unceremoniously copied and altered from 
+        kb_uploadmethodsImpl.py
+        """
+        # ctx is the context object
+        # return variables are: returnVal
+        #BEGIN import_fasta_as_seqset_from_staging
+        print('--->\nRunning EFIToolsKBase.import_sql_as_gnd_from_staging' +
+              '\nparams:')
+        print((json.dumps(params, indent=1)))
+        
+        # seems like better type checking could be done here...
+        for key, value in params.items():
+            if isinstance(value,str):
+                params[key] = value.strip()
+
+        importer  = ImportGND(self.config)
+        returnVal = importer.import_sql_as_gnd_from_staging(params)
+
+        reportVal = importer.generate_report(returnVal['obj_ref'], params)
+        returnVal.update(reportVal)
+        #END import_fasta_as_seqset_from_staging
+
+        # At some point might do deeper type checking...
+        if not isinstance(returnVal, dict):
+            raise ValueError('Method import_sql_as_gnd_from_staging return ' +
+                             'value output is not type dict as required.')
+        # return the results
+        return [returnVal]
+
+    def run_EFI_GNT_View_Saved_Diagrams(self, ctx, params):
+        """
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_GNT_View_Saved_Diagrams
+        #gnd_viewer = GNDViewer(ctx, config=config)
+        logging.info(params)
+        #output = gnd_viewer.do_analysis(params)
+        #END run_EFI_GNT_View_Saved_Diagrams
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFIToolsKBase return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
