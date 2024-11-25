@@ -27,16 +27,6 @@ parameters:
         short-hint: |
             The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided in the input box below. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
             
-    sequence_id_upload:
-        ui-name: Sequence IDs (upload)
-        short-hint: |
-            The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided in the input box below. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
-
-    neighborhood_window_size:
-        ui-name: Neighborhood window size
-        short-hint: |
-            Number of neighbors to retrieve on either side of the query sequence for each BLAST result
-            
     sequence_database:
         ui-name: Sequence database
         short-hint: |

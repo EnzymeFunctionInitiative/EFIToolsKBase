@@ -14,7 +14,7 @@
     "parameters": [
         {
             "id": "sequence_id",
-            "optional": true,
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
@@ -23,31 +23,6 @@
             "field_type": "textarea",
             "textarea_options": {
                 "n_rows": 10
-            }
-        },
-        {
-            "id": "sequence_id_upload",
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "file"
-        },
-        {
-            "id": "neighborhood_window_size",
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                "10"
-            ],
-            "field_type": "text",
-            "text_options": {
-                "valid_ws_types": [],
-                "validate_as": "int",
-                "min_int": 1
             }
         },
         {
@@ -106,16 +81,6 @@
                 {
                     "input_parameter": "sequence_id",
                     "target_property": "sequence_id",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "sequence_id_upload",
-                    "target_property": "sequence_id_upload",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "neighborhood_window_size",
-                    "target_property": "neighborhood_window_size",
                     "target_type_transform": "resolved-ref"
                 },
                 {
