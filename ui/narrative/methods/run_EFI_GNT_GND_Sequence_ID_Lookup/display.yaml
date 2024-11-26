@@ -15,24 +15,23 @@ icon: icon.png
 #
 suggestions:
     apps:
-        related: []
+        related: [run_EFI_GNT_GND_Single_Sequence_BLAST,run_EFI_GNT_GND_FASTA_Sequence_Lookup]
         next: []
 
 #
 # Configure the display and description of parameters
+# short-hint text is in parity with the webserver (almost)
 #
 parameters:
-    sequence_id:
+    sequence_ids:
         ui-name: Sequence IDs (paste)
         short-hint: |
-            The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided in the input box below. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
+            The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided as a comma-separated list of IDs in the input box above. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
             
     sequence_database:
         ui-name: Sequence database
         short-hint: |
             If the Sequence Database is set to UniRef90, the resulting GNDs will also include GNDs for UniRef90 cluster IDs that group together UniProt sequences by 90% sequence identiy. For UniRef50, the GNDs will also include UniProt sequences that are grouped by 50% sequence identity. Any of the Exclude Fragments options will exclude UniProt-defined sequence fragments. 
-            
-    
 
 description: |
     <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>

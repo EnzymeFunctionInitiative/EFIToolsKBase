@@ -13,7 +13,7 @@
     },
     "parameters": [
         {
-            "id": "sequence_id",
+            "id": "sequence_ids",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -79,8 +79,8 @@
                     "target_property": "workspace_id"
                 },
                 {
-                    "input_parameter": "sequence_id",
-                    "target_property": "sequence_id",
+                    "input_parameter": "sequence_ids",
+                    "target_property": "sequence_ids",
                     "target_type_transform": "resolved-ref"
                 },
                 {
