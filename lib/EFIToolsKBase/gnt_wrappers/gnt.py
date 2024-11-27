@@ -12,6 +12,9 @@ from ..const import *
 
 from base import Core
 
+# temp preamble for stand-in code
+import urllib3
+
 
 class EFIGNT(Core):
     def __init__(self, ctx, config, clients_class=None):
@@ -56,29 +59,39 @@ class EFIGNT(Core):
         #self.flow.write_params_file(mapping)
         #self.flow.generate_run_command()
         #retcode, stdout, stderr = self.flow.execute()
-        # if retcode != 0:
-        #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
-        
+        #if retcode != 0:
+        #   raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+       
+
+        ###########################################################
         # temp pipeline: 
         # download a sqlite file from sahasWidget github repo, e.g.
         # https://github.com/sahasramesh/kb_gnd_demo/blob/master/30086.sqlite
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
 
+        http = urllib3.PoolManager()
+        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
+        response = http.request('GET',URL)
+        gnd_view_file_path = os.path.join(self.shared_folder, "test.txt")
+        with open(gnd_view_file_path,'w') as out:
+            out.write(response.data.decode('utf-8'))
+        ###########################################################
+
+
+        data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
+                                                        gnd_view_file_path)
+
         print(self.shared_folder, os.listdir(self.shared_folder))
 
-        #data_ref = self.save_edge_file_to_workspace(workspace_name, 
-        #                                        os.path.join(self.shared_folder, "1.out.parquet"), 
-        #                                        os.path.join(self.shared_folder, "all_sequences.fasta"),
-        #                                        os.path.join(self.shared_folder, "evalue.tab"),
-        #                                        acc_data)
+        #report_data = {
+        #    "workspace_name": workspace_name
+        #}
 
-        report_data = {
-            "workspace_name": workspace_name
-        }
-
-        output = self.generate_report(report_data, [{"description": "..."}])   #,"ref": data_ref, 
-        #output["edge_ref"] = data_ref
+        #output = self.generate_report(report_data, 
+        #                              [{"description": "placeholder for actual results",
+        #                                "ref": data_ref}])
+        ##output["edge_ref"] = data_ref
 
         return output
 
@@ -178,30 +191,27 @@ class EFIGNT(Core):
 
     def save_gnd_view_file_to_workspace(self, 
                                         workspace_name, 
-                                        gnd_sqlite_filepath):
+                                        gnd_view_filepath):
         """
         NOTE: the GNDViewFile is not an object defined in the root spec file
         Need to update, commenting out the old est code for now
         """
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        #edge_file_shock_id = self.dfu.file_to_shock({"file_path": edge_filepath})["shock_id"]
+        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_filepath})["shock_id"]
+        
+
         #fasta_handle_shock_id = self.dfu.file_to_shock({"file_path": fasta_filepath})["shock_id"]
         #evalue_shock_id = self.dfu.file_to_shock({"file_path": evalue_filepath})["shock_id"]
-        #save_object_params = {
-        #'id': workspace_id,
-        #'objects': [{
-        #    'type': 'EFIToolsKBase.BlastEdgeFile',
-        #    'data': {
-        #        "edgefile_handle": edge_file_shock_id,
-        #        "fasta_handle": fasta_handle_shock_id,
-        #        "evalue_handle": evalue_shock_id,
-        #        "edge_count": acc_data["EdgeCount"],
-        #        "unique_seq": acc_data["UniqueSeq"],
-        #        "convergence_ratio": acc_data['ConvergenceRatio'],
-        #    },
-        #    'name': "blast_edge_file"
-        #}]
-        #}
+        save_object_params = {
+        'id': workspace_id,
+        'objects': [{
+            'type': 'EFIToolsKBase.GNDViewFile',
+            'data': {
+                "gnd_view_handle": gnd_view_file_shock_id
+            },
+            'name': "gnd_view_file"     # change this to name the object, take user input into account here 
+        }]
+        }
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
         object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
         return object_reference
