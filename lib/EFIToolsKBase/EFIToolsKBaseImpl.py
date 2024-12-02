@@ -17,6 +17,8 @@ from .est_wrappers.ssn_creation import SSNCreation
 
 from .ssnutil_wrappers.colorssn import ColorSSN
 
+from .gnt_wrappers.gnt_sequence_id_lookup import EFISequenceIDLookup
+
 from base import Core
 
 #END_HEADER
@@ -233,6 +235,37 @@ class EFIToolsKBase:
                              'output is not type dict as required.')
         # return the results
         return [output]
+
+    def run_EFI_GNT_GND_Sequence_ID_Lookup(self, ctx, params):
+        """
+        :param ctx: ..., the context object
+        :param params: ...,
+        :returns: instace of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_SSN_Utils_Color_SSN
+        config = dict(
+            callback_url=self.callback_url,
+            shared_folder=self.shared_folder,
+            clients=dict(
+                KBaseReport=KBaseReport,
+                DataFileUtil=DataFileUtil
+            ),
+        )
+        gnd_seq_lookup = EFISequenceIDLookup(ctx, config=config)
+        logging.info(params)
+        output = gnd_seq_lookup.do_analysis(params)
+        #END run_EFI_SSN_Utils_Color_SSN
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_SSN_Utils_Color_SSN return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
