@@ -42,7 +42,11 @@ class EFIGNT(Core):
 
     def run_gnt_pipeline(self, mapping, workspace_name):
         """
-        Called in subclasses' do_analysis() method after rendering parameters.
+        design idea: this method takes in a standardized input. create 
+        separate methods for the various input paths (FASTA Sequence Lookup, 
+        Sequence ID Lookup, Single Sequence BLAST, or SSN File) that handles 
+        those diverse input types and then feeds into this method to output a 
+        standard out format. This is the app that calls nextflow.
 
         :params mapping: dict, used to do string substitution on the yml 
                                parameter template, see subclass do_analysis() 
@@ -53,47 +57,81 @@ class EFIGNT(Core):
         :rtype:  dict, created from the generate_report() method 
                        what are the key/value pairs in this object? 
         """
+        logging.info(f'shared folder ({self.shared_folder}) contains:\n{os.listdir(self.shared_folder)}')
+        logging_str = 'parameters:\n'
+        for key, value in mapping.items():
+            logging_str += f'{key}: {value}\n'
+        logging.info(logging_str)
+
+        if lower(mapping['gnt_input']) == 'seqlookup':
+            logging.info('Input was gathered from a list of sequence IDs that were gathered')
+        else:
+            raise SystemExit('Unexpected input type. Exiting.')
+
         ###########################################################
         # commenting out since no NF pipeline currently implemented
+        # see line(s) in __init__() method
         ###########################################################
         #self.flow.write_params_file(mapping)
         #self.flow.generate_run_command()
         #retcode, stdout, stderr = self.flow.execute()
         #if retcode != 0:
         #   raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
-       
+        ###########################################################
 
         ###########################################################
         # temp pipeline: 
-        # download a sqlite file from sahasWidget github repo, e.g.
+        # download a (sqlite) file from sahasWidget github repo, e.g.
         # https://github.com/sahasramesh/kb_gnd_demo/blob/master/30086.sqlite
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
-
         http = urllib3.PoolManager()
         URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
+        # downloading this sqlite file is not working even on my local desktop. not sure why
+        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        # download the URL object
         response = http.request('GET',URL)
-        gnd_view_file_path = os.path.join(self.shared_folder, "test.txt")
+        gnd_view_file_path = os.path.join(self.shared_folder, "test.txt")   # shouldn't use a static file name
+        # write downloaded URL file to storage
         with open(gnd_view_file_path,'w') as out:
             out.write(response.data.decode('utf-8'))
         ###########################################################
 
-
+        # attach the file to the workspace
         data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
                                                         gnd_view_file_path)
+        report_data = {
+            "workspace_name": workspace_name,
+            "":,
+            "":,
+        }
 
-        print(self.shared_folder, os.listdir(self.shared_folder))
-
-        #report_data = {
-        #    "workspace_name": workspace_name
-        #}
-
-        #output = self.generate_report(report_data, 
-        #                              [{"description": "placeholder for actual results",
-        #                                "ref": data_ref}])
-        ##output["edge_ref"] = data_ref
+        output = self.generate_report(report_data, 
+                                      [{"description": "placeholder for actual results",
+                                        "ref": data_ref}])
 
         return output
+
+    def gather_sequence_data(self, mapping, workspace_name):
+        """
+        Gather sequence data associated with accession IDs provided by the user.
+        if not already stored in a user-provided 
+        ssn data object. 
+        Then daisy-chained into running the `run_gnt_pipeline()` method.
+
+        :params mapping: dict, see subclass do_analysis() method for 
+                               documentation on `mapping` key/values
+        :params workspace_name: string, passed in from params dict in runner 
+                                        (params["workspace_name"])
+        :return: ...
+        :rtype:  results from the `run_gnt_pipeline()` method 
+        """
+
+        # place holder for code to grab sequence data associated with 
+        # user-provided IDs
+        mapping['id_data'] = []
+
+        return self.run_gnt_pipeline(mapping, workspace_name)
 
     def _create_file_links(self, inlcude_zip=True):
         """
@@ -129,18 +167,17 @@ class EFIGNT(Core):
         
         :returns: dict, filled with information about the report object but doesn't return the actual dict report_info...
         """
+        reports_path = os.path.join(self.shared_folder, "reports")
         ###########################################################
         # commenting out since no report html currently implemented
         ###########################################################
-        #reports_path = os.path.join(self.shared_folder, "reports")
-        ##template_path = os.path.join(TEMPLATES_DIR, "est_report.html")
-        #template_variables = params
+        #template_path = os.path.join(TEMPLATES_DIR, "gnt_report.html")
 
         # The KBaseReport configuration dictionary
         config = dict(
             report_name=f"EFI_GNT_{str(uuid.uuid4())}",
             reports_path=reports_path,
-            template_variables=template_variables,
+            template_variables=params,
             workspace_name=params["workspace_name"],
             objects_created=objects_created
         )
