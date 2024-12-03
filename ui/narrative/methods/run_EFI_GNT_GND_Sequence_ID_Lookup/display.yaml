@@ -23,7 +23,7 @@ suggestions:
 #
 parameters:
     sequence_ids:
-        ui-name: Sequence IDs (paste)
+        ui-name: Sequence IDs
         short-hint: |
             The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided as a comma-separated list of IDs in the input box above. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
             
@@ -33,9 +33,9 @@ parameters:
             If the Sequence Database is set to UniRef90, the resulting GNDs will also include GNDs for UniRef90 cluster IDs that group together UniProt sequences by 90% sequence identiy. For UniRef50, the GNDs will also include UniProt sequences that are grouped by 50% sequence identity. Any of the Exclude Fragments options will exclude UniProt-defined sequence fragments. 
 
     description:
-        ui-name: Description
+        ui-name: Description (optional)
         short-hint: |
-            Very short, descriptive blurb about sequences input to this app. 
+            Providee a very short, descriptive blurb about the sequence IDs input to this app. 
 
 
 description: |

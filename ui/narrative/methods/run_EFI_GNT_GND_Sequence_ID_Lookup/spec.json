@@ -26,6 +26,18 @@
             }
         },
         {
+            "id": "description",
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "textarea",
+            "textarea_options": {
+                "n_rows": 1
+            }
+        },
+        {
             "id": "sequence_database",
             "optional": false,
             "advanced": false,
@@ -81,6 +93,11 @@
                 {
                     "input_parameter": "sequence_ids",
                     "target_property": "sequence_ids",
+                    "target_type_transform": "resolved-ref"
+                },
+                {
+                    "input_parameter": "description",
+                    "target_property": "description",
                     "target_type_transform": "resolved-ref"
                 },
                 {
