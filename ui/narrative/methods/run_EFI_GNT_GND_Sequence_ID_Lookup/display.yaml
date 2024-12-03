@@ -1,14 +1,13 @@
 #
 # define display information
 #
-name: EFI-GNT GND Sequence ID Lookup
-
-tooltip: |
-    Enzyme Function Initiative (EFI) Tools
+name     : EFI-GNT GND Sequence ID Lookup
+subtitle : Create a Geneome Neighborhood Diagram for the provided IDs
+tooltip  : Create a Geneome Neighborhood Diagram for the provided IDs
 
 screenshots: []
 
-icon: icon.png
+icon: efi-gnn_logo.png
 
 #
 # define a set of similar apps that might be useful to the user
@@ -33,5 +32,11 @@ parameters:
         short-hint: |
             If the Sequence Database is set to UniRef90, the resulting GNDs will also include GNDs for UniRef90 cluster IDs that group together UniProt sequences by 90% sequence identiy. For UniRef50, the GNDs will also include UniProt sequences that are grouped by 50% sequence identity. Any of the Exclude Fragments options will exclude UniProt-defined sequence fragments. 
 
+    description:
+        ui-name: Description
+        short-hint: |
+            Very short, descriptive blurb about sequences input to this app. 
+
+
 description: |
-    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
+    <p> Input a set of Sequence IDs to create a genome neighborhood network (GNN) dataset that can be visualized as a genome neighborhood diagram (GND). For more information, read <a href="https://efi.igb.illinois.edu/dev/efi-gnt/diagram_tutorial.pdf">a quick tutorial for GNDs</a> and the <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative website</a>.</p>
