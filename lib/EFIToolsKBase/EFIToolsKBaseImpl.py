@@ -17,7 +17,7 @@ from .est_wrappers.ssn_creation import SSNCreation
 
 from .ssnutil_wrappers.colorssn import ColorSSN
 
-from .gnt_wrappers.gnt_sequence_id_lookup import EFISequenceIDLookup
+from .gnt_wrappers.gnt_sequence_id_lookup import GNTSequenceIDLookup
 
 from base import Core
 
@@ -254,15 +254,16 @@ class EFIToolsKBase:
                 DataFileUtil=DataFileUtil
             ),
         )
-        gnd_seq_lookup = EFISequenceIDLookup(ctx, config=config)
+        gnd_seq_lookup = GNTSequenceIDLookup(ctx, config=config)
         logging.info(params)
         output = gnd_seq_lookup.do_analysis(params)
         #END run_EFI_SSN_Utils_Color_SSN
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_SSN_Utils_Color_SSN return value ' +
-                             'output is not type dict as required.')
+            raise ValueError('Method run_EFI_GNT_GND_Sequence_ID_Lookup ' +
+                             'return value output is not type dict as ' +
+                             'required.')
         # return the results
         return [output]
 
