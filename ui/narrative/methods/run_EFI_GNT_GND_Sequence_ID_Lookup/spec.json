@@ -68,7 +68,7 @@
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_GNT_GND_Sequence_ID_Lookup",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
