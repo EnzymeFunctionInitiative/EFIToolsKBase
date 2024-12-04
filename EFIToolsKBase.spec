@@ -59,16 +59,6 @@ module EFIToolsKBase {
     funcdef run_EFI_SSN_Utils_Color_SSN(mapping<string, UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
     /* 
-    Strong typing control of input parameters for the 
-    run_EFI_GNT_GND_Sequence_ID_Lookup code 
-    */
-    typedef structure {
-        string sequence_ids;
-        string sequence_database;
-        string description;
-    } GNTSeqLookupParams;
-
-    /* 
     Data object type that contains the sqlite file to be viewed with the GND 
     Viewer 
     */
@@ -85,6 +75,19 @@ module EFIToolsKBase {
         string GNDViewFile_ref;
     } GNTReportResults;
 
+    /* 
+    Strong typing control of input parameters for the 
+    run_EFI_GNT_GND_Sequence_ID_Lookup code 
+    */
+    typedef structure {
+        string sequence_ids;
+        string sequence_database;
+        string description;
+    } GNTSeqLookupParams;
+
+    /* 
+    declaring input and output objects for the run_EFI_GNT_GND_Sequence_ID_Lookup method
+    */ 
     funcdef run_EFI_GNT_GND_Sequence_ID_Lookup(GNTSeqLookupParams params) 
 	    returns (GNTReportResults output) authentication required;
 
