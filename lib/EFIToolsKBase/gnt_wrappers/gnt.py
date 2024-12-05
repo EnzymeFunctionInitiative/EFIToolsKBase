@@ -7,7 +7,6 @@ import zipfile
 from jinja2 import DictLoader, Environment, select_autoescape
 
 from ..nextflow import NextflowRunner
-from ..utils import png_to_base64
 from ..const import *
 
 from base import Core
@@ -42,23 +41,30 @@ class EFIGNT(Core):
 
     def run_gnt_pipeline(self, mapping, workspace_name):
         """
+        take in validated input parameters, run the nextflow pipeline for 
+        the GNT tool, save necessary output files to the workspace. 
+
         design idea: this method takes in a standardized input. create 
         separate methods for the various input paths (FASTA Sequence Lookup, 
         Sequence ID Lookup, Single Sequence BLAST, or SSN File) that handles 
         those diverse input types and then feeds into this method to output a 
         standard out format. This is the app that calls nextflow.
 
-        :params mapping: dict, used to do string substitution on the yml 
-                               parameter template, see subclass do_analysis() 
-                               method for documentation on `mapping` key/values
+        :params mapping: dict, user-provided input
+                               - used to do string substitution on the yml 
+                                 parameter template, see subclass do_analysis() 
+                                 method for documentation on `mapping` 
+                                 key/values
         :params workspace_name: string, passed in from params dict in runner 
                                         (params["workspace_name"])
-        :return: ...
-        :rtype:  dict, created from the generate_report() method 
-                       what are the key/value pairs in this object? 
+        :return: dict, 
+                 - 'gnd_ref' key maps to the object reference string created for
+                   the GNDViewFile object written to the workspace
+                 - NOTE: add other key:value pairs for passing info from this
+                   method to the generate_report() method
         """
         logging.info(f'shared folder ({self.shared_folder}) contains:\n{os.listdir(self.shared_folder)}')
-        logging_str = 'parameters:\n'
+        logging_str = 'parameters for running the GNT:\n'
         for key, value in mapping.items():
             logging_str += f'{key}: {value}\n'
         logging.info(logging_str)
@@ -97,23 +103,15 @@ class EFIGNT(Core):
             out.write(response.data.decode('utf-8'))
         ###########################################################
 
-        # attach the file to the workspace
+        # attach the file to the workspace and get the GNDViewFile UPA
         data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
-                                                        gnd_view_file_path)
-        report_data = {
-            "workspace_name": workspace_name,
-            "":,
-            "":,
-        }
+                                                        gnd_view_file_path)[0]
 
-        output = self.generate_report(report_data, 
-                                      [{"description": "placeholder for actual results",
-                                        "ref": data_ref}])
-
-        return output
+        return {'gnd_ref': data_ref, 'other_results': []}
 
     def gather_sequence_data(self, mapping, workspace_name):
         """
+        #### NOTE, MAY NOT FIT INTO DESIGN OF THE GNT NF CODE
         Gather sequence data associated with accession IDs provided by the user.
         if not already stored in a user-provided 
         ssn data object. 
@@ -138,10 +136,19 @@ class EFIGNT(Core):
         NOTE: replace hardcoded file paths/names to be dynamic or use a 
               stem that is defined in user-input
         """
+        # hard coded for now since no stem variable is given
         output_file_names = [
+            'GNDViewFile.sqlite'
         ]
 
         file_links = [
+                {
+                    'path': os.path.join(self.shared_folder, 
+                                         output_file_names[0]),
+                    'name': output_file_names[0],
+                    'label':output_file_names[0],
+                    'description': 'Genome Neighborhood Diagram view file',
+                }
         ]
 
         if inlcude_zip:
@@ -160,67 +167,80 @@ class EFIGNT(Core):
 
         return file_links
 
-    def generate_report(self, params, objects_created):
+    def generate_report(self, params, template_var_dict):
         """
-        NOTE: NEED TO DEVELOP THE REPORT HTML FILE
-        runs the _create_file_links() method 
+        Take in the results dict from run_gnt_pipeline() method, write the 
+        associated html report, link files, ...
+
+        runs the _create_file_links() method
+        :param params: dict, app input info
+        :param template_var_dict: dict, keys are variables in the 
+                                  jinja2-readable template source file. Values
+                                  are strings pasted in the template. 
+
+        :param objects_created: dict, the `gnd_ref` key maps to the GNDViewFile
+                                UPA string. 
+
+        :returns: dict, filled with information about the report object but 
+                        doesn't return the actual dict report_info...
+        """
+        # get the workspace_id
+        workspace_id = self.dfu.ws_name_to_id(params["workspace_name"])
+
+        # output_files is a list of dicts, each element mapping to a file
+        # created by the app. 
+        # only the GNDViewFile sqlite file is created so no need to zip
+        output_files = self._create_file_links(include_zip=False)
+
+        # hand make the reports_path and file io variables
+        # ... not sure why we need a new subdir? 
+        reports_path = os.path.join(self.shared_folder, 'reports')
+        os.makedirs(reports_path, exist_ok=True)
+        report_uuid = str(uuid.uuid4())
+        report_name = f'EFI_GNT_{report_uuid}'
+        report_path = os.path.join(reports_path, 
+                                   f"{report_name}.html")
+
+        # fill the KBaseReport configuration dictionary
+        kbr_config = {'workspace_id': workspace_id,
+                      'file_links': output_files,
+                      'objects_created': [
+                          {'ref': template_var_dict['gnd_ref'],
+                           'description': 'GND View File'}
+                          ],
+                      'direct_html_link_index': 0,
+                      'html_links': [
+                          {'description': 'HTML report for GNT Sequence ID Lookup',
+                           'name': f'{report_name}.html',
+                           'path': reports_path}
+                          ],
+                      'html_window_height': 375,
+                      'report_object_name': report_name,
+                      'message': 'A sample report.' # the summary tab
+                      }
         
-        :returns: dict, filled with information about the report object but doesn't return the actual dict report_info...
-        """
-        reports_path = os.path.join(self.shared_folder, "reports")
-        ###########################################################
-        # commenting out since no report html currently implemented
-        ###########################################################
-        #template_path = os.path.join(TEMPLATES_DIR, "gnt_report.html")
-
-        # The KBaseReport configuration dictionary
-        config = dict(
-            report_name=f"EFI_GNT_{str(uuid.uuid4())}",
-            reports_path=reports_path,
-            template_variables=params,
-            workspace_name=params["workspace_name"],
-            objects_created=objects_created
-        )
-
-        logging.info("Creating report...")
         # Create report from template
+        logging.info("Creating report...")
+        template_path = os.path.join(TEMPLATES_DIR, "gnt_report.html")
         with open(template_path) as tpf:
             template_source = tpf.read()
+        # set up the jinja2 template environment
         env = Environment(
             loader=DictLoader(dict(template=template_source)),
             autoescape=select_autoescape(default=False)
         )
         template = env.get_template("template")
-        report = template.render(**config["template_variables"])
-        # Create report object including report
-        report_name = config["report_name"]
-        reports_path = config["reports_path"]
-        workspace_name = config["workspace_name"]
-        os.makedirs(reports_path, exist_ok=True)
-        report_path = os.path.join(reports_path, "index.html")
+        # feed in the template_var_dict data and save the text in report
+        report = template.render(**template_var_dict)
+        
+        # Create report file using the uuid'd 'report_object_name'
         with open(report_path, "w") as report_file:
             report_file.write(report)
-        html_links = [
-            {
-                "description": "report",
-                "name": "index.html",
-                "path": reports_path,
-            },
-        ]
 
-        output_files = self._create_file_links()
-
-        report_info = self.report.create_extended_report(
-            {
-                "direct_html_link_index": 0,
-                "html_links": html_links,
-                "message": "A sample report.",
-                "report_object_name": report_name,
-                "workspace_name": workspace_name,
-                "file_links": output_files,
-                "objects_created": config["objects_created"]
-            }
-        )
+        # run the KBaseReport method to create the report to be shown
+        report_info = self.report.create_extended_report(kbr_config)
+        
+        # return the name and UPA for the report file
         return {
             "report_name": report_info["name"],
             "report_ref": report_info["ref"],
@@ -228,27 +248,40 @@ class EFIGNT(Core):
 
     def save_gnd_view_file_to_workspace(self, 
                                         workspace_name, 
-                                        gnd_view_filepath):
+                                        gnd_view_file_path):
         """
-        NOTE: the GNDViewFile is not an object defined in the root spec file
-        Need to update, commenting out the old est code for now
+        save the GNDViewFile file to the workspace and return its object UPA
         """
+        # get the ID instead of the name. apparently there's some race 
+        # conditions to be considered.
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_filepath})["shock_id"]
-        
-
-        #fasta_handle_shock_id = self.dfu.file_to_shock({"file_path": fasta_filepath})["shock_id"]
-        #evalue_shock_id = self.dfu.file_to_shock({"file_path": evalue_filepath})["shock_id"]
+        # move file to the blobstore and get its ID
+        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path})["shock_id"]
+        # prep the save_objects() parameter dictionary
         save_object_params = {
-        'id': workspace_id,
-        'objects': [{
-            'type': 'EFIToolsKBase.GNDViewFile',
-            'data': {
-                "gnd_view_handle": gnd_view_file_shock_id
-            },
-            'name': "gnd_view_file"     # change this to name the object, take user input into account here 
-        }]
-        }
+            'id': workspace_id,
+            # objects is a list of dicts, where each element contains info about
+            # the object to be saved/created
+            'objects': [{
+                        'type': 'EFIToolsKBase.GNDViewFile',
+                        'data': {
+                                "gnd_view_handle": gnd_view_file_shock_id
+                                },
+                        'name': "gnd_view_file"}
+                        # TODO: RBD
+                        # change this to name the object, take user input into
+                        # account here or use 'id' instead... need to look at 
+                        # DataFileUtil save_objects() method for more details
+                        ]
+            }
+        # save file(s) to the workspace, given the parameters defined above
+        # dfu.save_objects returns a list of length 
+        # len(save_object_params['objects']), each element being a tuple of 
+        # len 11. See DataFileUtil client for more information
+        
+        # since only one object is being created, just grab the zeroth element
+        # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
+        # creates a str of f'{wsid}/{objid}/{version}' that is the object's UPA
         object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
-        return object_reference
+        return [gnd_object_reference]
