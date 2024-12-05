@@ -257,7 +257,6 @@ class EFIToolsKBase:
         # report template with necessary info
         # reportVal is a dict with the UPA for the report object
         reportVal = gnd_seq_lookup.generate_report(params, returnVal)
-        returnVal.update(reportVal)
 
         # output is a dict with keys matching those defined in the root 
         # EFIToolsKBase spec file
