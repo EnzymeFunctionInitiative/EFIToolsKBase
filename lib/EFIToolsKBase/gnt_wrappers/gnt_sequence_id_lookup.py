@@ -52,6 +52,7 @@ class GNTSequenceIDLookup(EFIGNT):
         mapping = {
             "final_output_dir": self.shared_folder,
             "ids_file": accession_file,
+            "nIDs": len(accessions),
             "sequence_database": params['sequence_database'],
             "description": params['description'],
             "gnt_input": 'SeqLookup'

@@ -92,7 +92,6 @@ class EFIGNT(Core):
         # https://github.com/sahasramesh/kb_gnd_demo/blob/master/30086.sqlite
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
-        print(mapping['id_data'])
         http = urllib3.PoolManager()
         URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
         # downloading this sqlite file is not working even on my local desktop. not sure why
@@ -109,7 +108,7 @@ class EFIGNT(Core):
         data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
                                                         gnd_view_file_path)[0]
 
-        return {'gnd_ref': data_ref, 'other_results': []}
+        return {'gnd_ref': data_ref, 'nIDs': mapping['nIDs']}
 
     def gather_sequence_data(self, mapping, workspace_name):
         """
