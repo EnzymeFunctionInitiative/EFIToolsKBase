@@ -63,6 +63,7 @@ class EFIGNT(Core):
                  - NOTE: add other key:value pairs for passing info from this
                    method to the generate_report() method
         """
+        logging.info(f'Working in {workspace_name} Workspace.')
         logging.info(f'shared folder ({self.shared_folder}) contains:\n{os.listdir(self.shared_folder)}')
         logging_str = 'parameters for running the GNT:\n'
         for key, value in mapping.items():
@@ -91,6 +92,7 @@ class EFIGNT(Core):
         # https://github.com/sahasramesh/kb_gnd_demo/blob/master/30086.sqlite
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
+        print(mapping['id_data'])
         http = urllib3.PoolManager()
         URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
         # downloading this sqlite file is not working even on my local desktop. not sure why
