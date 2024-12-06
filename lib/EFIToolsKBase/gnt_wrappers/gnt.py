@@ -267,7 +267,7 @@ class EFIGNT(Core):
             'objects': [{
                         'type': 'EFIToolsKBase.GNDViewFile',
                         'data': {
-                                "gnd_view_handle": gnd_view_file_shock_id
+                                "gnd_view_file_handle": gnd_view_file_shock_id
                                 },
                         'name': "gnd_view_file"}
                         # TODO: RBD
