@@ -284,5 +284,5 @@ class EFIGNT(Core):
         # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
         # creates a str of f'{wsid}/{objid}/{version}' that is the object's UPA
-        object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        gnd_object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
         return [gnd_object_reference]
