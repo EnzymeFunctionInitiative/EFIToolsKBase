@@ -43,6 +43,8 @@ class GNTSequenceIDLookup(EFIGNT):
         accessions = re.sub(r'[^0-9a-zA-Z_.]+',
                             r' ',
                             params['sequence_ids']).split()
+        # check for non-unique IDs in the list
+        accessions = lis(set(accessions))
         # if the accessions list is empty, raise an error
         if not accessions:
             raise TypeError(f"User input for Sequence IDs is empty.")

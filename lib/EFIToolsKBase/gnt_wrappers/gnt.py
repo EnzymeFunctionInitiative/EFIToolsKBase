@@ -44,17 +44,30 @@ class EFIGNT(Core):
         take in validated input parameters, run the nextflow pipeline for 
         the GNT tool, save necessary output files to the workspace. 
 
-        design idea: this method takes in a standardized input. create 
+        design idea: this method takes in a standardized input. need to create
         separate methods for the various input paths (FASTA Sequence Lookup, 
         Sequence ID Lookup, Single Sequence BLAST, or SSN File) that handles 
         those diverse input types and then feeds into this method to output a 
         standard out format. This is the app that calls nextflow.
+        # NOTE: THIS IS MAY OR MAY NOT BE HOW THE GNT NF PIPELINE WORKS SO WAIT
+        AND SEE
 
         :params mapping: dict, user-provided input
-                               - used to do string substitution on the yml 
-                                 parameter template, see subclass do_analysis() 
-                                 method for documentation on `mapping` 
-                                 key/values
+                            "final_output_dir": string, self.shared_folder
+                            "ids_file": string, path to file with user-provided
+                                        accession ids list
+                            "nIDs": int, just a temp value to pass on
+                            "sequence_database": string, only possible values 
+                                                 are set in the input dropdown 
+                                                 menu
+                            "description": string, just a temp value to pass on
+                            "gnt_input": string, just a temp value that might be
+                                         used to control the GNT pipeline
+                            - this mapping dict is used to do string 
+                              substitution on the yml parameter template (yet to
+                              be implemented)
+
+
         :params workspace_name: string, passed in from params dict in runner 
                                         (params["workspace_name"])
         :return: dict, 
