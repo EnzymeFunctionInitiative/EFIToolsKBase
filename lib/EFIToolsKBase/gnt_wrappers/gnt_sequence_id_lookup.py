@@ -17,12 +17,12 @@ class GNTSequenceIDLookup(EFIGNT):
              # LIKELY TO CHANGE DEPENDENT ON GNT TOOL NF CODE
 
         :params params: input from the App's fields, stored as a dict. 
-                        - "sequence_ids_input", string, any-seperator formatted
+                        - "sequence_ids", string, any-seperator formatted
                           list of IDs to be gathered
                         - "sequence_database", string, control which database 
                           is used to gather gene neighborhood info. 
                         - "description", string, used to title the GND view
-                        - "workspace_name", string, unique(?) name for the WS
+                        - "workspace_name", string, unique name for the WS
 
         :return: results from the `gather_sequence_data()` method, which is 
                  actually the results from the `run_gnt_pipeline()` method, 
@@ -35,8 +35,12 @@ class GNTSequenceIDLookup(EFIGNT):
         # regex substitute any non-alphanumeric character with an empty space
         # then split based on white space to get a list of IDs
         # ASSUMES: all sources of IDs follow an expected alphanumeric-only 
-        # format
-        accessions = re.sub(r'[^0-9a-zA-Z]+',
+        # format. 
+        # Uniprot Accession IDs: https://www.uniprot.org/help/accession_numbers
+        # NCBI Accession numbers: https://www.ncbi.nlm.nih.gov/books/NBK470040/
+        # ENA Accession numbers: https://ena-docs.readthedocs.io/en/latest/submit/general-guide/accessions.html
+        # PDB IDs: http://www.wwpdb.org/documentation/new-format-for-pdb-ids
+        accessions = re.sub(r'[^0-9a-zA-Z_.]+',
                             r' ',
                             params['sequence_ids']).split()
         # if the accessions list is empty, raise an error
