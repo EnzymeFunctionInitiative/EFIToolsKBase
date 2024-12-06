@@ -83,7 +83,7 @@ module EFIToolsKBase {
         string sequence_ids;
         string sequence_database;
         string description;
-	string workspace_name;
+        string workspace_name;
     } GNTSeqLookupParams;
 
     /* 
