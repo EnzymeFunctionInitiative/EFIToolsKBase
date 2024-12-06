@@ -93,15 +93,16 @@ class EFIGNT(Core):
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
         http = urllib3.PoolManager()
-        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
-        # downloading this sqlite file is not working even on my local desktop. not sure why
-        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
         # download the URL object
-        response = http.request('GET',URL)
-        gnd_view_file_path = os.path.join(self.shared_folder, "test.txt")   # shouldn't use a static file name
-        # write downloaded URL file to storage
-        with open(gnd_view_file_path,'w') as out:
-            out.write(response.data.decode('utf-8'))
+        with http.request('GET',URL,preload_content=False) as response:
+            gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
+            with open(gnd_view_file_path,'wb') as out: 
+                while True:
+                    data = response.read(1024)
+                    if not data:
+                        break
+                    out.write(data)
         ###########################################################
 
         # attach the file to the workspace and get the GNDViewFile UPA
