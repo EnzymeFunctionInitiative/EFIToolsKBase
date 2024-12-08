@@ -17,6 +17,8 @@ from .est_wrappers.ssn_creation import SSNCreation
 
 from .ssnutil_wrappers.colorssn import ColorSSN
 
+from .gnt_wrappers.gnt_sequence_id_lookup import GNTSequenceIDLookup
+
 from base import Core
 
 #END_HEADER
@@ -233,6 +235,46 @@ class EFIToolsKBase:
                              'output is not type dict as required.')
         # return the results
         return [output]
+
+    def run_EFI_GNT_GND_Sequence_ID_Lookup(self, ctx, params):
+        """
+        :param ctx: ..., the context object
+        :param params: input parameters as a dict 
+        :returns: list of dict, output dict is filled with: 
+                  'GNDViewFile_ref' and 'report_ref' keys that map to the 
+                  respective files' UPA string
+                  'report_name' that maps to the report's file name? why is this important???
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_GNT_GND_Sequence_ID_Lookup
+        gnd_seq_lookup = GNTSequenceIDLookup(ctx, self.config)
+        logging.info(params)
+        # do_analysis() gathers the sequence info, runs the GNT tool, and saves
+        # the GNDViewFile object to the workspace 
+        returnVal = gnd_seq_lookup.do_analysis(params)
+        # pass returnVal dict to the generate_report() method to fill the html
+        # report template with necessary info
+        # reportVal is a dict with the UPA for the report object
+        reportVal = gnd_seq_lookup.generate_report(params, returnVal)
+
+        # output is a dict with keys matching those defined in the root 
+        # EFIToolsKBase spec file
+        output = {'GNDViewFile_ref': returnVal['gnd_ref'], 
+                  'report_ref': reportVal['report_ref'],
+                  'report_name': reportVal['report_name']
+                  }
+
+        #END run_EFI_GNT_GND_Sequence_ID_Lookup
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_EFI_GNT_GND_Sequence_ID_Lookup ' +
+                             'return value output is not type dict as ' +
+                             'required.')
+        # return the results
+        return [output]
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

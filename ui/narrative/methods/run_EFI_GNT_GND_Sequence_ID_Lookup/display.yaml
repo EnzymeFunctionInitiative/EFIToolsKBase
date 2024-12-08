@@ -1,48 +1,42 @@
 #
 # define display information
 #
-name: EFI-GNT GND Sequence ID Lookup
-
-tooltip: |
-    Enzyme Function Initiative (EFI) Tools
+name     : EFI-GNT GND Sequence ID Lookup
+subtitle : Create a Geneome Neighborhood Diagram for the provided IDs
+tooltip  : Create a Geneome Neighborhood Diagram for the provided IDs
 
 screenshots: []
 
-icon: icon.png
+icon: efi-gnn_logo.png
 
 #
 # define a set of similar apps that might be useful to the user
 #
 suggestions:
     apps:
-        related: []
+        related: [run_EFI_GNT_GND_Single_Sequence_BLAST,run_EFI_GNT_GND_FASTA_Sequence_Lookup]
         next: []
 
 #
 # Configure the display and description of parameters
+# short-hint text is in parity with the webserver (almost)
 #
 parameters:
-    sequence_id:
-        ui-name: Sequence IDs (paste)
+    sequence_ids:
+        ui-name: Sequence IDs
         short-hint: |
-            The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided in the input box below. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
-            
-    sequence_id_upload:
-        ui-name: Sequence IDs (upload)
-        short-hint: |
-            The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided in the input box below. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
-
-    neighborhood_window_size:
-        ui-name: Neighborhood window size
-        short-hint: |
-            Number of neighbors to retrieve on either side of the query sequence for each BLAST result
+            The genomic neighborhoods are retreived for the UniProt, NCBI, EMBL-EBI ENA, and PDB identifiers that are provided as a comma-separated list of IDs in the input box above. Not all identifiers may exist in the EFI-GNT database so the results will only include diagrams for sequences that were identified. 
             
     sequence_database:
         ui-name: Sequence database
         short-hint: |
             If the Sequence Database is set to UniRef90, the resulting GNDs will also include GNDs for UniRef90 cluster IDs that group together UniProt sequences by 90% sequence identiy. For UniRef50, the GNDs will also include UniProt sequences that are grouped by 50% sequence identity. Any of the Exclude Fragments options will exclude UniProt-defined sequence fragments. 
-            
-    
+
+    description:
+        ui-name: Description (optional)
+        short-hint: |
+            Provide a very short, descriptive blurb about the sequence IDs input to this app. 
+
 
 description: |
-    <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
+    <p> Input a set of Sequence IDs to create a genome neighborhood network (GNN) dataset that can be visualized as a genome neighborhood diagram (GND). For more information, read <a href="https://efi.igb.illinois.edu/dev/efi-gnt/diagram_tutorial.pdf">a quick tutorial for GNDs</a> and the <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative website</a>.</p>
