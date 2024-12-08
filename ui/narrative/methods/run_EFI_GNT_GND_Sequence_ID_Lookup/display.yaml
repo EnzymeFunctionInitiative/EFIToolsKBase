@@ -35,7 +35,7 @@ parameters:
     description:
         ui-name: Description (optional)
         short-hint: |
-            Providee a very short, descriptive blurb about the sequence IDs input to this app. 
+            Provide a very short, descriptive blurb about the sequence IDs input to this app. 
 
 
 description: |
