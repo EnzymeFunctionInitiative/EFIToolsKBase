@@ -366,6 +366,10 @@ class Application(object):
                              name='EFIToolsKBase.run_EFI_SSN_Utils_Color_SSN',
                              types=[dict])
         self.method_authentication['EFIToolsKBase.run_EFI_SSN_Utils_Color_SSN'] = 'required'  # noqa
+        self.rpc_service.add(impl_EFIToolsKBase.run_EFI_GNT_GND_Sequence_ID_Lookup,
+                             name='EFIToolsKBase.run_EFI_GNT_GND_Sequence_ID_Lookup',
+                             types=[dict])
+        self.method_authentication['EFIToolsKBase.run_EFI_GNT_GND_Sequence_ID_Lookup'] = 'required'  # noqa
         self.rpc_service.add(impl_EFIToolsKBase.status,
                              name='EFIToolsKBase.status',
                              types=[dict])
