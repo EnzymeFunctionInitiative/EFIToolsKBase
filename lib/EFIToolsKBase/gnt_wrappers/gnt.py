@@ -14,6 +14,10 @@ from base import Core
 # temp preamble for stand-in code
 import urllib3
 
+BLOCKSIZE=1024
+INPUT_METHODS = {'seqlookup': 'User provided input was a list of sequence IDS.'
+                }
+
 
 class EFIGNT(Core):
     def __init__(self, ctx, config, clients_class=None):
@@ -83,10 +87,14 @@ class EFIGNT(Core):
             logging_str += f'{key}: {value}\n'
         logging.info(logging_str)
 
+        logging_str = INPUT_METHODS.get(lower(mapping['gnt_input']))
+        if not logging_str:
+            raise SystemExit('Unexpected input type. Exiting.')
+        logging.info(logging_str)
+
         if lower(mapping['gnt_input']) == 'seqlookup':
             logging.info('Input was gathered from a list of sequence IDs that were gathered')
         else:
-            raise SystemExit('Unexpected input type. Exiting.')
 
         ###########################################################
         # commenting out since no NF pipeline currently implemented
@@ -112,7 +120,7 @@ class EFIGNT(Core):
             gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
             with open(gnd_view_file_path,'wb') as out: 
                 while True:
-                    data = response.read(1024)
+                    data = response.read(BLOCKSIZE)
                     if not data:
                         break
                     out.write(data)
