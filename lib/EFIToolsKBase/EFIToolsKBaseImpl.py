@@ -25,13 +25,13 @@ from base import Core
 
 
 class EFIToolsKBase:
-    '''
+    """
     Module Name:
     EFIToolsKBase
 
     Module Description:
     A KBase module: EFIToolsKBase
-    '''
+    """
 
     ######## WARNING FOR GEVENT USERS ####### noqa
     # Since asynchronous IO can lead to methods - even the same method -
@@ -50,9 +50,9 @@ class EFIToolsKBase:
     # be found
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
-        self.callback_url = os.environ['SDK_CALLBACK_URL']
-        self.shared_folder = config['scratch']
-        logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
+        self.callback_url = os.environ["SDK_CALLBACK_URL"]
+        self.shared_folder = config["scratch"]
+        logging.basicConfig(format="%(created)s %(levelname)s: %(message)s",
                             level=logging.INFO)
         os.environ["JAVA_HOME"] = "/root/.sdkman/candidates/java/current"
         self.wsc = Workspace(self.callback_url)
@@ -85,8 +85,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFIToolsKBase return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFIToolsKBase return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -107,8 +107,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_Sequence_BLAST return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFI_EST_Sequence_BLAST return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -129,8 +129,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_FASTA return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFI_EST_FASTA return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -151,8 +151,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_Families return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFI_EST_Families return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -173,8 +173,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_Accession_IDs return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFI_EST_Accession_IDs return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -202,8 +202,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_EST_SSN_Creation return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFI_EST_SSN_Creation return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -231,8 +231,8 @@ class EFIToolsKBase:
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_SSN_Utils_Color_SSN return value ' +
-                             'output is not type dict as required.')
+            raise ValueError("Method run_EFI_SSN_Utils_Color_SSN return value " +
+                             "output is not type dict as required.")
         # return the results
         return [output]
 
@@ -241,9 +241,9 @@ class EFIToolsKBase:
         :param ctx: ..., the context object
         :param params: input parameters as a dict 
         :returns: list of dict, output dict is filled with: 
-                  'GNDViewFile_ref' and 'report_ref' keys that map to the 
+                  "GNDViewFile_ref" and "report_ref" keys that map to the 
                   respective files' UPA string
-                  'report_name' that maps to the report's file name? why is this important???
+                  "report_name" that maps to the report's file name? why is this important???
         """
         # ctx is the context object
         # return variables are: output
@@ -260,27 +260,27 @@ class EFIToolsKBase:
 
         # output is a dict with keys matching those defined in the root 
         # EFIToolsKBase spec file
-        output = {'GNDViewFile_ref': returnVal['gnd_ref'], 
-                  'report_ref': reportVal['report_ref'],
-                  'report_name': reportVal['report_name']
+        output = {"GNDViewFile_ref": returnVal["gnd_ref"], 
+                  "report_ref": reportVal["report_ref"],
+                  "report_name": reportVal["report_name"]
                   }
 
         #END run_EFI_GNT_GND_Sequence_ID_Lookup
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_EFI_GNT_GND_Sequence_ID_Lookup ' +
-                             'return value output is not type dict as ' +
-                             'required.')
+            raise ValueError("Method run_EFI_GNT_GND_Sequence_ID_Lookup " +
+                             "return value output is not type dict as " +
+                             "required.")
         # return the results
         return [output]
 
     def status(self, ctx):
         #BEGIN_STATUS
-        returnVal = {'state': "OK",
-                     'message': "",
-                     'version': self.VERSION,
-                     'git_url': self.GIT_URL,
-                     'git_commit_hash': self.GIT_COMMIT_HASH}
+        returnVal = {"state": "OK",
+                     "message": "",
+                     "version": self.VERSION,
+                     "git_url": self.GIT_URL,
+                     "git_commit_hash": self.GIT_COMMIT_HASH}
         #END_STATUS
         return [returnVal]
