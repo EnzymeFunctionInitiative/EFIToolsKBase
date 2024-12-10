@@ -87,7 +87,7 @@ class EFIGNT(Core):
             logging_str += f"{key}: {value}\n"
         logging.info(logging_str)
 
-        logging_str = INPUT_METHODS.get(lower(mapping["gnt_input"]))
+        logging_str = INPUT_METHODS.get(mapping["gnt_input"].lower())
         if not logging_str:
             raise SystemExit("Unexpected input type. Exiting.")
         logging.info(logging_str)
