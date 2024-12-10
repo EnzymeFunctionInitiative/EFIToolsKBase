@@ -110,7 +110,8 @@ class EFIGNT(Core):
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
         http = urllib3.PoolManager()
-        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
         # download the URL object
         with http.request("GET",URL,preload_content=False) as response:
             gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
