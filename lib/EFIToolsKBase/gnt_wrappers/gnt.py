@@ -111,8 +111,8 @@ class EFIGNT(Core):
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
         http = urllib3.PoolManager()
-        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
-        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
+        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
         # download the URL object
         with http.request("GET",URL,preload_content=False) as response:
             gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
@@ -131,11 +131,9 @@ class EFIGNT(Core):
                 cursor.execute('SELECT * FROM attributes')
                 results = cursor.fetchall()
                 print(results[0])
-        except sqlite3.DatabaseError: 
-            print(f"for some reason downloaded file isn't recognized as a sqlite file")
-            pass
         except Exception as e: 
-            print(f"some other funky stuff is happening")
+            print(f"Unexpected error: {e=}, {type(err)=}")
+            raise
 
         ###########################################################
 
@@ -295,7 +293,7 @@ class EFIGNT(Core):
         print(type(workspace_id))
         # move file to the blobstore and get its ID
         print(f'trying to get shock id of the gnd view file {gnd_view_file_path}')
-        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path})["shock_id"]
+        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path,'pack':'gzip'})["shock_id"]
         # prep the save_objects() parameter dictionary
         save_object_params = {
             "id": workspace_id,
