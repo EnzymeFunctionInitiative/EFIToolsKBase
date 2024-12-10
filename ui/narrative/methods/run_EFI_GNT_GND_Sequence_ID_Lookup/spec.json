@@ -13,8 +13,8 @@
     },
     "parameters": [
         {
-            "id": "sequence_id",
-            "optional": true,
+            "id": "sequence_ids",
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
@@ -26,29 +26,14 @@
             }
         },
         {
-            "id": "sequence_id_upload",
+            "id": "description",
             "optional": true,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
                 ""
             ],
-            "field_type": "file"
-        },
-        {
-            "id": "neighborhood_window_size",
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                "10"
-            ],
-            "field_type": "text",
-            "text_options": {
-                "valid_ws_types": [],
-                "validate_as": "int",
-                "min_int": 1
-            }
+            "field_type": "text"
         },
         {
             "id": "sequence_database",
@@ -93,35 +78,23 @@
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_GNT_GND_Sequence_ID_Lookup",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
+                    "input_parameter": "sequence_ids",
+                    "target_property": "sequence_ids"
                 },
                 {
-                    "input_parameter": "sequence_id",
-                    "target_property": "sequence_id",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "sequence_id_upload",
-                    "target_property": "sequence_id_upload",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "neighborhood_window_size",
-                    "target_property": "neighborhood_window_size",
-                    "target_type_transform": "resolved-ref"
+                    "input_parameter": "description",
+                    "target_property": "description"
                 },
                 {
                     "input_parameter": "sequence_database",
-                    "target_property": "sequence_database",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "sequence_database"
                 }
             ],
             "output_mapping": [
@@ -138,6 +111,13 @@
                         "report_ref"
                     ],
                     "target_property": "report_ref"
+                },
+                {
+                    "service_method_output_path": [
+                        0,
+                        "GNDViewFile_ref"
+                    ],
+                    "target_property": "GNDViewFile_ref"
                 }
             ]
         }
