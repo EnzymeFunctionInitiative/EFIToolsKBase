@@ -131,7 +131,7 @@ class EFIGNT(Core):
                 cursor.execute('SELECT * FROM attributes')
                 results = cursor.fetchall()
                 print(results[0])
-        except DatabaseError: 
+        except sqlite3.DatabaseError: 
             print(f"for some reason downloaded file isn't recognized as a sqlite file: {e}")
             pass
         except Exception as e: 
