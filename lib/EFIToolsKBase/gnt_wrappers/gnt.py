@@ -13,6 +13,7 @@ from base import Core
 
 # temp preamble for stand-in code
 import urllib3
+import sqlite3
 
 BLOCKSIZE=1024
 INPUT_METHODS = {"seqlookup": "User provided input was a list of sequence IDS."
@@ -110,8 +111,8 @@ class EFIGNT(Core):
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
         http = urllib3.PoolManager()
-        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
-        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
+        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
         # download the URL object
         with http.request("GET",URL,preload_content=False) as response:
             gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
@@ -121,9 +122,24 @@ class EFIGNT(Core):
                     if not data:
                         break
                     out.write(data)
+
+        # test the sqlite actually is readable
+        print(gnd_view_file_path)
+        try:
+            conn = sqlite3.connect(gnd_view_file_path)
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM attributes')
+            results = cursor.fetchall()
+            print(results[0])
+        except DatabaseError: 
+            print(f"for some reason downloaded file isn't recognized as a sqlite file: {e}")
+        except Exception as e: 
+            print(f"some other funky stuff is happening")
+
         ###########################################################
 
         # attach the file to the workspace and get the GNDViewFile UPA
+        print("trying to attach the downloaded file to a GNDViewFile object")
         data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
                                                         gnd_view_file_path)[0]
 
