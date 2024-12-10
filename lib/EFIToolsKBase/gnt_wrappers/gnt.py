@@ -291,7 +291,9 @@ class EFIGNT(Core):
         # get the ID instead of the name. apparently there's some race 
         # conditions to be considered.
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
+        print(type(workspace_id))
         # move file to the blobstore and get its ID
+        print(f'trying to get shock id of the gnd view file {gnd_view_file_path}')
         gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path})["shock_id"]
         # prep the save_objects() parameter dictionary
         save_object_params = {
@@ -301,7 +303,7 @@ class EFIGNT(Core):
             "objects": [{
                         "type": "EFIToolsKBase.GNDViewFile",
                         "data": {
-                                "gnd_view_file_handle": gnd_view_file_shock_id
+                                "gnd_view_file_handle": gnd_view_file_shock_id,
                                 },
                         "name": "gnd_view_file"}
                         # TODO: RBD
@@ -317,6 +319,7 @@ class EFIGNT(Core):
         
         # since only one object is being created, just grab the zeroth element
         # and parse its tuple
+        print('grabbing the datafileutil object information')
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
         # creates a str of f"{wsid}/{objid}/{version}" that is the object's UPA
         gnd_object_reference = str(dfu_oi[6]) + "/" + str(dfu_oi[0]) + "/" + str(dfu_oi[4])
