@@ -132,7 +132,7 @@ class EFIGNT(Core):
                 results = cursor.fetchall()
                 print(results[0])
         except sqlite3.DatabaseError: 
-            print(f"for some reason downloaded file isn't recognized as a sqlite file: {e}")
+            print(f"for some reason downloaded file isn't recognized as a sqlite file")
             pass
         except Exception as e: 
             print(f"some other funky stuff is happening")
