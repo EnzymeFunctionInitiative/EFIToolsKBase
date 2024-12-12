@@ -56,8 +56,6 @@ def get_remote_file_contents(remote_file_url: str) -> str:
         return None
 
     file_contents = response.read()
-    if file_contents is None:
-        return None
     return io.StringIO(str(file_contents.decode('utf-8')))
 
 
