@@ -293,7 +293,7 @@ class EFIGNT(Core):
         print(type(workspace_id))
         # move file to the blobstore and get its ID
         print(f'trying to get shock id of the gnd view file {gnd_view_file_path}')
-        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path,'pack':'gzip'})["shock_id"]
+        gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path})["shock_id"]
         # prep the save_objects() parameter dictionary
         save_object_params = {
             "id": workspace_id,
