@@ -149,7 +149,7 @@ def download_file(url: str, dest_file: str) -> bool:
 
     with open(dest_file, "wb") as f:
         chunk = u.read(BLOCK_SIZE)
-        while chunk is not None:
+        while chunk:
             f.write(chunk)
             chunk = u.read(BLOCK_SIZE)
 
@@ -173,7 +173,7 @@ def calculate_md5(file_path: str) -> str:
     hash_md5 = hashlib.md5()
     with open(file_path, "rb") as fh:
         chunk = fh.read(BLOCK_SIZE)
-        while chunk is not None:
+        while chunk:
             hash_md5.update(chunk)
             chunk = fh.read(BLOCK_SIZE)
     return hash_md5.hexdigest()
@@ -237,7 +237,7 @@ if __name__ == '__main__':
             for fname in temp_files:
                 with open(fname, "rb") as fh:
                     chunk = fh.read(BLOCK_SIZE)
-                    while chunk is not None:
+                    while chunk:
                         merged.write(chunk)
                         chunk = fh.read(BLOCK_SIZE)
 
