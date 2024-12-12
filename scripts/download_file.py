@@ -47,7 +47,7 @@ def get_remote_file_contents(remote_file_url: str) -> str:
 
     Returns
     -------
-        UTF-8 string containing file contents if successful retrieval; False otherwise
+        UTF-8 string containing file contents if successful retrieval; None otherwise
     """
 
     try:
@@ -77,8 +77,7 @@ def get_file_list(remote_dir_url: str, remote_file: str) -> dict:
 
     Returns
     -------
-        files
-            dictionary of files to checksum (MD5) for each file on the remote
+        dictionary of files to checksum (MD5) for each file on the remote
     """
 
     remote_file_url = remote_dir_url + "/" + remote_file + ".file_list"
@@ -99,7 +98,8 @@ def get_remote_checksum(remote_dir_url: str, remote_file: str) -> str:
     """
     Return the MD5 hash from the MD5 file corresponding to the remote file (not split).
 
-    Parameters:
+    Parameters
+    ----------
         remote_dir_url
             URL of directory on remote that contains files
         remote_file
@@ -117,7 +117,7 @@ def get_remote_checksum(remote_dir_url: str, remote_file: str) -> str:
         return None
 
     parts = checksum_data.read().strip().split(" ")
-    if parts[0]:
+    if parts[0] != "":
         return parts[0]
     else:
         return None
@@ -127,11 +127,16 @@ def download_file(url: str, dest_file: str) -> bool:
     """ 
     Download a file from the remote and save it to the specified local file.
 
-    Parameters:
+    Parameters
+    ----------
         url
             URL of the remote file
         dest_file
             local path to store downloaded file to
+
+    Returns
+    -------
+        True if download to the dest_file was successful; False otherwise
     """
 
     try:
@@ -141,11 +146,10 @@ def download_file(url: str, dest_file: str) -> bool:
         return False
 
     with open(dest_file, "wb") as f:
-        while True:
-            buffer = u.read(BLOCK_SIZE)
-            if not buffer:
-                break
-            f.write(buffer)
+        chunk = u.read(BLOCK_SIZE)
+        while chunk:
+            f.write(chunk)
+            chunk = u.read(BLOCK_SIZE)
 
     return True
 
@@ -183,6 +187,10 @@ def compare_md5(remote_md5: str, local_md5: str) -> str:
             hash computed remotely of the remote file by md5sum 
         local_md5
             hash computed locally of local file by md5sum 
+
+    Returns
+    -------
+        True if the MD5s are equal, False otherwise
     """
 
     if remote_md5 != local_md5:
@@ -213,12 +221,12 @@ if __name__ == '__main__':
             remote_url = args.remote_dir + "/" + fname
 
             print(f"Downloading {remote_url}")
-            if not download_file(remote_url, temp_local_file):
+            if download_file(remote_url, temp_local_file) != True:
                 print(f"Unable to download {remote_url} to {temp_local_file}")
                 sys.exit(1)
 
             local_md5 = calculate_md5(temp_local_file)
-            if not compare_md5(file_list[fname], local_md5):
+            if compare_md5(file_list[fname], local_md5) != True:
                 print(f"File {fname} was not downloaded correctly from {remote_url}; checksums do not match")
                 sys.exit(1)
 
@@ -235,7 +243,7 @@ if __name__ == '__main__':
         remote_url = args.remote_dir + "/" + args.remote_file
 
         print(f"Downloading {remote_url}")
-        if not download_file(remote_url, args.local_file):
+        if download_file(remote_url, args.local_file) != True:
             print(f"Unable to download {remote_url} to {args.local_file}")
             sys.exit(1)
 
@@ -245,7 +253,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
         local_md5 = calculate_md5(args.local_file)
-        if not compare_md5(remote_md5, local_md5):
+        if compare_md5(remote_md5, local_md5) != True:
             print(f"File {args.local_file} was not downloaded correctly from {remote_url}; checksums do not match")
             sys.exit(1)
 
