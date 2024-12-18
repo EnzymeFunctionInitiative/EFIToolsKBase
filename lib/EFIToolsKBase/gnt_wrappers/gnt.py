@@ -110,18 +110,25 @@ class EFIGNT(Core):
         # https://github.com/sahasramesh/kb_gnd_demo/blob/master/30086.sqlite
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
-        http = urllib3.PoolManager()
-        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
-        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
-        # download the URL object
-        with http.request("GET",URL,preload_content=False) as response:
-            gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
-            with open(gnd_view_file_path,"wb") as out: 
-                while True:
-                    data = response.read(BLOCKSIZE)
-                    if not data:
-                        break
-                    out.write(data)
+        
+        #http = urllib3.PoolManager()
+        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        ##URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
+        ## download the URL object
+        #with http.request("GET",URL,preload_content=False) as response:
+        #    gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
+        #    with open(gnd_view_file_path,"wb") as out: 
+        #        while True:
+        #            data = response.read(BLOCKSIZE)
+        #            if not data:
+        #                break
+        #            out.write(data)
+
+        # a sqlite file is downloaded during the module initialization
+        gnd_view_file_path = "/data/large_gnd.sqlite"
+        if not os.path.isfile(gnd_view_file_path):
+            raise FileNotFoundError("The expected sqlite file was not" + 
+                                    "successfully downloaded")
 
         # test the sqlite actually is readable
         print(gnd_view_file_path)
