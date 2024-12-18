@@ -50,7 +50,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
         cls.scratch = cls.cfg["scratch"]
         cls.callback_url = os.environ["SDK_CALLBACK_URL"]
         suffix = int(time.time() * 1000)
-        cls.wsName = "test_ContigFilter_" + str(suffix)
+        cls.wsName = "test_EFIToolsKBase_" + str(suffix)
         ret = cls.wsClient.create_workspace({"workspace": cls.wsName})  # noqa
 
     @classmethod
