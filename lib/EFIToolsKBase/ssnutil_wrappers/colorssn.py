@@ -63,7 +63,7 @@ class ColorSSN(Core):
 
     def _create_file_links(self):
         output_file_names = [
-            "ssn_out.xgmml",
+            "ssn_colored.xgmml",
             "mapping_table.txt"
         ]
         file_links = [
@@ -71,13 +71,13 @@ class ColorSSN(Core):
                 "path": os.path.join(self.shared_folder, output_file_names[0]),
                 "name": output_file_names[0],
                 "label": output_file_names[0],
-                "description": "New SSN file"
+                "description": "New SSN file with cluster IDs and colors"
             },
             {
                 "path": os.path.join(self.shared_folder, output_file_names[1]),
                 "name": output_file_names[1],
                 "label": output_file_names[1],
-                "description": "New SSN file"
+                "description": "Mapping Table for Cluster IDs"
             },
         ]
 
