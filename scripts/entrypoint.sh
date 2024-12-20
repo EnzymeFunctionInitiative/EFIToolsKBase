@@ -21,22 +21,41 @@ elif [ "${1}" = "init" ] ; then
 
   DIR=/data
 
-  file="blastdb.tar.gz"
-  python scripts/download_file.py --remote-dir $remote_base/blastdb --remote-file $file --local-dir $DIR/temp_$file --local-file $DIR/$file
-  rm -rf $DIR/temp_$file
-  tar xzf $DIR/$file -C $DIR
-  rm $DIR/$file
+  CURL_RETURN_CODE=0
+  file="efidata.tar.gz"
+  echo "curl -o $DIR/$file https://efi.igb.illinois.edu/downloads/sample_data/old/kb_test_all/kb_test_all.tar.gz"
+  curl -o $DIR/$file https://efi.igb.illinois.edu/downloads/sample_data/old/kb_test_all/kb_test_all.tar.gz
+  if [ $CURL_RETURN_CODE -eq 0 ] ; then
+    tar xzf $DIR/$file -C $DIR
+  fi
+  ls $DIR
 
-  file="diamonddb.tar.gz"
-  python scripts/download_file.py --remote-dir $remote_base/diamonddb --remote-file $file --local-dir $DIR/temp_$file --local-file $DIR/$file
-  rm -rf $DIR/temp_$file
-  tar xzf $DIR/$file -C $DIR
-  rm $DIR/$file
+  CURL_RETURN_CODE=0
+  file="large_gnd.sqlite"
+  echo "curl -o $DIR/$file https://efi.igb.illinois.edu/downloads/large_gnd.sqlite"
+  curl -o $DIR/$file https://efi.igb.illinois.edu/downloads/large_gnd.sqlite
+  ls $DIR
 
-  file="efi_db.sqlite.gz"
-  python scripts/download_file.py --remote-dir $remote_base/efi_db --remote-file $file --local-dir $DIR/temp_$file --local-file $DIR/$file
-  rm -rf $DIR/temp_$file
-  gunzip $DIR/$file
+  echo "Skipping database download"
+  #file="blastdb.tar.gz"
+  #echo "Downloading database $file"
+  #python scripts/download_file.py --remote-dir $remote_base/blastdb --remote-file $file --local-dir $DIR/temp_$file --local-file $DIR/$file
+  #rm -rf $DIR/temp_$file
+  #tar xzf $DIR/$file -C $DIR
+  #rm $DIR/$file
+
+  #file="diamonddb.tar.gz"
+  #echo "Downloading database $file"
+  #python scripts/download_file.py --remote-dir $remote_base/diamonddb --remote-file $file --local-dir $DIR/temp_$file --local-file $DIR/$file
+  #rm -rf $DIR/temp_$file
+  #tar xzf $DIR/$file -C $DIR
+  #rm $DIR/$file
+
+  #file="efi_db.sqlite.gz"
+  #echo "Downloading database $file"
+  #python scripts/download_file.py --remote-dir $remote_base/efi_db --remote-file $file --local-dir $DIR/temp_$file --local-file $DIR/$file
+  #rm -rf $DIR/temp_$file
+  #gunzip $DIR/$file
 
   touch $DIR/__READY__
 elif [ "${1}" = "bash" ] ; then
