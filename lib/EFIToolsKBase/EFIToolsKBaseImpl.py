@@ -250,20 +250,12 @@ class EFIToolsKBase:
         #BEGIN run_EFI_GNT_GND_Sequence_ID_Lookup
         gnd_seq_lookup = GNTSequenceIDLookup(ctx, self.config)
         logging.info(params)
-        # do_analysis() gathers the sequence info, runs the GNT tool, and saves
-        # the GNDViewFile object to the workspace 
-        returnVal = gnd_seq_lookup.do_analysis(params)
-        # pass returnVal dict to the generate_report() method to fill the html
-        # report template with necessary info
-        # reportVal is a dict with the UPA for the report object
-        reportVal = gnd_seq_lookup.generate_report(params, returnVal)
+        # do_analysis() gathers the sequence info, runs the GNT tool, saves the
+        # GNDViewFile object to the workspace, and create the HTML report file
+        output = gnd_seq_lookup.do_analysis(params)
 
-        # output is a dict with keys matching those defined in the root 
+        # output is a dict with keys matching the content defined in the root 
         # EFIToolsKBase spec file
-        output = {"GNDViewFile_ref": returnVal["gnd_ref"], 
-                  "report_ref": reportVal["report_ref"],
-                  "report_name": reportVal["report_name"]
-                  }
 
         #END run_EFI_GNT_GND_Sequence_ID_Lookup
 

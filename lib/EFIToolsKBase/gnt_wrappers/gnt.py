@@ -111,21 +111,22 @@ class EFIGNT(Core):
         # and then save this file as a data object so that it can be visualized
         # by sahasWidget
         
-        #http = urllib3.PoolManager()
-        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
-        ##URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
-        ## download the URL object
-        #with http.request("GET",URL,preload_content=False) as response:
-        #    gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
-        #    with open(gnd_view_file_path,"wb") as out: 
-        #        while True:
-        #            data = response.read(BLOCKSIZE)
-        #            if not data:
-        #                break
-        #            out.write(data)
+        http = urllib3.PoolManager()
+        URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/30086.sqlite"
+        #URL = "https://raw.githubusercontent.com/sahasramesh/kb_gnd_demo/refs/heads/master/sahasWidget.spec"
+        # download the URL object
+        with http.request("GET",URL,preload_content=False) as response:
+            gnd_view_file_path = os.path.join(self.shared_folder, "test.sqlite")
+            with open(gnd_view_file_path,"wb") as out: 
+                while True:
+                    data = response.read(BLOCKSIZE)
+                    if not data:
+                        break
+                    out.write(data)
 
-        # a sqlite file is downloaded during the module initialization
-        gnd_view_file_path = "/data/large_gnd.sqlite"
+        ## a sqlite file is downloaded during the module initialization
+        #gnd_view_file_path = "/data/large_gnd.sqlite"
+        
         if not os.path.isfile(gnd_view_file_path):
             raise FileNotFoundError("The expected sqlite file was not" + 
                                     "successfully downloaded")
@@ -135,7 +136,7 @@ class EFIGNT(Core):
         try:
             with sqlite3.connect(gnd_view_file_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('SELECT * FROM attributes')
+                cursor.execute("SELECT * FROM attributes")
                 results = cursor.fetchall()
                 print(results[0])
         except Exception as e: 
@@ -145,11 +146,31 @@ class EFIGNT(Core):
         ###########################################################
 
         # attach the file to the workspace and get the GNDViewFile UPA
-        print("trying to attach the downloaded file to a GNDViewFile object")
+        print("Create the GNDViewFile object")
         data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
-                                                        gnd_view_file_path)[0]
+                                                        gnd_view_file_path,
+                                                        mapping["description"])[0]
+        
+        print("Creating the HTML report")
+        # 
+        report_data = {
+            "nIDs": mapping["nIDs"],
+            "gnd_view_file_name": "gnd_view_file"
+        }
+        # only one object created (the GNDViewFile) so list of len 1
+        objects_created_list = [
+            {
+                "ref": data_ref, 
+                "description": "Genome Neighborhood Diagram View File"
+            }
+        ]
+        report_output = self.generate_report(workspace_name, 
+                                             report_data, 
+                                             objects_created_list)
 
-        return {"gnd_ref": data_ref, "nIDs": mapping["nIDs"]}
+        return {"gnd_ref": data_ref, 
+                "report_ref": report_output["report_ref"], 
+                "report_name": report_output["report_name"]}
 
     def gather_sequence_data(self, mapping, workspace_name):
         """
@@ -173,14 +194,14 @@ class EFIGNT(Core):
 
         return self.run_gnt_pipeline(mapping, workspace_name)
 
-    def _create_file_links(self, inlcude_zip=True):
+    def _create_file_links(self, include_zip=True):
         """
         NOTE: replace hardcoded file paths/names to be dynamic or use a 
               stem that is defined in user-input
         """
         # hard coded for now since no stem variable is given
         output_file_names = [
-            "GNDViewFile.sqlite"
+            "test.sqlite"
         ]
 
         file_links = [
@@ -193,7 +214,7 @@ class EFIGNT(Core):
                 }
         ]
 
-        if inlcude_zip:
+        if include_zip:
             zip_path = os.path.join(self.shared_folder, "all_files.zip")
             with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
                 for name in output_file_names:
@@ -209,25 +230,25 @@ class EFIGNT(Core):
 
         return file_links
 
-    def generate_report(self, params, template_var_dict):
+    def generate_report(self, ws_name, template_var_dict, objects_created):
         """
         Take in the results dict from run_gnt_pipeline() method, write the 
         associated html report, link files, ...
 
         runs the _create_file_links() method
-        :param params: dict, app input info
+        :param ws_name: string, name for the active Workspace
         :param template_var_dict: dict, keys are variables in the 
                                   jinja2-readable template source file. Values
                                   are strings pasted in the template. 
 
-        :param objects_created: dict, the `gnd_ref` key maps to the GNDViewFile
-                                UPA string. 
+        :param objects_created: list of dicts, the `gnd_ref` key maps to the 
+                                GNDViewFile UPA string. 
 
         :returns: dict, filled with information about the report object but 
                         doesn"t return the actual dict report_info...
         """
         # get the workspace_id
-        workspace_id = self.dfu.ws_name_to_id(params["workspace_name"])
+        workspace_id = self.dfu.ws_name_to_id(ws_name)
 
         # output_files is a list of dicts, each element mapping to a file
         # created by the app. 
@@ -246,10 +267,7 @@ class EFIGNT(Core):
         # fill the KBaseReport configuration dictionary
         kbr_config = {"workspace_id": workspace_id,
                       "file_links": output_files,
-                      "objects_created": [
-                          {"ref": template_var_dict["gnd_ref"],
-                           "description": "GND View File"}
-                          ],
+                      "objects_created": objects_created,
                       "direct_html_link_index": 0,
                       "html_links": [
                           {"description": "HTML report for GNT Sequence ID Lookup",
@@ -290,7 +308,8 @@ class EFIGNT(Core):
 
     def save_gnd_view_file_to_workspace(self, 
                                         workspace_name, 
-                                        gnd_view_file_path):
+                                        gnd_view_file_path,
+                                        title):
         """
         save the GNDViewFile file to the workspace and return its object UPA
         """
@@ -310,6 +329,7 @@ class EFIGNT(Core):
                         "type": "EFIToolsKBase.GNDViewFile",
                         "data": {
                                 "gnd_view_file_handle": gnd_view_file_shock_id,
+                                "view_title": title,
                                 },
                         "name": "gnd_view_file"}
                         # TODO: RBD
