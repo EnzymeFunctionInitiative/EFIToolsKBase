@@ -23,7 +23,6 @@ class EFIEST(Core):
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
-        self.au = self.clients.AssemblyUtil
         self.wsClient = self.clients.Workspace
         self.flow = NextflowRunner("pipelines/est/est.nf", "est/kbase.config")
 
