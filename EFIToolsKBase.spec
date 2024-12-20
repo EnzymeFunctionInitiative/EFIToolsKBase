@@ -64,6 +64,7 @@ module EFIToolsKBase {
     */
     typedef structure {
         handle gnd_view_file_handle;
+	string view_title;
     } GNDViewFile;
    
     /* 
