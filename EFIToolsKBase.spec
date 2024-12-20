@@ -67,15 +67,6 @@ module EFIToolsKBase {
     } GNDViewFile;
    
     /* 
-    Data object type associated with the GNT report
-    */
-    typedef structure {
-        string report_name;
-        string report_ref;
-        string GNDViewFile_ref;
-    } GNTReportResults;
-
-    /* 
     Strong typing control of input parameters for the 
     run_EFI_GNT_GND_Sequence_ID_Lookup code 
     */
@@ -90,6 +81,6 @@ module EFIToolsKBase {
     declaring input and output objects for the run_EFI_GNT_GND_Sequence_ID_Lookup method
     */ 
     funcdef run_EFI_GNT_GND_Sequence_ID_Lookup(GNTSeqLookupParams params) 
-	    returns (GNTReportResults output) authentication required;
+	    returns (GNDViewFile output) authentication required;
 
 };
