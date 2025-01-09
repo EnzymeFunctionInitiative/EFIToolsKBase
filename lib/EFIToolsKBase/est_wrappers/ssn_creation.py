@@ -44,11 +44,17 @@ class SSNCreation(Core):
             "file_path": os.path.join(self.shared_folder, "sequences.fa"), 
             "unpack": "unpack"}
         )
+        self.dfu.shock_to_file({
+            "shock_id": edge_file_obj["data"]["seq_meta_handle"], 
+            "file_path": os.path.join(self.shared_folder, "sequence_metadata.tab"), 
+            "unpack": "unpack"}
+        )
 
         print(params)
         mapping = {
             "blast_parquet": os.path.join(self.shared_folder, "1.out.parquet"),
             "fasta_file": os.path.join(self.shared_folder, "sequences.fa"),
+            "seq_meta_file": os.path.join(self.shared_folder, "sequence_metadata.tab"),
             "final_output_dir": self.shared_folder,
             "filter_parameter": params["filter_options"]["filter_parameter"],
             "filter_min_val": params["filter_options"]["filter_value"],
@@ -63,6 +69,8 @@ class SSNCreation(Core):
             "job_id": 131,
             "efi_db": EFI_DB_PATH
         }
+        # hardcoded dictionary entry values. are these used in this code???
+
         self.flow.write_params_file(mapping)
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
@@ -70,12 +78,17 @@ class SSNCreation(Core):
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         print(self.shared_folder, os.listdir(self.shared_folder))
         stats = pd.read_csv(os.path.join(self.shared_folder, "stats.tab"), sep="\t")
-        data_ref = self.save_ssn_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "full_ssn.xgmml"), int(stats["Nodes"][0]), int(stats["Edges"][0]), "An SSN file and metadata")
+        data_ref = self.save_ssn_file_to_workspace(params["workspace_name"], 
+                                                   os.path.join(self.shared_folder, "full_ssn.xgmml"), 
+                                                   int(stats["Nodes"][0]), 
+                                                   int(stats["Edges"][0]), 
+                                                   "An SSN file and metadata")
         report_data = {
             "stats": stats.to_html(),
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data, [{"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"}])
+        output = self.generate_report(report_data, 
+                                      [{"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"}])
         return output
 
     def _create_file_links(self, inlcude_zip=True):
