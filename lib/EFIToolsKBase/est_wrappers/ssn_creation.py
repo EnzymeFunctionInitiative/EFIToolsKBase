@@ -96,7 +96,7 @@ class SSNCreation(Core):
             "2.out",
             "filtered_sequences.fasta",
             "full_ssn.xgmml",
-            "struct.filtered.out"
+            "filtered_sequence_metadata.tab"
         ]
 
         file_links = [
