@@ -32,6 +32,8 @@ class SSNCreation(Core):
 
 
     def do_analysis(self, params):
+        """
+        """
         edge_file_obj = self.dfu.get_objects({"object_refs": [params["blast_edge_file"]]})["data"][0]
         print(edge_file_obj)
         self.dfu.shock_to_file({
@@ -60,16 +62,18 @@ class SSNCreation(Core):
             "filter_min_val": params["filter_options"]["filter_value"],
             "min_length": params["min_length"],
             "max_length": params["max_length"],
-            "ssn_name": "kbase_ssn",
-            "ssn_title": "kbase_ssn",
-            "maxfull": 0,
-            "uniref_version": 90,
+            # used in `get_annotations()` process
+            "uniref_version": 90,   # currently not giving the user option to use UniRef50?
             "efi_config": EFI_CONFIG_PATH,
-            "db_version": 100,
-            "job_id": 131,
             "efi_db": EFI_DB_PATH
+            # used in `create_full_ssn()` process
+            "ssn_title": "kbase_ssn",
+            "db_version": EFI_DB_VERSION,
+            # unused keys
+            "ssn_name": "kbase_ssn",
+            "maxfull": 0,
+            "job_id": 131
         }
-        # hardcoded dictionary entry values. are these used in this code???
 
         self.flow.write_params_file(mapping)
         self.flow.generate_run_command()
