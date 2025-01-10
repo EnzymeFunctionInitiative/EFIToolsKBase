@@ -82,7 +82,7 @@ class SSNCreation(Core):
                                                    os.path.join(self.shared_folder, "full_ssn.xgmml"), 
                                                    int(stats["Nodes"][0]), 
                                                    int(stats["Edges"][0]), 
-                                                   "An SSN file and metadata")
+                                                   "An SSN XGMML file and metadata")
         report_data = {
             "stats": stats.to_html(),
             "workspace_name": params["workspace_name"]
@@ -96,7 +96,7 @@ class SSNCreation(Core):
             "2.out",
             "filtered_sequences.fasta",
             "full_ssn.xgmml",
-            "filtered_sequence_metadata.tab"
+            "ssn_metadata.tab"
         ]
 
         file_links = [
