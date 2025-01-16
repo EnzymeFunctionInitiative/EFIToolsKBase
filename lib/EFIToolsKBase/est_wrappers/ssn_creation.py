@@ -56,12 +56,14 @@ class SSNCreation(Core):
             output 
                 Dictionary of reference information for the report and data 
                 object created by the App. 
-                    "":
         """
+        # grab the user-provided BlastEdgeFile data object
         edge_file_obj = self.dfu.get_objects(
             {"object_refs": [params["blast_edge_file"]]})["data"][0]
-
         print(edge_file_obj)
+
+        # grab important files from the BlastEdgeFile data object and stash
+        # these in the workspace storage
         self.dfu.shock_to_file({
             "shock_id": edge_file_obj["data"]["edgefile_handle"], 
             "file_path": os.path.join(self.shared_folder, "1.out.parquet"), 
@@ -89,7 +91,7 @@ class SSNCreation(Core):
                 self.shared_folder, 
                 "sequence_metadata.tab"
             ),
-            "final_output_dir": self.shared_folder,
+            "output_dir": self.shared_folder,
             "filter_parameter": params["filter_options"]["filter_parameter"],
             "filter_min_val": params["filter_options"]["filter_value"],
             "min_length": params["min_length"],
@@ -131,8 +133,15 @@ class SSNCreation(Core):
             "workspace_name": params["workspace_name"]
         }
         
-        output = self.generate_report(report_data, 
-                                      [{"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"}])
+        output = self.generate_report(
+            report_data, 
+            [
+                {
+                    "ref": data_ref["shock_id"], 
+                    "description": "SSN XGMML file and metadata"
+                }
+            ]
+        )
         return output
 
     def _create_file_links(self, include_zip=True):
@@ -187,7 +196,7 @@ class SSNCreation(Core):
                 "name": "all_files.zip",
                 "label": "all_files.zip",
                 "description": "All files created by the analysis collected" 
-                                + " in a zip zrchive"
+                                + " in a zip archive"
             }
             file_links = [zip_file_link] + file_links
 
