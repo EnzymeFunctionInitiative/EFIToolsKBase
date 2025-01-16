@@ -82,8 +82,8 @@ class EFIEST(Core):
             }
         ]
         output = self.generate_report(workspace_name,
-                                      report_data, 
-                                      objects_created_list)
+            report_data, 
+            objects_created_list)
         
         output["edge_ref"] = data_ref
 
@@ -185,22 +185,23 @@ class EFIEST(Core):
         report_uuid = str(uuid.uuid4())
         report_name = f"EFI_EST_{report_uuid}"
         report_path = os.path.join(reports_path,
-                                   f"{report_name}.html")
+            f"{report_name}.html")
 
         # fill KBaseReport configuration dictionary
-        kbr_config = {"workspace_id": workspace_id,
-                      "file_links": output_files,
-                      "objects_created": objects_created,
-                      "direct_html_link_index": 0,
-                      "html_links": [
-                          {"description": "HTML report for EST analysis",
-                           "name": f"{report_name}.html",
-                           "path": reports_path}
-                          ],
-                      "html_window_height": 375,
-                      "report_object_name": report_name,
-                      "message": "A sample report." # update!
-                      }
+        kbr_config = {
+            "workspace_id": workspace_id,
+            "file_links": output_files,
+            "objects_created": objects_created,
+            "direct_html_link_index": 0,
+            "html_links": [
+                {"description": "HTML report for EST analysis",
+                 "name": f"{report_name}.html",
+                 "path": reports_path}
+                ],
+            "html_window_height": 375,
+            "report_object_name": report_name,
+            "message": "A sample report." # update!
+        }
 
         # Create report from template
         logging.info("Creating report...")
@@ -228,13 +229,14 @@ class EFIEST(Core):
             "report_ref": report_info["ref"],
         }
 
-    def save_edge_file_to_workspace(self, 
-                                    workspace_name, 
-                                    edge_filepath, 
-                                    fasta_filepath, 
-                                    evalue_filepath, 
-                                    seq_meta_filepath, 
-                                    acc_data):
+    def save_edge_file_to_workspace(
+            self, 
+            workspace_name, 
+            edge_filepath, 
+            fasta_filepath, 
+            evalue_filepath, 
+            seq_meta_filepath, 
+            acc_data):
         """
         """
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
@@ -247,24 +249,22 @@ class EFIEST(Core):
             "id": workspace_id,
             # objects is a list of dicts, where each dict element contains info 
             # about the object to be saved/created
-            "objects": [{
-                        "type": "EFIToolsKBase.BlastEdgeFile",
-                        "data": {
-                            "edgefile_handle": edge_file_shock_id,
-                            "fasta_handle": fasta_handle_shock_id,
-                            "evalue_handle": evalue_shock_id,
-                            "seq_meta_handle": seq_meta_shock_id,
-                            "edge_count": acc_data["EdgeCount"],
-                            "unique_seq": acc_data["UniqueSeq"],
-                            "convergence_ratio": acc_data['ConvergenceRatio'],
-                        },
-                        'name': "blast_edge_file"}
-                        # TODO: RBD
-                        # change this to name the object, take user input into
-                        # account here or use "id" instead... need to look at
-                        # DataFileUtil save_objects() method for more details
-                        ]
-            }
+            "objects": [
+                {
+                    "type": "EFIToolsKBase.BlastEdgeFile",
+                    "data": {
+                        "edgefile_handle": edge_file_shock_id,
+                        "fasta_handle": fasta_handle_shock_id,
+                        "evalue_handle": evalue_shock_id,
+                        "seq_meta_handle": seq_meta_shock_id,
+                        "edge_count": acc_data["EdgeCount"],
+                        "unique_seq": acc_data["UniqueSeq"],
+                        "convergence_ratio": acc_data['ConvergenceRatio'],
+                    },
+                    'name': "blast_edge_file"
+                }
+            ]
+        }
         # since only one object is being created, just grab the zeroth element
         # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
