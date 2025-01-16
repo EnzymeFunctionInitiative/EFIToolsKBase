@@ -50,20 +50,25 @@ class EFIEST(Core):
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         print(self.shared_folder, os.listdir(self.shared_folder))
-        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
-        length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
-        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
+        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, 
+                                                    "pident_sm.png"))
+        length_dataurl = png_to_base64(os.path.join(self.shared_folder, 
+                                                    "length_sm.png"))
+        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, 
+                                                  "edge_sm.png"))
 
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
 
         print("Create the BlastEdgeFile object")
-        data_ref = self.save_edge_file_to_workspace(workspace_name, 
+        data_ref = self.save_edge_file_to_workspace(
+            workspace_name, 
             os.path.join(self.shared_folder, "1.out.parquet"), 
             os.path.join(self.shared_folder, "all_sequences.fasta"),
             os.path.join(self.shared_folder, "evalue.tab"),
             os.path.join(self.shared_folder, "sequence_metadata.tab"),
-            acc_data)
+            acc_data
+        )
         
         print("Create the HTML report")
         report_data = {
@@ -154,7 +159,9 @@ class EFIEST(Core):
 
         if inlcude_zip:
             zip_path = os.path.join(self.shared_folder, "all_files.zip")
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+            with zipfile.ZipFile(zip_path, 
+                    "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+                # loop over files in list and stash in the zip
                 for name in output_file_names:
                     zf.write(os.path.join(self.shared_folder, name), name)
 
@@ -162,7 +169,8 @@ class EFIEST(Core):
                 "path": zip_path,
                 "name": "all_files.zip",
                 "label": "all_files.zip",
-                "description": "All files created by the analysis collected in a zip zrchive"
+                "description": "All files created by the analysis collected"
+                                + "in a zip archive"
             }
             file_links = [zip_file_link] + file_links
 
@@ -184,8 +192,7 @@ class EFIEST(Core):
         os.makedirs(reports_path, exist_ok=True)
         report_uuid = str(uuid.uuid4())
         report_name = f"EFI_EST_{report_uuid}"
-        report_path = os.path.join(reports_path,
-            f"{report_name}.html")
+        report_path = os.path.join(reports_path, f"{report_name}.html")
 
         # fill KBaseReport configuration dictionary
         kbr_config = {
@@ -194,10 +201,12 @@ class EFIEST(Core):
             "objects_created": objects_created,
             "direct_html_link_index": 0,
             "html_links": [
-                {"description": "HTML report for EST analysis",
-                 "name": f"{report_name}.html",
-                 "path": reports_path}
-                ],
+                {
+                    "description": "HTML report for EST analysis",
+                    "name": f"{report_name}.html",
+                    "path": reports_path
+                }
+            ],
             "html_window_height": 375,
             "report_object_name": report_name,
             "message": "A sample report." # update!
@@ -240,10 +249,14 @@ class EFIEST(Core):
         """
         """
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        edge_file_shock_id = self.dfu.file_to_shock({"file_path": edge_filepath})["shock_id"]
-        fasta_handle_shock_id = self.dfu.file_to_shock({"file_path": fasta_filepath})["shock_id"]
-        evalue_shock_id = self.dfu.file_to_shock({"file_path": evalue_filepath})["shock_id"]
-        seq_meta_shock_id = self.dfu.file_to_shock({"file_path": seq_meta_filepath})["shock_id"]
+        edge_file_shock_id = self.dfu.file_to_shock(
+                {"file_path": edge_filepath})["shock_id"]
+        fasta_handle_shock_id = self.dfu.file_to_shock(
+                {"file_path": fasta_filepath})["shock_id"]
+        evalue_shock_id = self.dfu.file_to_shock(
+                {"file_path": evalue_filepath})["shock_id"]
+        seq_meta_shock_id = self.dfu.file_to_shock(
+                {"file_path": seq_meta_filepath})["shock_id"]
         # prep the save_objects() parameter dictionary
         save_object_params = {
             "id": workspace_id,
@@ -252,6 +265,7 @@ class EFIEST(Core):
             "objects": [
                 {
                     "type": "EFIToolsKBase.BlastEdgeFile",
+                    'name': "blast_edge_file"
                     "data": {
                         "edgefile_handle": edge_file_shock_id,
                         "fasta_handle": fasta_handle_shock_id,
@@ -261,12 +275,11 @@ class EFIEST(Core):
                         "unique_seq": acc_data["UniqueSeq"],
                         "convergence_ratio": acc_data['ConvergenceRatio'],
                     },
-                    'name': "blast_edge_file"
                 }
             ]
         }
         # since only one object is being created, just grab the zeroth element
         # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
-        object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
         return object_reference
