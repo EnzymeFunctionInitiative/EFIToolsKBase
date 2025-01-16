@@ -265,7 +265,7 @@ class EFIEST(Core):
             "objects": [
                 {
                     "type": "EFIToolsKBase.BlastEdgeFile",
-                    'name': "blast_edge_file"
+                    'name': "blast_edge_file",
                     "data": {
                         "edgefile_handle": edge_file_shock_id,
                         "fasta_handle": fasta_handle_shock_id,
@@ -274,7 +274,7 @@ class EFIEST(Core):
                         "edge_count": acc_data["EdgeCount"],
                         "unique_seq": acc_data["UniqueSeq"],
                         "convergence_ratio": acc_data['ConvergenceRatio'],
-                    },
+                    }
                 }
             ]
         }
