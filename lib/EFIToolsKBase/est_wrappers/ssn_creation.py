@@ -100,7 +100,7 @@ class SSNCreation(Core):
             # currently not giving the user the option to use UniRef50?
             "uniref_version": 90,   
             "efi_config": EFI_CONFIG_PATH,
-            "efi_db": EFI_DB_PATH
+            "efi_db": EFI_DB_PATH,
             # used in `create_full_ssn()` process
             "ssn_title": "kbase_ssn",
             "db_version": EFI_DB_VERSION,
