@@ -91,7 +91,7 @@ class SSNCreation(Core):
                 self.shared_folder, 
                 "sequence_metadata.tab"
             ),
-            "output_dir": self.shared_folder,
+            "final_output_dir": self.shared_folder,
             "filter_parameter": params["filter_options"]["filter_parameter"],
             "filter_min_val": params["filter_options"]["filter_value"],
             "min_length": params["min_length"],
