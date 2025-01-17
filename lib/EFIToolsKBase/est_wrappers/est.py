@@ -1,3 +1,4 @@
+
 import os
 import json
 import logging
@@ -86,9 +87,8 @@ class EFIEST(Core):
                 "description": "Edge file and other metadata"
             }
         ]
-        output = self.generate_report(workspace_name,
-            report_data, 
-            objects_created_list)
+        output = self.generate_report(workspace_name, report_data, 
+                                      objects_created_list)
         
         output["edge_ref"] = data_ref
 
@@ -170,7 +170,7 @@ class EFIEST(Core):
                 "name": "all_files.zip",
                 "label": "all_files.zip",
                 "description": "All files created by the analysis collected"
-                                + "in a zip archive"
+                                + " in a zip archive"
             }
             file_links = [zip_file_link] + file_links
 
