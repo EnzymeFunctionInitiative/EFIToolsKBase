@@ -145,8 +145,7 @@ class SSNCreation(Core):
         return output
 
     def _create_file_links(self, include_zip=True):
-        """
-        """
+        """link named files to the App's output report"""
         output_file_names = [
             "2.out",
             "filtered_sequences.fasta",
@@ -204,7 +203,27 @@ class SSNCreation(Core):
 
 
     def generate_report(self, params, objects_created):
-        """
+        """ 
+        Generate the HTML report file associated with the App
+
+        Parameters
+        ----------
+            params
+                Dictionary. Key:value pairs:
+                    "stats": html string representing the tabulated SSN results
+                    "filter_options": dict, 
+                    "workspace_name": string, name of the narrative workspace
+
+            objects_created
+                list of dicts, each dict containing the shock_id reference and 
+                description for the Data Objects created by the App. Only 
+                contains info about the SequenceSimilarityNetwork object.
+
+        Returns
+        -------
+            output 
+                Dictionary of reference information for the report file. 
+
         """
         reports_path = os.path.join(self.shared_folder, "reports")
         template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
@@ -265,8 +284,7 @@ class SSNCreation(Core):
 
     def save_ssn_file_to_workspace(self, workspace_name, filepath, nodes, 
             edges, description):
-        """
-        """
+        """Create the SequenceSimilarityNetwork data object"""
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
         output_file_shock_id = self.dfu.file_to_shock(
             {"file_path": filepath})["shock_id"]
