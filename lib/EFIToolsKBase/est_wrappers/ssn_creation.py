@@ -1,7 +1,3 @@
-"""
-This ExampleReadsApp demonstrates how to use best practices for KBase App
-development using the SFA base package.
-"""
 import os
 import logging
 import uuid
@@ -28,12 +24,46 @@ class SSNCreation(Core):
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
-        self.flow = NextflowRunner("pipelines/generatessn/generatessn.nf", "generatessn/kbase.config")
+        self.flow = NextflowRunner(
+            "pipelines/generatessn/generatessn.nf", 
+            "generatessn/kbase.config"
+        )
 
 
     def do_analysis(self, params):
-        edge_file_obj = self.dfu.get_objects({"object_refs": [params["blast_edge_file"]]})["data"][0]
+        """
+        gather files from the BlastEdgeFile data object, create input json with 
+        parameters for the generatessn.nf script, execute the script, gather
+        output files into the SequenceSimilarityNetwork data object, create
+        linked files for user-download, create HTML report to summarize results
+
+        Parameters
+        ----------
+            params
+                Dictionary of user input. Key:value pairs:
+                    "blast_edge_file": selected BlastEdgeFile data object
+                    "filter_options": dict, 
+                        "filter_parameter": string, which metric to filter 
+                            BLAST results by.
+                        "filter_value": float, value used as minimum cutoff for
+                            the "filter_parameter"
+                    "min_length": int, minimum sequence length to consider
+                    "max_length": int, maximum sequence length to consider
+                    "workspace_name": string, name of the narrative workspace
+
+        Returns
+        -------
+            output 
+                Dictionary of reference information for the report and data 
+                object created by the App. 
+        """
+        # grab the user-provided BlastEdgeFile data object
+        edge_file_obj = self.dfu.get_objects(
+            {"object_refs": [params["blast_edge_file"]]})["data"][0]
         print(edge_file_obj)
+
+        # grab important files from the BlastEdgeFile data object and stash
+        # these in the workspace storage
         self.dfu.shock_to_file({
             "shock_id": edge_file_obj["data"]["edgefile_handle"], 
             "file_path": os.path.join(self.shared_folder, "1.out.parquet"), 
@@ -44,46 +74,83 @@ class SSNCreation(Core):
             "file_path": os.path.join(self.shared_folder, "sequences.fa"), 
             "unpack": "unpack"}
         )
+        self.dfu.shock_to_file({
+            "shock_id": edge_file_obj["data"]["seq_meta_handle"], 
+            "file_path": os.path.join(
+                self.shared_folder, 
+                "sequence_metadata.tab"
+            ), 
+            "unpack": "unpack"}
+        )
 
         print(params)
         mapping = {
             "blast_parquet": os.path.join(self.shared_folder, "1.out.parquet"),
             "fasta_file": os.path.join(self.shared_folder, "sequences.fa"),
+            "seq_meta_file": os.path.join(
+                self.shared_folder, 
+                "sequence_metadata.tab"
+            ),
             "final_output_dir": self.shared_folder,
             "filter_parameter": params["filter_options"]["filter_parameter"],
             "filter_min_val": params["filter_options"]["filter_value"],
             "min_length": params["min_length"],
             "max_length": params["max_length"],
-            "ssn_name": "kbase_ssn",
-            "ssn_title": "kbase_ssn",
-            "maxfull": 0,
-            "uniref_version": 90,
+            # used in `get_annotations()` process
+            # currently not giving the user the option to use UniRef50?
+            "uniref_version": 90,   
             "efi_config": EFI_CONFIG_PATH,
-            "db_version": 100,
-            "job_id": 131,
-            "efi_db": EFI_DB_PATH
+            "efi_db": EFI_DB_PATH,
+            # used in `create_full_ssn()` process
+            "ssn_title": "kbase_ssn",
+            "db_version": EFI_DB_VERSION,
+            # unused keys
+            "ssn_name": "kbase_ssn",
+            "maxfull": 0,
+            "job_id": 131
         }
+
         self.flow.write_params_file(mapping)
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         print(self.shared_folder, os.listdir(self.shared_folder))
-        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.tab"), sep="\t")
-        data_ref = self.save_ssn_file_to_workspace(params["workspace_name"], os.path.join(self.shared_folder, "full_ssn.xgmml"), int(stats["Nodes"][0]), int(stats["Edges"][0]), "An SSN file and metadata")
+        stats = pd.read_csv(
+            os.path.join(self.shared_folder, "stats.tab"), 
+            sep="\t"
+        )
+        data_ref = self.save_ssn_file_to_workspace(
+            params["workspace_name"], 
+            os.path.join(self.shared_folder, "full_ssn.xgmml"), 
+            int(stats["Nodes"][0]), 
+            int(stats["Edges"][0]), 
+            "An SSN XGMML file and metadata"
+        )
+        
         report_data = {
             "stats": stats.to_html(),
             "workspace_name": params["workspace_name"]
         }
-        output = self.generate_report(report_data, [{"ref": data_ref["shock_id"], "description": "SSN XGMML file and metadata"}])
+        
+        output = self.generate_report(
+            report_data, 
+            [
+                {
+                    "ref": data_ref["shock_id"], 
+                    "description": "SSN XGMML file and metadata"
+                }
+            ]
+        )
         return output
 
-    def _create_file_links(self, inlcude_zip=True):
+    def _create_file_links(self, include_zip=True):
+        """link named files to the App's output report"""
         output_file_names = [
             "2.out",
             "filtered_sequences.fasta",
             "full_ssn.xgmml",
-            "struct.filtered.out"
+            "ssn_metadata.tab"
         ]
 
         file_links = [
@@ -97,7 +164,8 @@ class SSNCreation(Core):
                 "path": os.path.join(self.shared_folder, output_file_names[1]),
                 "name": output_file_names[1],
                 "label": output_file_names[1],
-                "description": "Filtered FASTA file containing sequences present int network"
+                "description": "Filtered FASTA file containing sequences" 
+                                + " present int network"
             },
             {
                 "path": os.path.join(self.shared_folder, output_file_names[2]),
@@ -109,13 +177,16 @@ class SSNCreation(Core):
                 "path": os.path.join(self.shared_folder, output_file_names[3]),
                 "name": output_file_names[3],
                 "label": output_file_names[3],
-                "description": "Taxonomy and other metadata about each sequence in filtered_sequences.fasta"
+                "description": "Taxonomy and other metadata about each" 
+                                + " sequence in filtered_sequences.fasta"
             }
         ]
 
-        if inlcude_zip:
+        if include_zip:
             zip_path = os.path.join(self.shared_folder, "all_files.zip")
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+            with zipfile.ZipFile(
+                    zip_path, "w", zipfile.ZIP_DEFLATED, 
+                    allowZip64=True) as zf:
                 for name in output_file_names:
                     zf.write(os.path.join(self.shared_folder, name), name)
 
@@ -123,7 +194,8 @@ class SSNCreation(Core):
                 "path": zip_path,
                 "name": "all_files.zip",
                 "label": "all_files.zip",
-                "description": "All files created by the analysis collected in a zip zrchive"
+                "description": "All files created by the analysis collected" 
+                                + " in a zip archive"
             }
             file_links = [zip_file_link] + file_links
 
@@ -131,6 +203,28 @@ class SSNCreation(Core):
 
 
     def generate_report(self, params, objects_created):
+        """ 
+        Generate the HTML report file associated with the App
+
+        Parameters
+        ----------
+            params
+                Dictionary. Key:value pairs:
+                    "stats": html string representing the tabulated SSN results
+                    "filter_options": dict, 
+                    "workspace_name": string, name of the narrative workspace
+
+            objects_created
+                list of dicts, each dict containing the shock_id reference and 
+                description for the Data Objects created by the App. Only 
+                contains info about the SequenceSimilarityNetwork object.
+
+        Returns
+        -------
+            output 
+                Dictionary of reference information for the report file. 
+
+        """
         reports_path = os.path.join(self.shared_folder, "reports")
         template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
         template_variables = params
@@ -188,24 +282,32 @@ class SSNCreation(Core):
             "report_ref": report_info["ref"],
         }
 
-    def save_ssn_file_to_workspace(self, workspace_name, filepath, nodes, edges, description):
+    def save_ssn_file_to_workspace(self, workspace_name, filepath, nodes, 
+            edges, description):
+        """Create the SequenceSimilarityNetwork data object"""
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        output_file_shock_id = self.dfu.file_to_shock({"file_path": filepath})["shock_id"]
-        print(f"Uploaded filepath {filepath} to shock and got id {output_file_shock_id}")
+        output_file_shock_id = self.dfu.file_to_shock(
+            {"file_path": filepath})["shock_id"]
+        
+        print(f"Uploaded filepath {filepath} to shock and got id" 
+                + f" {output_file_shock_id}")
+        
         save_object_params = {
-        'id': workspace_id,
-        'objects': [{
-            'type': 'EFIToolsKBase.SequenceSimilarityNetwork',
-            'data': {
-                "ssn_xgmml_handle": output_file_shock_id,
-                "node_count": nodes,
-                "edge_count": edges,
-            },
-            'name': "ssn_file"
-        }]
+            'id': workspace_id,
+            'objects': [
+                {
+                    'type': 'EFIToolsKBase.SequenceSimilarityNetwork',
+                    'data': {
+                        "ssn_xgmml_handle": output_file_shock_id,
+                        "node_count": nodes,
+                        "edge_count": edges,
+                    },
+                'name': "ssn_file"
+                }
+            ]
         }
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
-        object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
         return {"shock_id": object_reference,
                 "name": os.path.basename(filepath),
                 "label": os.path.basename(filepath),

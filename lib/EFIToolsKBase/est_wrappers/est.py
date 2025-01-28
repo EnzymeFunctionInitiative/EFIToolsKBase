@@ -1,3 +1,4 @@
+
 import os
 import json
 import logging
@@ -49,28 +50,45 @@ class EFIEST(Core):
         # if retcode != 0:
         #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         print(self.shared_folder, os.listdir(self.shared_folder))
-        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, "pident_sm.png"))
-        length_dataurl = png_to_base64(os.path.join(self.shared_folder, "length_sm.png"))
-        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, "edge_sm.png"))
+        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, 
+                                                    "pident_sm.png"))
+        length_dataurl = png_to_base64(os.path.join(self.shared_folder, 
+                                                    "length_sm.png"))
+        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, 
+                                                  "edge_sm.png"))
 
         with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
             acc_data = json.load(f)
 
-        data_ref = self.save_edge_file_to_workspace(workspace_name, 
-                                                os.path.join(self.shared_folder, "1.out.parquet"), 
-                                                os.path.join(self.shared_folder, "all_sequences.fasta"),
-                                                os.path.join(self.shared_folder, "evalue.tab"),
-                                                acc_data)
+        print("Create the BlastEdgeFile object")
+        data_ref = self.save_edge_file_to_workspace(
+            workspace_name, 
+            os.path.join(self.shared_folder, "1.out.parquet"), 
+            os.path.join(self.shared_folder, "all_sequences.fasta"),
+            os.path.join(self.shared_folder, "evalue.tab"),
+            os.path.join(self.shared_folder, "sequence_metadata.tab"),
+            acc_data
+        )
+        
+        print("Create the HTML report")
         report_data = {
             "pident_img": pident_dataurl, 
             "length_img": length_dataurl, 
             "edge_img": edge_dataurl, 
             "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3f}",
             "edge_count": acc_data["EdgeCount"],
-            "unique_seqs": acc_data["UniqueSeq"],
-            "workspace_name": workspace_name
+            "unique_seqs": acc_data["UniqueSeq"]
         }
-        output = self.generate_report(report_data, [{"ref": data_ref, "description": "Edge file and other metadata"}])
+        # only one object created (the GNDViewFile) so list of len 1
+        objects_created_list = [
+            {
+                "ref": data_ref, 
+                "description": "Edge file and other metadata"
+            }
+        ]
+        output = self.generate_report(workspace_name, report_data, 
+                                      objects_created_list)
+        
         output["edge_ref"] = data_ref
 
         return output
@@ -140,7 +158,9 @@ class EFIEST(Core):
 
         if inlcude_zip:
             zip_path = os.path.join(self.shared_folder, "all_files.zip")
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+            with zipfile.ZipFile(zip_path, 
+                    "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
+                # loop over files in list and stash in the zip
                 for name in output_file_names:
                     zf.write(os.path.join(self.shared_folder, name), name)
 
@@ -148,90 +168,118 @@ class EFIEST(Core):
                 "path": zip_path,
                 "name": "all_files.zip",
                 "label": "all_files.zip",
-                "description": "All files created by the analysis collected in a zip zrchive"
+                "description": "All files created by the analysis collected"
+                                + " in a zip archive"
             }
             file_links = [zip_file_link] + file_links
 
         return file_links
 
-    def generate_report(self, params, objects_created):
+    def generate_report(self, ws_name, template_var_dict, objects_created):
+        """
+        """
+        # get the workspace_id
+        workspace_id = self.dfu.ws_name_to_id(ws_name)
+
+        # output_files is a list of dicts, each element mapping to a file
+        # created by the app. 
+        output_files = self._create_file_links()
+
+        # hand make the reports_path and file io variables
+        # ... not sure why we need a new subdir?
         reports_path = os.path.join(self.shared_folder, "reports")
-        template_path = os.path.join(TEMPLATES_DIR, "est_report.html")
-        template_variables = params
+        os.makedirs(reports_path, exist_ok=True)
+        report_uuid = str(uuid.uuid4())
+        report_name = f"EFI_EST_{report_uuid}"
+        report_path = os.path.join(reports_path, f"{report_name}.html")
 
-        # The KBaseReport configuration dictionary
-        config = dict(
-            report_name=f"EFI_EST_{str(uuid.uuid4())}",
-            reports_path=reports_path,
-            template_variables=template_variables,
-            workspace_name=params["workspace_name"],
-            objects_created=objects_created
-        )
+        # fill KBaseReport configuration dictionary
+        kbr_config = {
+            "workspace_id": workspace_id,
+            "file_links": output_files,
+            "objects_created": objects_created,
+            "direct_html_link_index": 0,
+            "html_links": [
+                {
+                    "description": "HTML report for EST analysis",
+                    "name": f"{report_name}.html",
+                    "path": reports_path
+                }
+            ],
+            "html_window_height": 375,
+            "report_object_name": report_name,
+            "message": "A sample report." # update!
+        }
 
-        logging.info("Creating report...")
         # Create report from template
+        logging.info("Creating report...")
+        template_path = os.path.join(TEMPLATES_DIR, "est_report.html")
         with open(template_path) as tpf:
             template_source = tpf.read()
+        # set up the jinja2 template environment
         env = Environment(
             loader=DictLoader(dict(template=template_source)),
             autoescape=select_autoescape(default=False)
         )
         template = env.get_template("template")
-        report = template.render(**config["template_variables"])
-        # Create report object including report
-        report_name = config["report_name"]
-        reports_path = config["reports_path"]
-        workspace_name = config["workspace_name"]
-        os.makedirs(reports_path, exist_ok=True)
-        report_path = os.path.join(reports_path, "index.html")
+        # feed in the template_var_dict data and save the text in report
+        report = template.render(**template_var_dict)
+        
+        # Create report file using the uuid'd "report_object_name"
         with open(report_path, "w") as report_file:
             report_file.write(report)
-        html_links = [
-            {
-                "description": "report",
-                "name": "index.html",
-                "path": reports_path,
-            },
-        ]
 
-        output_files = self._create_file_links()
-
-        report_info = self.report.create_extended_report(
-            {
-                "direct_html_link_index": 0,
-                "html_links": html_links,
-                "message": "A sample report.",
-                "report_object_name": report_name,
-                "workspace_name": workspace_name,
-                "file_links": output_files,
-                "objects_created": config["objects_created"]
-            }
-        )
+        # run the KBaseReport method to create the report to be shown
+        report_info = self.report.create_extended_report(kbr_config)
+        
         return {
             "report_name": report_info["name"],
             "report_ref": report_info["ref"],
         }
 
-    def save_edge_file_to_workspace(self, workspace_name, edge_filepath, fasta_filepath, evalue_filepath, acc_data):
+    def save_edge_file_to_workspace(
+            self, 
+            workspace_name, 
+            edge_filepath, 
+            fasta_filepath, 
+            evalue_filepath, 
+            seq_meta_filepath, 
+            acc_data):
+        """
+        """
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        edge_file_shock_id = self.dfu.file_to_shock({"file_path": edge_filepath})["shock_id"]
-        fasta_handle_shock_id = self.dfu.file_to_shock({"file_path": fasta_filepath})["shock_id"]
-        evalue_shock_id = self.dfu.file_to_shock({"file_path": evalue_filepath})["shock_id"]
+        edge_file_shock_id = self.dfu.file_to_shock(
+                {"file_path": edge_filepath})["shock_id"]
+        fasta_handle_shock_id = self.dfu.file_to_shock(
+                {"file_path": fasta_filepath})["shock_id"]
+        evalue_shock_id = self.dfu.file_to_shock(
+                {"file_path": evalue_filepath})["shock_id"]
+        seq_meta_shock_id = self.dfu.file_to_shock(
+                {"file_path": seq_meta_filepath})["shock_id"]
+        # prep the save_objects() parameter dictionary
         save_object_params = {
-        'id': workspace_id,
-        'objects': [{
-            'type': 'EFIToolsKBase.BlastEdgeFile',
-            'data': {
-                "edgefile_handle": edge_file_shock_id,
-                "fasta_handle": fasta_handle_shock_id,
-                "evalue_handle": evalue_shock_id,
-                "edge_count": acc_data["EdgeCount"],
-                "unique_seq": acc_data["UniqueSeq"],
-                "convergence_ratio": acc_data['ConvergenceRatio'],
-            },
-            'name': "blast_edge_file"
-        }]
+            "id": workspace_id,
+            # objects is a list of dicts, where each dict element contains info 
+            # about the object to be saved/created
+            "objects": [
+                {
+                    "type": "EFIToolsKBase.BlastEdgeFile",
+                    'name': "blast_edge_file",
+                    "data": {
+                        "edgefile_handle": edge_file_shock_id,
+                        "fasta_handle": fasta_handle_shock_id,
+                        "evalue_handle": evalue_shock_id,
+                        "seq_meta_handle": seq_meta_shock_id,
+                        "edge_count": acc_data["EdgeCount"],
+                        "unique_seq": acc_data["UniqueSeq"],
+                        "convergence_ratio": acc_data['ConvergenceRatio'],
+                    }
+                }
+            ]
         }
+        # since only one object is being created, just grab the zeroth element
+        # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
-        object_reference = str(dfu_oi[6]) + '/' + str(dfu_oi[0]) + '/' + str(dfu_oi[4])
+        object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
+
         return object_reference

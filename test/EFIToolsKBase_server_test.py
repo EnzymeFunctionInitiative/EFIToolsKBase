@@ -133,7 +133,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_SSN_Creation_alignment_score(self):
         ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
-            "blast_edge_file": "73509/94/5",
+            "blast_edge_file": "73509/94/12",
             "filter_options": {
                 "filter_parameter": "alignment_score",
                 "filter_value": 96
@@ -146,7 +146,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_SSN_Creation_pident(self):
         ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
-            "blast_edge_file": "73509/94/5",
+            "blast_edge_file": "73509/94/12",
             "filter_options": {
                 "filter_parameter": "pident",
                 "filter_value": 40
@@ -159,7 +159,8 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_SSN_Utils_Color_SSN(self):
         ret = self.serviceImpl.run_EFI_SSN_Utils_Color_SSN(self.ctx, {
-            "ssn_file": "73509/108/3",
+            "ssn_file": "73509/108/6",
             "workspace_name": self.wsName
         })
         self.assertTrue(len(ret[0]["report_name"]))
+
