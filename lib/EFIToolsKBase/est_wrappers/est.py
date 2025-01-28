@@ -24,7 +24,6 @@ class EFIEST(Core):
         # Here we adjust the instance attributes for our convenience.
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
-        self.au = self.clients.AssemblyUtil
         self.wsClient = self.clients.Workspace
         self.flow = NextflowRunner("pipelines/est/est.nf", "est/kbase.config")
 
@@ -282,4 +281,5 @@ class EFIEST(Core):
         # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
         object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
+
         return object_reference

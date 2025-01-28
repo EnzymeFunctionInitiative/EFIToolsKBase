@@ -4,9 +4,7 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
-from installed_clients.ReadsUtilsClient import ReadsUtils
 from installed_clients.DataFileUtilClient import DataFileUtil
-from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.WorkspaceClient import Workspace
 
 from .est_wrappers.est_sequence_blast import EFISequenceBLAST
@@ -59,9 +57,7 @@ class EFIToolsKBase:
             shared_folder=self.shared_folder,
             clients=dict(
                 KBaseReport=KBaseReport,
-                ReadsUtils=ReadsUtils,
                 DataFileUtil=DataFileUtil,
-                AssemblyUtil=AssemblyUtil,
                 Workspace=Workspace
             ),
         )
