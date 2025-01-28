@@ -15,13 +15,13 @@ class EFISequenceBLAST(EFIEST):
             f.write(query_sequence)
         # handle user-input BLAST search DB choice; choose from a dropdown menu
         # containing only "UniProt", "UniRef90", and "UniRef50"
-        if params['blast_options']["sequence_database"] == "UniProt":
+        if params["blast_options"]["sequence_database"] == "UniProt":
             search_sequence_database = EFI_DB_PATH
-        elif params['blast_options']["sequence_database"] == "UniRef90":
+        elif params["blast_options"]["sequence_database"] == "UniRef90":
             print("UniRef90 sequence database not currently available."
                     + f" Using default: {EFI_DB_PATH}")
             search_sequence_database = EFI_DB_PATH
-        elif params['blast_options']["sequence_database"] == "UniRef50":
+        elif params["blast_options"]["sequence_database"] == "UniRef50":
             print("UniRef50 sequence database not currently available."
                     + f" Using default: {EFI_DB_PATH}")
             search_sequence_database = EFI_DB_PATH
