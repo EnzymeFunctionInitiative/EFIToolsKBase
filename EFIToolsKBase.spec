@@ -127,6 +127,10 @@ module EFIToolsKBase {
     */
     funcdef run_EFIToolsKBase(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
+    
+    /*
+        Actual funcdef lines calling their designed input and output objects
+    */
     funcdef run_EFI_EST_Sequence_BLAST(run_EFI_EST_Sequence_BLAST_input params) returns (ESTReportResults output) authentication required;
     
     funcdef run_EFI_EST_FASTA(run_EFI_EST_FASTA_input params) returns (ESTReportResults output) authentication required;
