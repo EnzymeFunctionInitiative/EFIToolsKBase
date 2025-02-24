@@ -16,15 +16,18 @@ class EFISequenceBLAST(EFIEST):
         # handle user-input BLAST search DB choice; choose from a dropdown menu
         # containing only "UniProt", "UniRef90", and "UniRef50"
         if params["blast_options"]["sequence_database"] == "UniProt":
-            search_sequence_database = EFI_DB_PATH
+            search_sequence_database = FASTA_DB_PATH
+        ######################################################################
+        # NOTE: update this once EST app enables this
         elif params["blast_options"]["sequence_database"] == "UniRef90":
             print("UniRef90 sequence database not currently available."
                     + f" Using default: {EFI_DB_PATH}")
-            search_sequence_database = EFI_DB_PATH
+            search_sequence_database = FASTA_DB_PATH
         elif params["blast_options"]["sequence_database"] == "UniRef50":
             print("UniRef50 sequence database not currently available."
                     + f" Using default: {EFI_DB_PATH}")
-            search_sequence_database = EFI_DB_PATH
+            search_sequence_database = FASTA_DB_PATH
+        ######################################################################
 
         # create parameter dictionary
         mapping = {
