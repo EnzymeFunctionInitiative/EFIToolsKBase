@@ -39,7 +39,7 @@ class EFISequenceBLAST(EFIEST):
             "efi_config": EFI_CONFIG_PATH,
             "fasta_db": FASTA_DB_PATH,
             "efi_db": EFI_DB_PATH,
-            "num_blast_matches": 250,   # this should not exist
+            "num_blast_matches": 250, # should this be hardcoded or added as a UI parameter?  
             "blast_evalue": f"1e-{params['ssn_e_value']}",
             "sequence_version": "uniprot",
             # parameters specifically for the sequence blast search step
