@@ -1,7 +1,8 @@
 {
     "ver": "0.0.1",
     "authors": [
-        "hdemeyer"
+        "hdemeyer",
+	"rbdavid"
     ],
     "contact": "",
     "categories": [
@@ -9,7 +10,7 @@
     ],
     "widgets": {
         "input": null,
-        "output": null
+        "output": "sahasWidget"
     },
     "parameters": [
         {
@@ -17,19 +18,18 @@
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "file"
+            "field_type": "text",
+            "default_values": [""],
+            "text_options": {
+		    "valid_ws_types": ["EFIToolsKBase.SequenceSimilarityNetwork"]
+	    }
         },
         {
             "id": "neighborhood_size",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                "10"
-            ],
+            "default_values": ["10"],
             "field_type": "text",
             "text_options": {
                 "valid_ws_types": [],
@@ -43,18 +43,17 @@
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                "20"
-            ],
+            "default_values": ["20."],
             "field_type": "text",
             "text_options": {
                 "valid_ws_types": [],
-                "validate_as": "int",
-                "min_int": 0,
-                "max_int": 100
+                "validate_as": "float",
+                "min_float": 0,
+                "max_float": 100
             }
         }
     ],
+
     "parameter-groups": [
         {
             "id": "gnt_submission",
@@ -69,11 +68,12 @@
             "with_border": true
         }
     ],
+
     "behavior": {
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_GNT_GNT_Submission",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
@@ -90,13 +90,11 @@
                 },
                 {
                     "input_parameter": "neighborhood_size",
-                    "target_property": "neighborhood_size",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "neighborhood_size"
                 },
                 {
                     "input_parameter": "percentage_lower_limit",
-                    "target_property": "percentage_lower_limit",
-                    "target_type_transform": "resolved-ref"
+                    "target_property": "percentage_lower_limit"
                 }
             ],
             "output_mapping": [
