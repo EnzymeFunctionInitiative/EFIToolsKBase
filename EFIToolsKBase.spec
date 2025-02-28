@@ -121,6 +121,18 @@ module EFIToolsKBase {
 	string ssn_file;		/* actually maps to a EFIToolsKBase.SequenceSimilarityNetwork data object */
     } run_EFI_SSN_Utils_Color_SSN_input;
 
+    typedef structure {
+	string ssn_data_object;
+	string neighborhood_size;	/* not actually used? */
+	string percentage_lower_limit;	/* not actually used? */
+    } run_EFI_GNT_GNT_Submission_input;
+
+    /* temp object design */
+    typedef structure {
+	string gnd_obj_ref;
+	string gnd_title;
+    } GNDViewFile_mapping;
+
 
     /*
         This example function accepts any number of parameters and returns results associated with the KBaseReport object
@@ -142,4 +154,6 @@ module EFIToolsKBase {
     funcdef run_EFI_EST_SSN_Creation(run_EFI_EST_SSN_Creation_input params) returns (ReportResults output) authentication required;
 
     funcdef run_EFI_SSN_Utils_Color_SSN(run_EFI_SSN_Utils_Color_SSN_input params) returns (ReportResults output) authentication required;
+
+    funcdef run_EFI_GNT_GNT_Submission(run_EFI_GNT_GNT_Submission_input params) returns (GNDViewFile_mapping output) authentication required;
 };
