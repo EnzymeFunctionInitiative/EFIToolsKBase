@@ -14,7 +14,7 @@
     },
     "parameters": [
         {
-            "id": "ssn_file",
+            "id": "ssn_data_object",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -58,7 +58,7 @@
         {
             "id": "gnt_submission",
             "parameters": [
-                "ssn_file",
+                "ssn_data_object",
                 "neighborhood_size",
                 "percentage_lower_limit"
             ],
@@ -84,8 +84,8 @@
                     "target_property": "workspace_id"
                 },
                 {
-                    "input_parameter": "ssn_file",
-                    "target_property": "ssn_file",
+                    "input_parameter": "ssn_data_object",
+                    "target_property": "ssn_data_object",
                     "target_type_transform": "resolved-ref"
                 },
                 {
