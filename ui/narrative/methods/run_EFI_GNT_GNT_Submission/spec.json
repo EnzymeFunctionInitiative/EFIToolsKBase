@@ -25,7 +25,7 @@
 	    }
         },
         {
-            "id": "neighborhood_size",
+            "id": "nb_size",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -39,7 +39,7 @@
             }
         },
         {
-            "id": "percentage_lower_limit",
+            "id": "cooc_threshold",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -51,7 +51,15 @@
                 "min_float": 0,
                 "max_float": 100
             }
-        }
+        },
+	{
+	    "id": "gnd_object_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": ["gnd_view_file"],
+            "field_type": "text"
+	}
     ],
 
     "parameter-groups": [
@@ -59,8 +67,8 @@
             "id": "gnt_submission",
             "parameters": [
                 "ssn_data_object",
-                "neighborhood_size",
-                "percentage_lower_limit"
+                "nb_size",
+                "cooc_threshold"
             ],
             "optional": false,
             "advanced": false,
@@ -89,12 +97,16 @@
                     "target_type_transform": "resolved-ref"
                 },
                 {
-                    "input_parameter": "neighborhood_size",
-                    "target_property": "neighborhood_size"
+                    "input_parameter": "nb_size",
+                    "target_property": "nb_size"
                 },
                 {
-                    "input_parameter": "percentage_lower_limit",
-                    "target_property": "percentage_lower_limit"
+                    "input_parameter": "cooc_threshold",
+                    "target_property": "cooc_threshold"
+                },
+                {
+                    "input_parameter": "gnd_object_name",
+                    "target_property": "gnd_object_name"
                 }
             ],
             "output_mapping": [
