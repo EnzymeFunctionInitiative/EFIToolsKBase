@@ -39,117 +39,167 @@ class EFIGNT(Core):
         ----------
         params, 
             dict, keys from the UI input fields
-                "ssn_data_object": data object reference string
+                "ssn_data_object": str, data object reference string
                 "nb_size": int, number of neighbors from up and down
-                                     stream to be gathered and analyzed.
-                "cooc_threshold": float, lower limit for the 
-                                               co-occurrence of Pfam families 
-                                               in the SSN clusters' 
-                                               neighborhoods.
+                           stream to be gathered and analyzed.
+                "cooc_threshold": float, lower limit for the co-occurrence of 
+                                  Pfam families in the SSN clusters' 
+                                  neighborhoods.
                 "gnd_object_name": str, name to be used for the GNDViewFile 
                                    data object to be created from this App.
-        workspace_name,
-            string, passed in from params dict in runner 
-            (params["workspace_name"])
         
+
+        workspace_name,
+            str, passed in from params dict in runner (params["workspace_name"])
+
+
+
 
         RETURNS
         -------
         output_dict, 
-            dict filled with keys as defined by the UI output mapping
+            dict filled with ...
+
+
+            keys as defined by the UI output mapping
                 "gnd_ref" key maps to the object reference string created for
                 the GNDViewFile object written to the workspace
 
-
-
-
-        nextflow input parameters as keys associated values. Keys:
-            "ids_file": string, path to file with user-provided
-                        accession ids list
-            "description": string, just a temp value to pass on
-            "gnt_input": string, just a temp value that might be
-                         used to control the GNT pipeline
-            - this mapping dict is used to do string 
-              substitution on the yml parameter template (yet to
-              be implemented)
-
         """
-        # adding hardcoded input parameters
+        # log the start of the app
+        logging.info(f"Working in {workspace_name} Workspace.")
+        logging.info(f"shared folder ({self.shared_folder}) contains:\n" 
+            + f"{os.listdir(self.shared_folder)}")
+        
+        # adding hardcoded input parameters to the params dict
         params["final_output_dir"] = self.shared_folder
         params["efi_config"] = EFI_CONFIG_PATH
         params["efi_db"] = EFI_DB_PATH
+        
+        # NOTE: does this needs to change; write code that detects which
+        # sequence database to use?
         params["fasta_db"] = "/data/blastdb/combined.fasta" 
 
-        # grab the "ssn_input" sqlite file from the input ssn data object
-
+        # using the object reference, grab the input SequenceSimilarityNetwork
+        # data object.
+        ssn_file_obj = self.dfu.get_objects(
+            {"object_refs": [params["ssn_data_object"]]}
+        )["data"][0]
+        # grab the "ssn_input" xgmml file from the input ssn data object, save
+        # a copy of the file to the docker storage space as "full_ssn.xgmml" 
+        ssn_file_path = os.path.join(self.shared_folder, "full_ssn.xgmml"), # hardcoded file name
+        self.dfu.shock_to_file({
+            "shock_id": ssn_file_obj["data"]["ssn_xgmml_handle"], 
+            "file_path": ssn_file_path,
+            "unpack": "unpack"}
+        )
+        params["ssn_input"] = ssn_file_path
         
-        
-        # log the start of the app
-        logging.info(f"Working in {workspace_name} Workspace.")
-        logging.info(f"shared folder ({self.shared_folder}) contains:\n{os.listdir(self.shared_folder)}")
-        logging_str = "parameters for running the GNT:\n"
+        # log the parameters used for this run of the App
+        logging_str = "parameters for running the GNT:"
         for key, value in params.items():
-            logging_str += f"{key}: {value}\n"
+            logging_str += f"\n\t{key}: {value}"
         logging.info(logging_str)
 
-        if not logging_str:
-            raise SystemExit("Unexpected input type. Exiting.")
-        logging.info(logging_str)
+        # validate input params
+        fail = False
+        if params["nb_size"] < 1 or params["nb_size"] > 20:
+            logging.info(f'Invalid value for --nb-size ({params["nb_size"]}).')
+            fail = True
+        if params["cooc_threshold"] < 0 or params["cooc_threshold"] > 1:
+            logging.info(f'Invalid value for --cooc-threshold ({params["cooc_threshold"]}).')
+            fail = True
+        if fail:
+            exit("Failed to render input params.")
 
-        self.flow.write_params_file(mapping)
+        self.flow.write_params_file(params)
         self.flow.generate_run_command()
         retcode, stdout, stderr = self.flow.execute()
-        if retcode != 0:
-           raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+        #if retcode != 0:
+        #   raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
 
+        logging.info(f"shared folder ({self.shared_folder}) contains:\n" 
+            + f"{os.listdir(self.shared_folder)}")
         
-        #if not os.path.isfile(gnd_view_file_path):
-        #    raise FileNotFoundError("The expected sqlite file was not" + 
-        #                            "successfully downloaded")
+        ######################################################################
+        # validate the gnd.sqlite file and create the associated GNDViewFile 
+        # Object
+        logging.info(f'Creating the GNDViewFile object, named {params["gnd_object_name"]}.')
+        gnd_view_file_path = os.path.join(self.shared_folder, "gnd.sqlite")
+        # test the sqlite for readability
+        try:
+            with sqlite3.connect(gnd_view_file_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM attributes")
+                results = cursor.fetchall()
+                logging.info(results[0])
+        except Exception as e: 
+            logging.info(f"Unexpected error: {e=}, {type(err)=}")
+            raise
 
-        ## test the sqlite actually is readable
-        #print(gnd_view_file_path)
-        #try:
-        #    with sqlite3.connect(gnd_view_file_path) as conn:
-        #        cursor = conn.cursor()
-        #        cursor.execute("SELECT * FROM attributes")
-        #        results = cursor.fetchall()
-        #        print(results[0])
-        #except Exception as e: 
-        #    print(f"Unexpected error: {e=}, {type(err)=}")
-        #    raise
+        gnd_obj_ref = self.save_gnd_file_to_workspace(
+            workspace_name,
+            gnd_view_file_path,
+            params["gnd_object_name"],
+            "testing"
+        )
 
-        ############################################################
-
-
-
-
-        # attach the file to the workspace and get the GNDViewFile UPA
-        print("Create the GNDViewFile object")
-        data_ref = self.save_gnd_view_file_to_workspace(workspace_name, 
-                                                        gnd_view_file_path,
-                                                        mapping["description"])[0]
-        
-        print("Creating the HTML report")
-        # 
-        report_data = {
-            "nIDs": mapping["nIDs"],
-            "gnd_view_file_name": "gnd_view_file"
-        }
-        # only one object created (the GNDViewFile) so list of len 1
-        objects_created_list = [
+        # create an objects_created list, filled with dicts, each with "ref"
+        # and "description" keys associated for each data object created
+        # only the GNDViewFile object is created
+        objects_created = [
             {
-                "ref": data_ref, 
-                "description": "Genome Neighborhood Diagram View File"
+                "ref": gnd_obj_ref,
+                "description": "SQLite database file containing information needed to visualize the genome neighborhood diagrams of SSN clusters"
             }
         ]
+        ######################################################################
+        # prep the info to be fed into the generate_report() method
+        # read and prep the color_and_retrieve() output files
+        logging.info(f'Creating the HTML report.')
+        stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t", header=None).to_html(index=False)
+        try:
+            ### UPDATE PATH TO THIS FILE WHEN EST #148 ISSUE GETS FIXED
+            cluster_sizes = pd.read_csv(os.path.join(self.shared_folder, "cluster-data/id_lists/cluster_sizes.txt"), sep="\t").to_html(index=False)
+        except:
+            cluster_sizes = "No data"
+        
+        try:
+            conv_ratios = pd.read_csv(os.path.join(self.shared_folder, "conv_ratio.txt"), sep="\t").to_html(index=False)
+        except:
+            conv_ratios = "No data"
+
+        # read and prep the create_gnns() output files
+        hub = pd.read_csv(os.path.join(self.shared_folder, "hub_count.txt"), sep="\t", header=None).to_html(index=False)
+        cooc = pd.read_csv(os.path.join(self.shared_folder, "cooc_table.txt"), sep="\t", header=None).to_html(index=False)
+
+        # gather the html strings and link to the data objects
+        report_data = {
+            "stats_tab": stats,
+            "cluster_sizes_tab": cluster_sizes,
+            "conv_ratios_tab": conv_ratios,
+            "hub_tab": hub,
+            "cooc_tab": cooc,
+            "gnd_view_file_name": params["gnd_object_name"],
+        }
+
         report_output = self.generate_report(workspace_name, 
                                              report_data, 
                                              objects_created_list)
 
+        
+        
+
+
+        # NOTE: NEED TO FIGURE OUT WHAT INFO NEEDS TO BE PASSED TO THE IMPL.PY CODE
         return {"gnd_ref": data_ref, 
                 "report_ref": report_output["report_ref"], 
                 "report_name": report_output["report_name"]}
+
+
+
+
+
 
     def _create_file_links(self, include_zip=True):
         """
