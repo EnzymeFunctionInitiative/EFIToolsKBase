@@ -79,7 +79,7 @@ class EFIEST(Core):
             "edge_count": acc_data["EdgeCount"],
             "unique_seqs": acc_data["UniqueSeq"]
         }
-        # only one object created (the GNDViewFile) so list of len 1
+        # only one object created (the BlastEdgeFile) so list of len 1
         objects_created_list = [
             {
                 "ref": data_ref, 
