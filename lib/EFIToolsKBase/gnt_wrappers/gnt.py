@@ -76,7 +76,7 @@ class EFIGNT(Core):
         params["efi_config"] = EFI_CONFIG_PATH
         params["efi_db"] = EFI_DB_PATH
         
-        # NOTE: does this needs to change; write code that detects which
+        # NOTE: does this need to change; write code that detects which
         # sequence database to use?
         params["fasta_db"] = "/data/blastdb/combined.fasta" 
 
@@ -87,14 +87,15 @@ class EFIGNT(Core):
         )["data"][0]
         # grab the "ssn_input" xgmml file from the input ssn data object, save
         # a copy of the file to the docker storage space as "full_ssn.xgmml" 
-        ssn_file_path = os.path.join(self.shared_folder, "full_ssn.xgmml"), # hardcoded file name
+        ssn_file_path = os.path.join(self.shared_folder, "full_ssn.xgmml"),
         self.dfu.shock_to_file({
             "shock_id": ssn_file_obj["data"]["ssn_xgmml_handle"], 
             "file_path": ssn_file_path,
             "unpack": "unpack"}
         )
         params["ssn_input"] = ssn_file_path
-        
+        params.pop("ssn_data_object")
+
         # log the parameters used for this run of the App
         logging_str = "parameters for running the GNT:"
         for key, value in params.items():
@@ -107,7 +108,8 @@ class EFIGNT(Core):
             logging.info(f'Invalid value for --nb-size ({params["nb_size"]}).')
             fail = True
         if params["cooc_threshold"] < 0 or params["cooc_threshold"] > 1:
-            logging.info(f'Invalid value for --cooc-threshold ({params["cooc_threshold"]}).')
+            logging.info(f'Invalid value for --cooc-threshold '
+                         + f'({params["cooc_threshold"]}).')
             fail = True
         if fail:
             exit("Failed to render input params.")
@@ -124,7 +126,8 @@ class EFIGNT(Core):
         ######################################################################
         # validate the gnd.sqlite file and create the associated GNDViewFile 
         # Object
-        logging.info(f'Creating the GNDViewFile object, named {params["gnd_object_name"]}.')
+        logging.info('Creating the GNDViewFile object, named ' 
+                     + f'{params["gnd_object_name"]}.')
         gnd_view_file_path = os.path.join(self.shared_folder, "gnd.sqlite")
         # test the sqlite for readability
         try:
@@ -132,12 +135,12 @@ class EFIGNT(Core):
                 cursor = conn.cursor()
                 cursor.execute("SELECT * FROM attributes")
                 results = cursor.fetchall()
-                logging.info(results[0])
         except Exception as e: 
             logging.info(f"Unexpected error: {e=}, {type(err)=}")
             raise
 
-        gnd_obj_ref = self.save_gnd_file_to_workspace(
+        # create the GNDViewFile data object containing the gnd.sqlite file 
+        gnd_obj_ref = self.save_gnd_view_file_to_workspace(
             workspace_name,
             gnd_view_file_path,
             params["gnd_object_name"],
@@ -150,13 +153,19 @@ class EFIGNT(Core):
         objects_created = [
             {
                 "ref": gnd_obj_ref,
-                "description": "SQLite database file containing information needed to visualize the genome neighborhood diagrams of SSN clusters"
+                "description": "SQLite database file containing information"
+                    + " needed to visualize the genome neighborhood diagrams"
+                    + " of SSN clusters",
             }
         ]
+        
         ######################################################################
         # prep the info to be fed into the generate_report() method
         # read and prep the color_and_retrieve() output files
         logging.info(f'Creating the HTML report.')
+       
+
+
         stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t", header=None).to_html(index=False)
         try:
             ### UPDATE PATH TO THIS FILE WHEN EST #148 ISSUE GETS FIXED
@@ -173,6 +182,10 @@ class EFIGNT(Core):
         hub = pd.read_csv(os.path.join(self.shared_folder, "hub_count.txt"), sep="\t", header=None).to_html(index=False)
         cooc = pd.read_csv(os.path.join(self.shared_folder, "cooc_table.txt"), sep="\t", header=None).to_html(index=False)
 
+
+
+
+
         # gather the html strings and link to the data objects
         report_data = {
             "stats_tab": stats,
@@ -183,6 +196,7 @@ class EFIGNT(Core):
             "gnd_view_file_name": params["gnd_object_name"],
         }
 
+        # create the HTML report, including linking files
         report_output = self.generate_report(workspace_name, 
                                              report_data, 
                                              objects_created_list)
@@ -197,45 +211,155 @@ class EFIGNT(Core):
                 "report_name": report_output["report_name"]}
 
 
-
-
-
-
     def _create_file_links(self, include_zip=True):
         """
-        NOTE: replace hardcoded file paths/names to be dynamic or use a 
-              stem that is defined in user-input
-        """
-        # hard coded for now since no stem variable is given
-        output_file_names = [
-            "test.sqlite"
-        ]
+        !!! NOTE: missing SwissProt annotations by singleton
+        
+        Find, validate, and link important files created from the GNT to enable
+        users to download these files. 
 
+        Parameters
+        ----------
+            include_zip
+                bool, control for whether a zip file of all linked files is 
+                also created and linked. Default: True. 
+
+        Returns
+        -------
+            file_links
+                list of dicts, one dict per linked file. Each dict contains the
+                necessary information for the KBaseReport creater to find and
+                link the file to the Report.
+        """
+        # hard coded local file paths
         file_links = [
                 {
                     "path": os.path.join(self.shared_folder, 
-                                         output_file_names[0]),
-                    "name": output_file_names[0],
-                    "label":output_file_names[0],
-                    "description": "Genome Neighborhood Diagram view file",
+                                         "ssn_colored.xgmml"),
+                    "name": "ssn_colored.xgmml",
+                    "label":"Colored Sequence Similarity Network (SSN)",
+                    "description": 'Each cluster in the submitted SSN has been identified and assigned a unique number and color. Node attributes for "Neighbor Pfam Families" and "Neighbor InterPro Families" have been added.',
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "cluster_gnn.xgmml"),
+                    "name": "cluster_gnn.xgmml",
+                    "label":"SSN Cluster Hub-Nodes: Genome Neighborhood Network (GNN)",
+                    "description": " GNNs provide a representation of the neighboring Pfam families for each SSN cluster identified in the colored SSN. To be displayed, neighboring Pfams families must be detected in the specified window and at a co-occurrence frequency higher than the specified minimum.\n\nEach hub-node in the network represents a SSN cluster. The spoke nodes represent Pfam families that have been identified as neighbors of the sequences from the center hub.",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "pfam_gnn.xgmml"),
+                    "name": "pfam_gnn.xgmml",
+                    "label":"Pfam Family Hub-Nodes Genome Neighborhood Network (GNN)",
+                    "description": " GNNs provide a representation of the neighboring Pfam families for each SSN cluster identified in the colored SSN. To be displayed, neighboring Pfams families must be detected in the specified window and at a co-occurrence frequency higher than the specified minimum.\n\n Each hub-node in the network represents a Pfam family identified as a neighbor. The spokes nodes represent SSN clusters that identified the Pfam family from the center hub.",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "gnd.sqlite"),
+                    "name": "gnd.sqlite",
+                    "label":"Genome Neighborhood Diagrams (GNDs)",
+                    "description": "Diagrams representing genomic regions around the genes encoded for the sequences from the submitted SSN are generated. All genes present in the specified window can be visualized (no minimal co-occurrence frequency filter or neighborhood size threshold is applied). Diagram data can be downloaded in .sqlite file format for later review in the View Saved Diagrams tab.",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "nomatches_noneighbors.txt"),
+                    "name": "nomatches_noneighbors.txt",
+                    "label":"No matches/no neighbors file",
+                    "description": "",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "cooc_table.txt"),
+                    "name": "cooc_table.txt",
+                    "label":"Pfam family/cluster co-occurrence table file",
+                    "description": "",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "hub_count.txt"),
+                    "name": "hub_count.txt",
+                    "label":"GNN hub cluster sequence count file",
+                    "description": "",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "cluster-data/id_lists/cluster_sizes.txt"),
+                    "name": "cluster_sizes.txt",
+                    "label":"Cluster size file",
+                    "description": "",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "swissprot_clusters_desc.txt"),
+                    "name": "swissprot_clusters_desc.txt",
+                    "label":"SwissProt annotations per SSN cluster",
+                    "description": "",
+                },
+                {
+                    "path": os.path.join(self.shared_folder, 
+                                         "mapping_table.txt"),
+                    "name": "mapping_table.txt",
+                    "label":"Sequence to colored SSN cluster mapping file",
+                    "description": "",
                 }
         ]
 
-        if include_zip:
-            zip_path = os.path.join(self.shared_folder, "all_files.zip")
-            with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
-                for name in output_file_names:
-                    zf.write(os.path.join(self.shared_folder, name), name)
+        # gotta zip up directories for Mapping Tables download options
+        subdirs = [
+            ("nb_pfam/pfam/", "pfam.zip", "Neighbor Pfam domain fusions at specified minimal co-occurrence frequency "),
+            ("nb_pfam/pfam_split/", "pfam_split.zip", "Neighbor Pfam domains at specified minimal co-occurrence frequency "),
+            ("nb_pfam/all_pfam/", "all_pfam.zip", "Neighbor Pfam domain fusions at 0% minimal co-occurrence frequency"),
+            ("nb_pfam/all_pfam_split/", "all_pfam_split.zip", "Neighbor Pfam domains at 0% minimal co-occurrence frequency"),
+            ("nb_pfam/no_fam", "no_fam.zip", "Neighbors without Pfam assigned")
+        ]
+        
+        # loop over the subdirectories
+        for subdir, zip_file_name, label in subdirs:
+            # open a zip file to be written to.
+            zip_file_path = os.path.join(self.shared_folder, zip_file_name)
+            with zipfile.ZipFile(
+                    zip_file_path, 
+                    "w", 
+                    zipfile.ZIP_DEFLATED, 
+                    allowZip64=True) as zf:
+                # loop over files in the subdirectory and write them to the zip
+                for file in os.scandir(subdir):
+                    zf.write(f"{subdir}/{file.name}", arcname = file.name)
+            # append the zip file to the file_links list
+            file_links.append(
+                {
+                    "path": zip_file_path,
+                    "name": zip_file_name,
+                    "label": label,
+                    "description": "",
+                }
+            )
 
-            zip_file_link = {
-                "path": zip_path,
-                "name": "all_files.zip",
-                "label": "all_files.zip",
-                "description": "All files created by the analysis collected in a zip zrchive"
-            }
-            file_links = [zip_file_link] + file_links
+        # check the include_zip boolean
+        if include_zip:
+            zip_file_path = os.path.join(self.shared_folder, "all_files.zip")
+            # open a zip file to be written to.
+            with zipfile.ZipFile(
+                    zip_file_path, 
+                    "w", 
+                    zipfile.ZIP_DEFLATED, 
+                    allowZip64=True) as zf:
+                # loop over subdicts in file_links to grab the paths
+                for file_dict in file_links:
+                    zf.write(file_dict["path"], file_dict["name"])
+            # append the zip file to the file_links list
+            file_links.append(
+                {
+                    "path": zip_file_path,
+                    "name": "all_files.zip",
+                    "label": "all_files.zip",
+                    "description": "All files created by the analysis collected in a zip archive."
+                }
+            )
 
         return file_links
+
 
     def generate_report(self, ws_name, template_var_dict, objects_created):
         """
@@ -243,51 +367,39 @@ class EFIGNT(Core):
         associated html report, link files, ...
 
         runs the _create_file_links() method
-        :param ws_name: string, name for the active Workspace
-        :param template_var_dict: dict, keys are variables in the 
-                                  jinja2-readable template source file. Values
-                                  are strings pasted in the template. 
+        
+        Parameters
+        ----------
+            ws_name
+                str, name for the active Workspace.
+            template_var_dict
+                dict, keys are variables in the jinja2-readable template source
+                file. Values are strings pasted in the template. 
+            objects_created
+                list of dicts, the `gnd_ref` key maps to the GNDViewFile UPA 
+                string. 
 
-        :param objects_created: list of dicts, the `gnd_ref` key maps to the 
-                                GNDViewFile UPA string. 
-
-        :returns: dict, filled with information about the report object but 
-                        doesn"t return the actual dict report_info...
+        Returns
+        -------
+            dict, 
+                keys are "report_name" and "report_ref" with associated values. 
         """
         # get the workspace_id
         workspace_id = self.dfu.ws_name_to_id(ws_name)
 
         # output_files is a list of dicts, each element mapping to a file
-        # created by the app. 
-        # only the GNDViewFile sqlite file is created so no need to zip
-        output_files = self._create_file_links(include_zip=False)
+        # created by the app. subdict keys are "path", "name", "label", and
+        # "description"
+        output_files = self._create_file_links(include_zip=True)
 
         # hand make the reports_path and file io variables
-        # ... not sure why we need a new subdir? 
         reports_path = os.path.join(self.shared_folder, "reports")
         os.makedirs(reports_path, exist_ok=True)
         report_uuid = str(uuid.uuid4())
         report_name = f"EFI_GNT_{report_uuid}"
-        report_path = os.path.join(reports_path, 
-                                   f"{report_name}.html")
+        report_path = os.path.join(reports_path, f"{report_name}.html")
 
-        # fill the KBaseReport configuration dictionary
-        kbr_config = {"workspace_id": workspace_id,
-                      "file_links": output_files,
-                      "objects_created": objects_created,
-                      "direct_html_link_index": 0,
-                      "html_links": [
-                          {"description": "HTML report for GNT Sequence ID Lookup",
-                           "name": f"{report_name}.html",
-                           "path": reports_path}
-                          ],
-                      "html_window_height": 375,
-                      "report_object_name": report_name,
-                      "message": "A sample report." # the summary tab
-                      }
-        
-        # Create report from template
-        logging.info("Creating report...")
+        # create report from the template
         template_path = os.path.join(TEMPLATES_DIR, "gnt_report.html")
         with open(template_path) as tpf:
             template_source = tpf.read()
@@ -304,8 +416,27 @@ class EFIGNT(Core):
         with open(report_path, "w") as report_file:
             report_file.write(report)
 
+        # fill the KBaseReport configuration dictionary
+        kbr_config = {
+            "workspace_id": workspace_id,
+            "file_links": output_files,
+            "objects_created": objects_created,
+            "direct_html_link_index": 0,
+            "html_links": [
+                {
+                    "path": reports_path,
+                    "name": f"{report_name}.html",
+                    "description": "HTML report for GNT Submission App",
+                }
+            ],
+            "html_window_height": 375,
+            "report_object_name": report_name,
+            "message": "A sample report." # printed in the summary tab
+        }
+        
         # run the KBaseReport method to create the report to be shown
         report_info = self.report.create_extended_report(kbr_config)
+        print(report_info)
         
         # return the name and UPA for the report file
         return {
@@ -313,55 +444,66 @@ class EFIGNT(Core):
             "report_ref": report_info["ref"],
         }
 
-    def save_gnd_view_file_to_workspace(self, 
-                                        workspace_name, 
-                                        gnd_view_file_path,
-                                        title):
+    def save_gnd_view_file_to_workspace(
+            self, 
+            ws_name, 
+            gnd_view_file_path,
+            data_obj_name,
+            title):
         """
-        save the GNDViewFile file to the workspace and return its object UPA
+        Save the GNDViewFile file to the workspace and return its object UPA.
+
+        Parameters
+        ----------
+            ws_name
+                str, name for the active Workspace.
+            gnd_view_file_path
+                str, file path where the "gnd.sqlite" file is stashed.
+            data_obj_name
+                str, name for the GNDViewFile data object to be used in the
+                data tab.
+            
+            title
+                str, ....
+
+        Returns
+        -------
+            gnd_object_reference
+                str, UPA of the GNDViewFile object that is created with the
+                format f"{wsid}/{objid}/{version}"
         """
         # get the ID instead of the name. apparently there's some race 
         # conditions to be considered.
-        workspace_id = self.dfu.ws_name_to_id(workspace_name)
-        print(type(workspace_id))
+        workspace_id = self.dfu.ws_name_to_id(ws_name)
         # move file to the blobstore and get its ID
-        print(f'trying to get shock id of the gnd view file {gnd_view_file_path}')
         gnd_view_file_shock_id = self.dfu.file_to_shock({"file_path": gnd_view_file_path})["shock_id"]
         # prep the save_objects() parameter dictionary
         save_object_params = {
             "id": workspace_id,
             # objects is a list of dicts, where each element contains info about
             # the object to be saved/created
-            "objects": [{
-                        "type": "EFIToolsKBase.GNDViewFile",
-                        "data": {
-                                "gnd_view_file_handle": gnd_view_file_shock_id,
-                                "view_title": title,
-                                },
-                        "name": "gnd_view_file"}
-                        # TODO: RBD
-                        # change this to name the object, take user input into
-                        # account here or use "id" instead... need to look at 
-                        # DataFileUtil save_objects() method for more details
-                        ]
-            }
+            "objects": [
+                {
+                    "type": "EFIToolsKBase.GNDViewFile",
+                    "data": {
+                        "gnd_view_file_handle": gnd_view_file_shock_id,
+                        "view_title": title,
+                    },
+                    "name": data_obj_name
+                }
+            ]
+        }
         # save file(s) to the workspace, given the parameters defined above
         # dfu.save_objects returns a list of length 
         # len(save_object_params["objects"]), each element being a tuple of 
-        # len 11. See DataFileUtil client for more information
+        # len 11. See DataFileUtil client for more information.
         
         # since only one object is being created, just grab the zeroth element
         # and parse its tuple
-        print('grabbing the datafileutil object information')
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
+        print(dfu_oi)
         # creates a str of f"{wsid}/{objid}/{version}" that is the object's UPA
-        gnd_object_reference = str(dfu_oi[6]) + "/" + str(dfu_oi[0]) + "/" + str(dfu_oi[4])
-        return [gnd_object_reference]
-
-
-
-
-
-
+        gnd_object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
+        return gnd_object_reference
 
 
