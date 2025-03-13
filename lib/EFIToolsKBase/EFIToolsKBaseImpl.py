@@ -15,6 +15,8 @@ from .est_wrappers.ssn_creation import SSNCreation
 
 from .ssnutil_wrappers.colorssn import ColorSSN
 
+from .gnt_wrappers.gnt import EFIGNT
+
 from base import Core
 
 #END_HEADER
@@ -229,6 +231,37 @@ class EFIToolsKBase:
                              'output is not type dict as required.')
         # return the results
         return [output]
+
+    def run_EFI_GNT_GNT_Submission(self, ctx, params):
+        """
+        :param ctx: ..., the context object
+        :param params: input parameters as a dict 
+        :returns: list of dict, output dict is filled with: 
+                  "GNDViewFile_ref" and "report_ref" keys that map to the 
+                  respective files' UPA string
+                  "report_name" that maps to the report's file name? why is this important???
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_EFI_GNT_GNT_Submission
+        gnt_submission = EFIGNT(ctx, self.config)
+        logging.info("Running the GNT Submission app with input parameters:" 
+                     + f"\n{params}")
+        output = gnt_submission.run_gnt_pipeline(params)
+
+        # output is a dict with keys matching the content defined in the root 
+        # EFIToolsKBase spec file
+
+        #END run_EFI_GNT_GNT_Submission
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError("Method run_EFI_GNT_GNT_Submission return value "
+                             + "output is not type dict as required.")
+        # return the results
+        return [output]
+
+
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
@@ -238,3 +271,4 @@ class EFIToolsKBase:
                      'git_commit_hash': self.GIT_COMMIT_HASH}
         #END_STATUS
         return [returnVal]
+
