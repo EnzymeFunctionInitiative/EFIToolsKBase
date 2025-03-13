@@ -37,7 +37,7 @@ class EFIGNT(Core):
 
         PARAMETERS
         ----------
-        params, 
+        params 
             dict, keys from the UI input fields
                 "ssn_data_object": str, data object reference string
                 "nb_size": int, number of neighbors from up and down
@@ -49,16 +49,14 @@ class EFIGNT(Core):
                                    data object to be created from this App.
         
 
-        workspace_name,
+        workspace_name
             str, passed in from params dict in runner (params["workspace_name"])
-
-
-
 
         RETURNS
         -------
-        output_dict, 
-            dict filled with ...
+        output_dict 
+            dict, keys are "gnd_ref", "gnd_sqlite_path", "report_ref", 
+            "report_name". 
 
 
             keys as defined by the UI output mapping
@@ -163,9 +161,6 @@ class EFIGNT(Core):
         # prep the info to be fed into the generate_report() method
         # read and prep the color_and_retrieve() output files
         logging.info(f'Creating the HTML report.')
-       
-
-
         stats = pd.read_csv(os.path.join(self.shared_folder, "stats.txt"), sep="\t", header=None).to_html(index=False)
         try:
             ### UPDATE PATH TO THIS FILE WHEN EST #148 ISSUE GETS FIXED
@@ -182,10 +177,6 @@ class EFIGNT(Core):
         hub = pd.read_csv(os.path.join(self.shared_folder, "hub_count.txt"), sep="\t", header=None).to_html(index=False)
         cooc = pd.read_csv(os.path.join(self.shared_folder, "cooc_table.txt"), sep="\t", header=None).to_html(index=False)
 
-
-
-
-
         # gather the html strings and link to the data objects
         report_data = {
             "stats_tab": stats,
@@ -201,12 +192,9 @@ class EFIGNT(Core):
                                              report_data, 
                                              objects_created_list)
 
-        
-        
-
-
         # NOTE: NEED TO FIGURE OUT WHAT INFO NEEDS TO BE PASSED TO THE IMPL.PY CODE
-        return {"gnd_ref": data_ref, 
+        return {"gnd_ref": gnd_obj_ref,
+                "gnd_sqlite_path": gnd_view_file_path,
                 "report_ref": report_output["report_ref"], 
                 "report_name": report_output["report_name"]}
 
@@ -443,6 +431,7 @@ class EFIGNT(Core):
             "report_name": report_info["name"],
             "report_ref": report_info["ref"],
         }
+
 
     def save_gnd_view_file_to_workspace(
             self, 
