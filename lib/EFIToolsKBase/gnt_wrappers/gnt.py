@@ -30,7 +30,7 @@ class EFIGNT(Core):
         self.flow = NextflowRunner("pipelines/est/gnt.nf", "gnt/kbase.config")
 
 
-    def run_gnt_pipeline(self, params, workspace_name):
+    def run_gnt_pipeline(self, params):
         """
         take in App input parameters, validate them, run the nextflow pipeline
         for the GNT tool, save necessary output files to the workspace. 
@@ -39,6 +39,8 @@ class EFIGNT(Core):
         ----------
         params 
             dict, keys from the UI input fields
+                "workspace_name": str, name of the workspace
+                "workspace_id": int, the numerical ID of the workspace
                 "ssn_data_object": str, data object reference string
                 "nb_size": int, number of neighbors from up and down
                            stream to be gathered and analyzed.
@@ -47,25 +49,17 @@ class EFIGNT(Core):
                                   neighborhoods.
                 "gnd_object_name": str, name to be used for the GNDViewFile 
                                    data object to be created from this App.
-        
-
-        workspace_name
-            str, passed in from params dict in runner (params["workspace_name"])
 
         RETURNS
         -------
-        output_dict 
-            dict, keys are "gnd_ref", "gnd_sqlite_path", "report_ref", 
-            "report_name". 
-
-
-            keys as defined by the UI output mapping
-                "gnd_ref" key maps to the object reference string created for
-                the GNDViewFile object written to the workspace
-
+            output_dict 
+                dict, keys are "gnd_ref", "report_ref", "report_name". 
+                    "gnd_ref" maps to the UPA of the GNDViewFile data object
+                    "report_ref" maps to the UPA for the KBaseReport
+                    "report_name" maps to the file name of the KBaseReport
         """
         # log the start of the app
-        logging.info(f"Working in {workspace_name} Workspace.")
+        logging.info(f'Working in {params["workspace_name"]} Workspace.')
         logging.info(f"shared folder ({self.shared_folder}) contains:\n" 
             + f"{os.listdir(self.shared_folder)}")
         
@@ -139,7 +133,7 @@ class EFIGNT(Core):
 
         # create the GNDViewFile data object containing the gnd.sqlite file 
         gnd_obj_ref = self.save_gnd_view_file_to_workspace(
-            workspace_name,
+            params["workspace_name"],
             gnd_view_file_path,
             params["gnd_object_name"],
             "testing"
@@ -188,13 +182,20 @@ class EFIGNT(Core):
         }
 
         # create the HTML report, including linking files
-        report_output = self.generate_report(workspace_name, 
+        report_output = self.generate_report(params["workspace_name"], 
                                              report_data, 
                                              objects_created_list)
 
+        
+        logging.info(f"{gnd_obj_ref}")
+        try:
+            temp = os.scandir(gnd_obj_ref)
+            logging.info(f"{[file.name for file in temp]}")
+        except:
+            logging.info("could not scan the gnd_obj_ref file path")
+
         # NOTE: NEED TO FIGURE OUT WHAT INFO NEEDS TO BE PASSED TO THE IMPL.PY CODE
         return {"gnd_ref": gnd_obj_ref,
-                "gnd_sqlite_path": gnd_view_file_path,
                 "report_ref": report_output["report_ref"], 
                 "report_name": report_output["report_name"]}
 
