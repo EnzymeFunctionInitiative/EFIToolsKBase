@@ -165,3 +165,10 @@ class EFIToolsKBaseTest(unittest.TestCase):
         })
         self.assertTrue(len(ret[0]["report_name"]))
 
+    def test_run_GNT_GNT_Submission(self):
+        ret = self.serviceImpl.run_EFI_GNT_GNT_Submission(self.ctx, {
+            "ssn_file": "73509/108/6",
+            "workspace_name": self.wsName
+        })
+        self.assertTrue(len(ret[0]["report_name"]))
+
