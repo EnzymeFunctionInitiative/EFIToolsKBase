@@ -32,7 +32,7 @@ description: |
     
     <p> <a href="https://efi.igb.illinois.edu/efi-gnt/tutorial.php">EFI-GNT tutorial</a></p>
 
-publications: | 
+publications:
     -
         display-text: | 
             [1] Zallot, R.; Oberg, N.; Geralt, J.A. "Democratized" genomic enzymology web tools for functional assignment. _Curr. Opin. Chem. Biol._ 2018, **47**, 77-85.
