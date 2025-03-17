@@ -37,10 +37,6 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
-                },
-                {
                     "input_parameter": "ssn_file",
                     "target_property": "ssn_file",
                     "target_type_transform": "resolved-ref"
