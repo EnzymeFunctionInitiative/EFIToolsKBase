@@ -8,9 +8,9 @@ module EFIToolsKBase {
     typedef string handle;
 
     /* 
-	data object types to be registered 
+	data object types to be registered
+	registration happens else where
     */
-    
     typedef structure {
         handle edgefile_handle;
         handle fasta_handle;
@@ -39,7 +39,7 @@ module EFIToolsKBase {
 
 
     /* 
-	data objects to guide development only 
+	Output data structures
     */
     typedef structure {
         string report_name;
@@ -52,11 +52,14 @@ module EFIToolsKBase {
         string edge_ref;
     } ESTReportResults;
 
+    /* 
+	Input data structures
+    */
     /* missing filter by taxonomy options */
     typedef structure {
 	string query_sequence;
-	string e_value; 		/* should map to an int or float */
-	string max_sequences_retrieved; /* should map to an int */
+	string e_value;
+	int max_sequences_retrieved;
 	string sequence_database; 	/* currently unused */
 	int fragment_option; 		/* currently unused */
 	string families_to_add; 	/* currently unused */
@@ -99,7 +102,7 @@ module EFIToolsKBase {
 
     typedef structure {
 	string families_to_add;
-	families_addition_cluster_id_format; /* currently unused */
+	string families_addition_cluster_id_format; /* currently unused */
 	int fragment_option; 		/* currently unused */
 	string taxonomic_level; 	/* currently unused */
 	string filter_string; 		/* currently unused */
