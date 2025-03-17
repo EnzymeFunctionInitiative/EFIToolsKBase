@@ -10,7 +10,7 @@
     ],
     "widgets": {
         "input": null,
-        "output": "sahasWidget"
+        "output": "no-display"
     },
     "parameters": [
         {
@@ -21,7 +21,7 @@
             "field_type": "text",
             "default_values": [""],
             "text_options": {
-		    "valid_ws_types": ["EFIToolsKBase.SequenceSimilarityNetwork"]
+		"valid_ws_types": ["EFIToolsKBase.SequenceSimilarityNetwork"]
 	    }
         },
         {
@@ -110,6 +110,13 @@
                 }
             ],
             "output_mapping": [
+                {
+                    "service_method_output_path": [
+                        0,
+                        "gnd_ref"
+                    ],
+                    "target_property": "gnd_ref"
+                },
                 {
                     "service_method_output_path": [
                         0,

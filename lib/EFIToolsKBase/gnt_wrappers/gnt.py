@@ -1,11 +1,11 @@
 
 import os
-import json
 import logging
 import uuid
 import zipfile
 
 from jinja2 import DictLoader, Environment, select_autoescape
+import pandas as pd
 
 from ..nextflow import NextflowRunner
 from ..const import *
@@ -27,7 +27,7 @@ class EFIGNT(Core):
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
         self.wsClient = self.clients.Workspace
-        self.flow = NextflowRunner("pipelines/est/gnt.nf", "gnt/kbase.config")
+        self.flow = NextflowRunner("pipelines/gnt/gnt.nf", "gnt/kbase.config")
 
 
     def run_gnt_pipeline(self, params):
@@ -75,44 +75,94 @@ class EFIGNT(Core):
         # using the object reference, grab the input SequenceSimilarityNetwork
         # data object.
         ssn_file_obj = self.dfu.get_objects(
-            {"object_refs": [params["ssn_data_object"]]}
-        )["data"][0]
+            {
+                "object_refs": [params["gnt_submission"]["ssn_data_object"]]
+            })["data"][0]
+        print(ssn_file_obj)
         # grab the "ssn_input" xgmml file from the input ssn data object, save
         # a copy of the file to the docker storage space as "full_ssn.xgmml" 
-        ssn_file_path = os.path.join(self.shared_folder, "full_ssn.xgmml"),
+        ssn_file_path = os.path.join(self.shared_folder, "full_ssn.xgmml")
         self.dfu.shock_to_file({
-            "shock_id": ssn_file_obj["data"]["ssn_xgmml_handle"], 
+            "shock_id": ssn_file_obj["data"]["ssn_xgmml_handle"],
             "file_path": ssn_file_path,
             "unpack": "unpack"}
         )
+        # assign the file path to the root dict "ssn_input" key
         params["ssn_input"] = ssn_file_path
-        params.pop("ssn_data_object")
+        # remove the key from the gnt_submission subdict
+        params["gnt_submission"].pop("ssn_data_object")
+
+        # Validate number of nearest neighbors parameter (`nb_size`)
+        if params["gnt_submission"]["nb_size"]:
+            try:
+                # Check that the value is an int and assign its value to the
+                # "nb_size" key in the root dict. Remove it from the subdict.
+                params["nb_size"] = int(params["gnt_submission"]["nb_size"])
+                params["gnt_submission"].pop("nb_size")
+            except:
+                logging.info("Unexpected value for the Neighborhood Size" 
+                    + " parameter. Please verify and re-run.")
+                exit()
+            # now check that the int value is btwn 3 and 20.
+            if params["nb_size"] < 3 or params["nb_size"] > 20:
+                params["nb_size"] = 20
+                logging.info("The input Neighborhood Size was outside of the"
+                    + " expected range. Setting its value to 20.")
+        else:
+            params["nb_size"] = 20
+            logging.info("The input Neighborhood Size was not provided."
+                + " Setting its value to 20.")
+        
+        # Validate the Co-occurrence threshold value (`cooc_threshold`)
+        if params["gnt_submission"]["cooc_threshold"]:
+            try:
+                # Check that the value is a float and assign its value to the
+                # "cooc_threshold" key in the root dict. Remove it from the 
+                # subdict.
+                params["cooc_threshold"] = float(
+                    params["gnt_submission"]["cooc_threshold"]
+                )
+                params["gnt_submission"].pop("cooc_threshold")
+            except:
+                logging.info("Unexpected value for the Minimal Co-occurence"
+                    + " Percentage Lower Limit parameter. Please verify and" 
+                    + " re-run.")
+                exit()
+            # now check that the float value is btwn 0 and 1.
+            if params["cooc_threshold"] > 0 and params["cooc_threshold"] < 1:
+                params["cooc_threshold"] = 0.2
+                logging.info("The input Minimal Co-occurence Percentage Lower"
+                    + " Limit was outside of the expected range. Setting its"
+                    + " value to 0.2.")
+        else:
+            params["cooc_threshold"] = 0.2
+            logging.info("The input Minimal Co-occurence Percentage Lower"
+                + " Limit parameter was not provided. Setting its value to" 
+                + " 0.2.")
+        
+        # we've gathered "ssn_data_object", "nb_size", and "cooc_threshold"
+        # keys from the gnt_submission subdict. Remove the subdict.
+        params.pop("gnt_submission")
 
         # log the parameters used for this run of the App
-        logging_str = "parameters for running the GNT:"
+        logging_str = "Parameters for running the GNT Submission app:"
         for key, value in params.items():
             logging_str += f"\n\t{key}: {value}"
         logging.info(logging_str)
 
-        # validate input params
-        fail = False
-        if params["nb_size"] < 1 or params["nb_size"] > 20:
-            logging.info(f'Invalid value for --nb-size ({params["nb_size"]}).')
-            fail = True
-        if params["cooc_threshold"] < 0 or params["cooc_threshold"] > 1:
-            logging.info(f'Invalid value for --cooc-threshold '
-                         + f'({params["cooc_threshold"]}).')
-            fail = True
-        if fail:
-            exit("Failed to render input params.")
-
+        # write the params dict into a json file
         self.flow.write_params_file(params)
+        # prep the nextflow command
         self.flow.generate_run_command()
+        logging.info(f"Nextflow execution:`{' '.join(self.flow.run_command)}`")
+        # run the nextflow command
         retcode, stdout, stderr = self.flow.execute()
         #if retcode != 0:
         #   raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
-
-        logging.info(f"shared folder ({self.shared_folder}) contains:\n" 
+        
+        # nextflow run finished. Log what files got written to the shared dir
+        logging.info(f"Nextflow pipeline finished. Wrote files to the shared"
+            + f" folder ({self.shared_folder}):\n" 
             + f"{os.listdir(self.shared_folder)}")
         
         ######################################################################
@@ -184,7 +234,7 @@ class EFIGNT(Core):
         # create the HTML report, including linking files
         report_output = self.generate_report(params["workspace_name"], 
                                              report_data, 
-                                             objects_created_list)
+                                             objects_created)
 
         
         logging.info(f"{gnd_obj_ref}")
@@ -196,7 +246,7 @@ class EFIGNT(Core):
 
         # NOTE: NEED TO FIGURE OUT WHAT INFO NEEDS TO BE PASSED TO THE IMPL.PY CODE
         return {"gnd_ref": gnd_obj_ref,
-                "report_ref": report_output["report_ref"], 
+                "report_ref": report_output["report_ref"],
                 "report_name": report_output["report_name"]}
 
 
@@ -307,14 +357,15 @@ class EFIGNT(Core):
         for subdir, zip_file_name, label in subdirs:
             # open a zip file to be written to.
             zip_file_path = os.path.join(self.shared_folder, zip_file_name)
+            subdir_path = os.path.join(self.shared_folder, subdir)
             with zipfile.ZipFile(
                     zip_file_path, 
                     "w", 
                     zipfile.ZIP_DEFLATED, 
                     allowZip64=True) as zf:
                 # loop over files in the subdirectory and write them to the zip
-                for file in os.scandir(subdir):
-                    zf.write(f"{subdir}/{file.name}", arcname = file.name)
+                for file in os.scandir(subdir_path):
+                    zf.write(f"{subdir_path}/{file.name}", arcname = file.name)
             # append the zip file to the file_links list
             file_links.append(
                 {
@@ -435,8 +486,8 @@ class EFIGNT(Core):
 
 
     def save_gnd_view_file_to_workspace(
-            self, 
-            ws_name, 
+            self,
+            ws_name,
             gnd_view_file_path,
             data_obj_name,
             title):
