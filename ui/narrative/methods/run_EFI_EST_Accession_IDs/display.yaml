@@ -124,7 +124,7 @@ parameter-groups:
         short-hint:
             Add sequences belonging to Pfam and/or InterPro families to the sequences used to generate the SSN. 
     
-    family_domain_boundary_option:
+    family_domain_boundary_options:
         ui-name: Family Domain Boundary Option
         short-hint: |
             Pfam and InterPro databases define domain boundaries for members of their families
