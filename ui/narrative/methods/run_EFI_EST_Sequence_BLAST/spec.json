@@ -267,12 +267,12 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
-                },
-                {
                     "input_parameter": "query_sequence",
                     "target_property": "query_sequence"
+                },
+                {
+                    "input_parameter": "ssn_e_value",
+                    "target_property": "ssn_e_value"
                 },
                 {
                     "input_parameter": "blast_options",
@@ -285,10 +285,6 @@
                 {
                     "input_parameter": "taxonomy_filter_options",
                     "target_property": "taxonomy_filter_options"
-                },
-                {
-                    "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value"
                 },
                 {
                     "input_parameter": "protein_family_addition_options",
