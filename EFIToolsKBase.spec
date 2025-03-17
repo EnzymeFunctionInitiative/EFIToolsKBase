@@ -38,6 +38,8 @@ module EFIToolsKBase {
     } GNDViewFile;
 
 
+
+
     /* 
 	Output data structures
     */
@@ -52,88 +54,121 @@ module EFIToolsKBase {
         string edge_ref;
     } ESTReportResults;
 
-    /* 
-	Input data structures
-    */
-    /* missing filter by taxonomy options */
+
+
+
+    /* unused structure but accurately describes the organization of the parameter groups used in run_EFI_EST_ apps */
     typedef structure {
-	string query_sequence;
 	string e_value;
-	int max_sequences_retrieved;
-	string sequence_database; 	/* currently unused */
-	int fragment_option; 		/* currently unused */
-	string families_to_add; 	/* currently unused */
-	string families_addition_cluster_id_format;	/* currently unused */
-	int fraction;			/* currently unused */
-	string ssn_e_value; 		/* should map to an int or float */
-    } run_EFI_EST_Sequence_BLAST_input;
+	string max_sequences_retrieved;
+	string sequence_database;	/* currently unused */
+    } initial_blast_options;
 
     typedef structure {
-	string fasta_sequence_file; 	/* really maps to a KBaseSequences.ProteinSequenceSet */
-	string header_format;		/* currently unused */
-	int fragment_option; 		/* currently unused */
-	string family_filter; 		/* currently unused */
-	string taxonomic_level; 	/* currently unused */
-	string filter_string; 		/* currently unused */
-	string families_to_add; 	/* currently unused */
+	string taxonomic_level;		/* currently unused */
+	string filter_string;		/* currently unused */
+    } taxonomy_filter_options;
+
+    typedef structure {
+	string families_to_add;				/* currently unused */
 	string families_addition_cluster_id_format;	/* currently unused */
-	int fraction;			/* currently unused */
-	int domain;			/* currently unused */
-	string family_domain_bound; 	/* currently unused, should map to a bool? */
-	string region; 			/* currently unused */
-	string ssn_e_value; 		/* should map to an int or float */
-    } run_EFI_EST_FASTA_input;
+	int fraction;					/* currently unused */
+    } protein_family_addition_options;
+
+    typedef structure {
+	string domain;			/* currently unused */
+	string family_domain_bound;	/* currently unused */
+	int region;			/* currently unused */
+    } family_domain_boundary_options;
 
     typedef structure {
 	string accession_ids;
 	string accession_id_format; 	/* currently unused */
-	int fragment_option; 		/* currently unused */
-	string family_filter; 		/* currently unused */
-	string taxonomic_level; 	/* currently unused */
-	string filter_string; 		/* currently unused */
-	string families_to_add; 	/* currently unused */
-	string families_addition_cluster_id_format;	/* currently unused */
-	int fraction;			/* currently unused */
-	int domain;			/* currently unused */
-	string family_domain_bound; 	/* currently unused, should map to a bool? */
-	string region; 			/* currently unused */
-	string ssn_e_value; 		/* should map to an int or float */
+    } accession_id_input;
+
+
+    /* 
+	Input data structures
+    */
+
+    typedef structure {
+	handle workspace_name;
+	string query_sequence;
+	string ssn_e_value;
+	initial_blast_options blast_options;
+	int fragment_option; 						 /* currently unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
+	protein_family_addition_options protein_family_addition_options; /* currently unused */
+    } run_EFI_EST_Sequence_BLAST_input;
+
+    typedef structure {
+	handle workspace_name;
+	string fasta_sequences_file; 					 /* really maps to a KBaseSequences.ProteinSequenceSet */
+	string header_format;						 /* currently unused */
+	int fragment_option; 						 /* currently unused */
+	string family_filter;						 /* currently unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
+	protein_family_addition_options protein_family_addition_options; /* currently unused */
+	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
+	string ssn_e_value;
+    } run_EFI_EST_FASTA_input;
+
+    typedef structure {
+	handle workspace_name;
+	accession_id_input accession_id_input;
+	int fragment_option; 						 /* currently unused */
+	string family_filter;						 /* currently unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
+	protein_family_addition_options protein_family_addition_options; /* currently unused */
+	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
+	string ssn_e_value;
     } run_EFI_EST_Accession_IDs_input;
 
     typedef structure {
-	string families_to_add;
-	string families_addition_cluster_id_format; /* currently unused */
+	handle workspace_name;
+	protein_family_addition_options protein_family_addition_options;
 	int fragment_option; 		/* currently unused */
-	string taxonomic_level; 	/* currently unused */
-	string filter_string; 		/* currently unused */
-	int fraction;			/* currently unused */
-	int domain;			/* currently unused */
-	string region; 			/* currently unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
+	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
 	string ssn_e_value; 		/* should map to an int or float */
     } run_EFI_EST_Families_input;
 
     typedef structure {
-	string blast_edge_file; 	/* actually maps to a EFIToolsKBase.BlastEdgeFile data object */
-	string filter_parameter;
-	string filter_value; 		/* should map to an int or float */
-	string min_length; 		/* should map to an int */
-	string max_length; 		/* should map to an int */
+	string filter_parameters;
+	float filter_value;
+    } filter_options;
+
+    typedef structure {
+	handle workspace_name;
+	handle blast_edge_file; 	/* actually maps to a EFIToolsKBase.BlastEdgeFile data object */
+	filter_options filter_options;
+	int min_length; 		/* should map to an int */
+	int max_length; 		/* should map to an int */
     } run_EFI_EST_SSN_Creation_input;
 
     typedef structure {
+	handle workspace_name;
 	string ssn_file;		/* actually maps to a EFIToolsKBase.SequenceSimilarityNetwork data object */
     } run_EFI_SSN_Utils_Color_SSN_input;
 
+    /* unused structure but accurately describes the organization of parameter group used in run_EFI_GNT_GNT_Submission_input */
     typedef structure {
-	string ssn_data_object;
-	string neighborhood_size;	/* not actually used? */
-	string percentage_lower_limit;	/* not actually used? */
+	handle ssn_data_object;
+	int nb_size;
+	float cooc_threshold;
+    } gnt_input_mapping;
+
+    typedef structure {
+	handle workspace_name;
+	gnt_input_mapping gnt_submission;
+	string gnd_object_name;
     } run_EFI_GNT_GNT_Submission_input;
 
-    /* temp object design */
+    /* temp output design */
     typedef structure {
-	string gnd_obj_ref;
-	string gnd_title;
+	string gnd_ref;
+	string report_name;
+	handle report_ref;
     } GNDViewFile_mapping;
 
 
