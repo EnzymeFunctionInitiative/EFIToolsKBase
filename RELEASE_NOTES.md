@@ -6,7 +6,7 @@ Current EFI Database version: 101 (https://efi.igb.illinois.edu/downloads/databa
 Current EFIToolsKBase commit hash registered on KBase: 54b2d1bf9efdfffac48c15003749d926ca5d588a 
 
 
-0.3.0
+0.3.0, 2025-01-21
 -----
 * Updates in the EST nextflow-tests branch caused errors in the KBase backend codes. Fixed those bugs. 
 * Update the root EFIToolsKBase.spec file to more exactly match the design of the Apps' UI spec.json files. 
