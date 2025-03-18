@@ -37,11 +37,8 @@ module EFIToolsKBase {
         string view_title;
     } GNDViewFile;
 
-
-
-
     /* 
-	Output data structures
+	App output data structures
     */
     typedef structure {
         string report_name;
@@ -54,10 +51,17 @@ module EFIToolsKBase {
         string edge_ref;
     } ESTReportResults;
 
+    /* temp output design */
+    typedef structure {
+	string gnd_ref;
+	string report_name;
+	handle report_ref;
+    } GNDViewFile_mapping;
 
 
-
-    /* unused structure but accurately describes the organization of the parameter groups used in run_EFI_EST_ apps */
+    /* 
+	data structure for the parameter groups defined in the Apps' UI spec files 
+    */
     typedef structure {
 	string e_value;
 	string max_sequences_retrieved;
@@ -86,11 +90,21 @@ module EFIToolsKBase {
 	string accession_id_format; 	/* currently unused */
     } accession_id_input;
 
+    typedef structure {
+	string filter_parameters;
+	float filter_value;
+    } ssn_filter_options;
+
+    typedef structure {
+	handle ssn_data_object;
+	int nb_size;
+	float cooc_threshold;
+    } gnt_inputs;
+
 
     /* 
-	Input data structures
+	App input data structures
     */
-
     typedef structure {
 	handle workspace_name;
 	string query_sequence;
@@ -127,21 +141,16 @@ module EFIToolsKBase {
     typedef structure {
 	handle workspace_name;
 	protein_family_addition_options protein_family_addition_options;
-	int fragment_option; 		/* currently unused */
+	int fragment_option; 						 /* currently unused */
 	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
 	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
-	string ssn_e_value; 		/* should map to an int or float */
+	string ssn_e_value; 						 /* should map to an int or float */
     } run_EFI_EST_Families_input;
-
-    typedef structure {
-	string filter_parameters;
-	float filter_value;
-    } filter_options;
 
     typedef structure {
 	handle workspace_name;
 	handle blast_edge_file; 	/* actually maps to a EFIToolsKBase.BlastEdgeFile data object */
-	filter_options filter_options;
+	ssn_filter_options filter_options;
 	int min_length; 		/* should map to an int */
 	int max_length; 		/* should map to an int */
     } run_EFI_EST_SSN_Creation_input;
@@ -151,25 +160,11 @@ module EFIToolsKBase {
 	string ssn_file;		/* actually maps to a EFIToolsKBase.SequenceSimilarityNetwork data object */
     } run_EFI_SSN_Utils_Color_SSN_input;
 
-    /* unused structure but accurately describes the organization of parameter group used in run_EFI_GNT_GNT_Submission_input */
-    typedef structure {
-	handle ssn_data_object;
-	int nb_size;
-	float cooc_threshold;
-    } gnt_input_mapping;
-
     typedef structure {
 	handle workspace_name;
-	gnt_input_mapping gnt_submission;
+	gnt_inputs gnt_submission;
 	string gnd_object_name;
     } run_EFI_GNT_GNT_Submission_input;
-
-    /* temp output design */
-    typedef structure {
-	string gnd_ref;
-	string report_name;
-	handle report_ref;
-    } GNDViewFile_mapping;
 
 
     /*
