@@ -9,7 +9,7 @@ module EFIToolsKBase {
 
     /* 
 	data object types to be registered
-	registration happens else where
+	registration happens elsewhere
     */
     typedef structure {
         handle edgefile_handle;
