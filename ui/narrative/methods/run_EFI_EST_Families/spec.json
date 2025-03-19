@@ -194,7 +194,8 @@
             "id": "protein_family_addition_options",
             "parameters": [
                 "families_to_add",
-                "families_addition_cluster_id_format"
+                "families_addition_cluster_id_format",
+		"fraction"
             ],
             "optional": false,
             "advanced": false,
@@ -213,7 +214,7 @@
             "with_border": true
         },
         {
-            "id": "family_domain_boundary_option",
+            "id": "family_domain_boundary_options",
             "parameters": [
                 "domain",
                 "region"
@@ -235,10 +236,6 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
-                },
-                {
                     "input_parameter": "fragment_option",
                     "target_property": "fragment_option"
                 },
@@ -247,8 +244,8 @@
                     "target_property": "taxonomy_filter_options"
                 },
                 {
-                    "input_parameter": "family_domain_boundary_option",
-                    "target_property": "family_domain_boundary_option"
+                    "input_parameter": "family_domain_boundary_options",
+                    "target_property": "family_domain_boundary_options"
                 },
                 {
                     "input_parameter": "ssn_e_value",
@@ -257,10 +254,6 @@
                 {
                     "input_parameter": "protein_family_addition_options",
                     "target_property": "protein_family_addition_options"
-                },
-                {
-                    "input_parameter": "fraction",
-                    "target_property": "fraction"
                 }
             ],
             "output_mapping": [

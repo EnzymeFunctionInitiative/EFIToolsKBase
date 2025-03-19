@@ -88,21 +88,8 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
-                },
-                {
-                    "input_parameter": "ssn_data_object",
-                    "target_property": "ssn_data_object",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "nb_size",
-                    "target_property": "nb_size"
-                },
-                {
-                    "input_parameter": "cooc_threshold",
-                    "target_property": "cooc_threshold"
+                    "input_parameter": "gnt_submission",
+                    "target_property": "gnt_submission"
                 },
                 {
                     "input_parameter": "gnd_object_name",

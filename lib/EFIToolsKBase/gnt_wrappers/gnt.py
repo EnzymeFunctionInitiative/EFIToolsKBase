@@ -40,13 +40,13 @@ class EFIGNT(Core):
         params 
             dict, keys from the UI input fields
                 "workspace_name": str, name of the workspace
-                "workspace_id": int, the numerical ID of the workspace
-                "ssn_data_object": str, data object reference string
-                "nb_size": int, number of neighbors from up and down
-                           stream to be gathered and analyzed.
-                "cooc_threshold": float, lower limit for the co-occurrence of 
-                                  Pfam families in the SSN clusters' 
-                                  neighborhoods.
+                "gnt_submission": dict, with keys:
+                    "ssn_data_object": str, data object reference string
+                    "nb_size": int, number of neighbors from up and down
+                               stream to be gathered and analyzed.
+                    "cooc_threshold": float, lower limit for the co-occurrence
+                                      of Pfam families in the SSN clusters' 
+                                      neighborhoods.
                 "gnd_object_name": str, name to be used for the GNDViewFile 
                                    data object to be created from this App.
 
