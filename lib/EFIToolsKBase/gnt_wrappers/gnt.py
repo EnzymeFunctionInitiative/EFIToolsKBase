@@ -157,6 +157,7 @@ class EFIGNT(Core):
         logging.info(f"Nextflow execution:`{' '.join(self.flow.run_command)}`")
         # run the nextflow command
         retcode, stdout, stderr = self.flow.execute()
+        print(retcode)
         #if retcode != 0:
         #   raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         
@@ -178,7 +179,7 @@ class EFIGNT(Core):
                 cursor.execute("SELECT * FROM attributes")
                 results = cursor.fetchall()
         except Exception as e: 
-            logging.info(f"Unexpected error: {e=}, {type(err)=}")
+            logging.info(f"Unexpected error: {e=}, {type(e)=}")
             raise
 
         # create the GNDViewFile data object containing the gnd.sqlite file 
