@@ -103,37 +103,42 @@ class EFIGNT(Core):
                 logging.info("Unexpected value for the Neighborhood Size" 
                     + " parameter. Please verify and re-run.")
                 exit()
-            # now check that the int value is btwn 3 and 20.
+            # now catch where the nb_size is not between 3 and 20.
             if params["nb_size"] < 3 or params["nb_size"] > 20:
-                params["nb_size"] = 20
                 logging.info("The input Neighborhood Size was outside of the"
-                    + " expected range. Setting its value to 20.")
+                    + " expected range. Please choose a more appropriate" 
+                    + " value.")
+                exit()
         else:
-            params["nb_size"] = 20
+            params["nb_size"] = 10
             logging.info("The input Neighborhood Size was not provided."
-                + " Setting its value to 20.")
+                + " Using the default value of 10 for its value.")
         
-        # Validate the Co-occurrence threshold value (`cooc_threshold`)
+        # Validate the Co-occurrence threshold value (`cooc_threshold`); in the
+        # UI, the range of accepted values is 0 to 100. 
         if params["gnt_submission"]["cooc_threshold"]:
             try:
-                # Check that the value is a float and assign its value to the
-                # "cooc_threshold" key in the root dict. Remove it from the 
-                # subdict.
+                # Check that the value can be converted to a float, divide it
+                # by 100 to convert to decimal probability, and assign its 
+                # value to the "cooc_threshold" key in the root dict. Remove it
+                # from the subdict.
                 params["cooc_threshold"] = float(
                     params["gnt_submission"]["cooc_threshold"]
-                )
+                )/100.
                 params["gnt_submission"].pop("cooc_threshold")
             except:
                 logging.info("Unexpected value for the Minimal Co-occurence"
                     + " Percentage Lower Limit parameter. Please verify and" 
                     + " re-run.")
                 exit()
-            # now check that the float value is btwn 0 and 1.
-            if params["cooc_threshold"] > 0 and params["cooc_threshold"] < 1:
-                params["cooc_threshold"] = 0.2
-                logging.info("The input Minimal Co-occurence Percentage Lower"
-                    + " Limit was outside of the expected range. Setting its"
-                    + " value to 0.2.")
+            # now catch where the threshold is not between 0 and 1.
+            if params["cooc_threshold"] < 0 or params["cooc_threshold"] > 1:
+                logging.info("Unexpected value for the Minimal Co-occurence"
+                    + " Percentage Lower Limit parameter. Please verify and" 
+                    + " re-run.")
+                exit()
+        # catch where the UI box was left blank; assign the default threshold
+        # value
         else:
             params["cooc_threshold"] = 0.2
             logging.info("The input Minimal Co-occurence Percentage Lower"
