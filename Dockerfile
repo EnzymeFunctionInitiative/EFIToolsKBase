@@ -29,11 +29,15 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
     echo 'source /root/.sdkman/bin/sdkman-init.sh && /opt/install_nextflow.sh' | bash && \
     mv /opt/install_nextflow.sh /usr/bin/nextflow
 
-# install EST scripts
-RUN echo "Force rebuild: CCCCCCC"
+# install the EST repo
+# update the commitHash variable to point to a specific commit (short or long) or branch name
+ARG commitHash=a210f3d90b744641ecc2bdef6ce03af8fa00e989
+#ARG commitHash=a210f3d
+#ARG commitHash=nextflow-test
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
     cd EST && \
-    git checkout nextflow-test && \
+    git checkout $commitHash && \
+    echo "EST repo commit: $(git rev-parse HEAD)" && \
     cpanm --installdeps /EST/
 
 # install efi.config
