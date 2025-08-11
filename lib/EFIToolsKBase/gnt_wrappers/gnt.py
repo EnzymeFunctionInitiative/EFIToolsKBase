@@ -78,7 +78,7 @@ class EFIGNT(Core):
             {
                 "object_refs": [params["gnt_submission"]["ssn_data_object"]]
             })["data"][0]
-        print(ssn_file_obj)
+        logging.debug(f'Info related to the {params["gnt_submission"]["ssn_data_object"]}:\n{ssn_file_obj}')
         # grab the "ssn_input" xgmml file from the input ssn data object, save
         # a copy of the file to the docker storage space as "full_ssn.xgmml" 
         ssn_file_path = os.path.join(self.shared_folder, "full_ssn.xgmml")
@@ -162,7 +162,7 @@ class EFIGNT(Core):
         logging.info(f"Nextflow execution:`{' '.join(self.flow.run_command)}`")
         # run the nextflow command
         retcode, stdout, stderr = self.flow.execute()
-        print(retcode)
+        logging.debug(f"The subprocessed Nextflow call returned with: {retcode}")
         #if retcode != 0:
         #   raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
         
@@ -507,7 +507,7 @@ class EFIGNT(Core):
         
         # run the KBaseReport method to create the report to be shown
         report_info = self.report.create_extended_report(kbr_config)
-        print(report_info)
+        logging.debug(f"This run's report info:\n{report_info}")
         
         # return the name and UPA for the report file
         return {
@@ -573,7 +573,7 @@ class EFIGNT(Core):
         # since only one object is being created, just grab the zeroth element
         # and parse its tuple
         dfu_oi = self.dfu.save_objects(save_object_params)[0]
-        print(dfu_oi)
+        logging.debug(f"This run's GNDViewFile object info:\n{dfu_oi}")
         # creates a str of f"{wsid}/{objid}/{version}" that is the object's UPA
         gnd_object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
         return gnd_object_reference
