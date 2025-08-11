@@ -277,73 +277,82 @@ class EFIGNT(Core):
                 link the file to the Report.
         """
         # hard coded local file paths
+
         file_links = [
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "ssn_colored.xgmml"),
-                    "name": "ssn_colored.xgmml",
+                    "path": os.path.join(self.shared_folder, "color_ssn.xgmml"),
+                    "name": "color_ssn.xgmml",
                     "label":"Colored Sequence Similarity Network (SSN)",
                     "description": 'Each cluster in the submitted SSN has been identified and assigned a unique number and color. Node attributes for "Neighbor Pfam Families" and "Neighbor InterPro Families" have been added.',
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "cluster_gnn.xgmml"),
+                    "path": os.path.join(
+                        self.shared_folder,
+                        "cluster_gnn.xgmml"
+                    ),
                     "name": "cluster_gnn.xgmml",
                     "label":"SSN Cluster Hub-Nodes: Genome Neighborhood Network (GNN)",
-                    "description": " GNNs provide a representation of the neighboring Pfam families for each SSN cluster identified in the colored SSN. To be displayed, neighboring Pfams families must be detected in the specified window and at a co-occurrence frequency higher than the specified minimum.\n\nEach hub-node in the network represents a SSN cluster. The spoke nodes represent Pfam families that have been identified as neighbors of the sequences from the center hub.",
+                    "description": "GNNs provide a representation of the neighboring Pfam families for each SSN cluster identified in the colored SSN. To be displayed, neighboring Pfams families must be detected in the specified window and at a co-occurrence frequency higher than the specified minimum.\n\nEach hub-node in the network represents a SSN cluster. The spoke nodes represent Pfam families that have been identified as neighbors of the sequences from the center hub.",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "pfam_gnn.xgmml"),
+                    "path": os.path.join(self.shared_folder, "pfam_gnn.xgmml"),
                     "name": "pfam_gnn.xgmml",
                     "label":"Pfam Family Hub-Nodes Genome Neighborhood Network (GNN)",
-                    "description": " GNNs provide a representation of the neighboring Pfam families for each SSN cluster identified in the colored SSN. To be displayed, neighboring Pfams families must be detected in the specified window and at a co-occurrence frequency higher than the specified minimum.\n\n Each hub-node in the network represents a Pfam family identified as a neighbor. The spokes nodes represent SSN clusters that identified the Pfam family from the center hub.",
+                    "description": "GNNs provide a representation of the neighboring Pfam families for each SSN cluster identified in the colored SSN. To be displayed, neighboring Pfams families must be detected in the specified window and at a co-occurrence frequency higher than the specified minimum.\n\n Each hub-node in the network represents a Pfam family identified as a neighbor. The spokes nodes represent SSN clusters that identified the Pfam family from the center hub.",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "gnd.sqlite"),
+                    "path": os.path.join(self.shared_folder, "gnd.sqlite"), 
                     "name": "gnd.sqlite",
                     "label":"Genome Neighborhood Diagrams (GNDs)",
                     "description": "Diagrams representing genomic regions around the genes encoded for the sequences from the submitted SSN are generated. All genes present in the specified window can be visualized (no minimal co-occurrence frequency filter or neighborhood size threshold is applied). Diagram data can be downloaded in .sqlite file format for later review in the View Saved Diagrams tab.",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "nomatches_noneighbors.txt"),
+                    "path": os.path.join(
+                        self.shared_folder,
+                        "nomatches_noneighbors.txt"
+                    ),
                     "name": "nomatches_noneighbors.txt",
                     "label":"No matches/no neighbors file",
                     "description": "",
                 },
+#Nextflow pipeline finished. Wrote files to the shared folder (/kb/module/work/tmp):
+#['edgelist.txt', 'nb_pfam', '64dcf239-1981-4a23-97bc-196998804303', 'full_ssn.xgmml', 'cluster_id_map.txt', 'id_index_map.txt', '7a9f5e25-4141-4e1c-b324-e3b077fc3b7a', 'params.yml', 'ssn_sequences.fasta', 'seqid_source_map.txt', 'cluster-data', 'index_seqid_map.txt', 'singletons.txt', 'cluster_num_map.txt', 'stats.txt', 'conv_ratio.txt']
+
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "cooc_table.txt"),
+                    "path": os.path.join(self.shared_folder, "cooc_table.txt"),
                     "name": "cooc_table.txt",
                     "label":"Pfam family/cluster co-occurrence table file",
                     "description": "",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "hub_count.txt"),
+                    "path": os.path.join(self.shared_folder, "hub_count.txt"),
                     "name": "hub_count.txt",
                     "label":"GNN hub cluster sequence count file",
                     "description": "",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "cluster-data/id_lists/cluster_sizes.txt"),
+                    "path": os.path.join(
+                        self.shared_folder, 
+                        "cluster-data/id_lists/cluster_sizes.txt"   # NOTE: !!!
+                    ),
                     "name": "cluster_sizes.txt",
                     "label":"Cluster size file",
                     "description": "",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "swissprot_clusters_desc.txt"),
+                    "path": os.path.join(
+                        self.shared_folder,
+                        "swissprot_clusters_desc.txt"
+                    ),
                     "name": "swissprot_clusters_desc.txt",
                     "label":"SwissProt annotations per SSN cluster",
                     "description": "",
                 },
                 {
-                    "path": os.path.join(self.shared_folder, 
-                                         "mapping_table.txt"),
+                    "path": os.path.join(
+                        self.shared_folder,
+                        "mapping_table.txt"
+                    ),
                     "name": "mapping_table.txt",
                     "label":"Sequence to colored SSN cluster mapping file",
                     "description": "",
@@ -352,10 +361,26 @@ class EFIGNT(Core):
 
         # gotta zip up directories for Mapping Tables download options
         subdirs = [
-            ("nb_pfam/pfam/", "pfam.zip", "Neighbor Pfam domain fusions at specified minimal co-occurrence frequency "),
-            ("nb_pfam/pfam_split/", "pfam_split.zip", "Neighbor Pfam domains at specified minimal co-occurrence frequency "),
-            ("nb_pfam/all_pfam/", "all_pfam.zip", "Neighbor Pfam domain fusions at 0% minimal co-occurrence frequency"),
-            ("nb_pfam/all_pfam_split/", "all_pfam_split.zip", "Neighbor Pfam domains at 0% minimal co-occurrence frequency"),
+            (
+                "nb_pfam/pfam/", 
+                "pfam.zip", 
+                "Neighbor Pfam domain fusions at specified minimal co-occurrence frequency "
+            ),
+            (
+                "nb_pfam/pfam_split/",
+                "pfam_split.zip", 
+                "Neighbor Pfam domains at specified minimal co-occurrence frequency "
+            ),
+            (
+                "nb_pfam/all_pfam/",
+                "all_pfam.zip",
+                "Neighbor Pfam domain fusions at 0% minimal co-occurrence frequency"
+            ),
+            (
+                "nb_pfam/all_pfam_split/", 
+                "all_pfam_split.zip", 
+                "Neighbor Pfam domains at 0% minimal co-occurrence frequency"
+            ),
             ("nb_pfam/no_fam", "no_fam.zip", "Neighbors without Pfam assigned")
         ]
         
