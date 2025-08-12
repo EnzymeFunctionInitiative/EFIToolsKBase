@@ -284,7 +284,7 @@
             "with_border": true
         },
         {
-            "id": "family_domain_boundary_option",
+            "id": "family_domain_boundary_options",
             "parameters": [
                 "domain",
                 "family_domain_bound",
@@ -307,10 +307,6 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
-                },
-                {
                     "input_parameter": "accession_id_input",
                     "target_property": "accession_id_input"
                 },
@@ -331,8 +327,8 @@
                     "target_property": "protein_family_addition_options"
                 },
                 {
-                    "input_parameter": "family_domain_boundary_option",
-                    "target_property": "family_domain_boundary_option"
+                    "input_parameter": "family_domain_boundary_options",
+                    "target_property": "family_domain_boundary_options"
                 },
                 {
                     "input_parameter": "ssn_e_value",

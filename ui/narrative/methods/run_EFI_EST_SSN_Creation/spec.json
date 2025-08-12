@@ -52,7 +52,7 @@
             "default_values": [ "" ],
             "field_type": "text",
             "text_options": {
-                "validate_as": "int",
+                "validate_as": "float",
                 "min_integer": 0
             }
         },
@@ -103,10 +103,6 @@
                 {
                     "narrative_system_variable": "workspace",
                     "target_property": "workspace_name"
-                },
-                {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
                 },
                 {
                     "input_parameter": "blast_edge_file",

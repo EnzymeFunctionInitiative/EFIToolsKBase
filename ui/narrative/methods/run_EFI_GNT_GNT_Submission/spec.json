@@ -1,7 +1,8 @@
 {
     "ver": "0.0.1",
     "authors": [
-        "hdemeyer"
+        "hdemeyer",
+	"rbdavid"
     ],
     "contact": "",
     "categories": [
@@ -9,27 +10,26 @@
     ],
     "widgets": {
         "input": null,
-        "output": null
+        "output": "no-display"
     },
     "parameters": [
         {
-            "id": "ssn_file",
+            "id": "ssn_data_object",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "file"
+            "field_type": "text",
+            "default_values": [""],
+            "text_options": {
+		"valid_ws_types": ["EFIToolsKBase.SequenceSimilarityNetwork"]
+	    }
         },
         {
-            "id": "neighborhood_size",
+            "id": "nb_size",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                "10"
-            ],
+            "default_values": ["10"],
             "field_type": "text",
             "text_options": {
                 "valid_ws_types": [],
@@ -39,29 +39,36 @@
             }
         },
         {
-            "id": "percentage_lower_limit",
+            "id": "cooc_threshold",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                "20"
-            ],
+            "default_values": ["20."],
             "field_type": "text",
             "text_options": {
                 "valid_ws_types": [],
-                "validate_as": "int",
-                "min_int": 0,
-                "max_int": 100
+                "validate_as": "float",
+                "min_float": 0,
+                "max_float": 100
             }
-        }
+        },
+	{
+	    "id": "gnd_object_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": ["gnd_view_file"],
+            "field_type": "text"
+	}
     ],
+
     "parameter-groups": [
         {
             "id": "gnt_submission",
             "parameters": [
-                "ssn_file",
-                "neighborhood_size",
-                "percentage_lower_limit"
+                "ssn_data_object",
+                "nb_size",
+                "cooc_threshold"
             ],
             "optional": false,
             "advanced": false,
@@ -69,37 +76,34 @@
             "with_border": true
         }
     ],
+
     "behavior": {
         "service-mapping": {
             "url": "",
             "name": "EFIToolsKBase",
-            "method": "run_EFIToolsKBase",
+            "method": "run_EFI_GNT_GNT_Submission",
             "input_mapping": [
                 {
                     "narrative_system_variable": "workspace",
                     "target_property": "workspace_name"
                 },
                 {
-                    "narrative_system_variable": "workspace_id",
-                    "target_property": "workspace_id"
+                    "input_parameter": "gnt_submission",
+                    "target_property": "gnt_submission"
                 },
                 {
-                    "input_parameter": "ssn_file",
-                    "target_property": "ssn_file",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "neighborhood_size",
-                    "target_property": "neighborhood_size",
-                    "target_type_transform": "resolved-ref"
-                },
-                {
-                    "input_parameter": "percentage_lower_limit",
-                    "target_property": "percentage_lower_limit",
-                    "target_type_transform": "resolved-ref"
+                    "input_parameter": "gnd_object_name",
+                    "target_property": "gnd_object_name"
                 }
             ],
             "output_mapping": [
+                {
+                    "service_method_output_path": [
+                        0,
+                        "gnd_ref"
+                    ],
+                    "target_property": "gnd_ref"
+                },
                 {
                     "service_method_output_path": [
                         0,

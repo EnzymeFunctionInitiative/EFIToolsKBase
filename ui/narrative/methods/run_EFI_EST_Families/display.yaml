@@ -100,7 +100,7 @@ parameter-groups:
         short-hint: |
             A taxonomy filter is applied to the list of UniProt, UniRef90, or UniRef50 cluster IDs retrieved by the BLAST
     
-    family_domain_boundary_option:
+    family_domain_boundary_options:
         ui-name: Family Domain Boundary Option
         short-hint: |
             Pfam and InterPro databases define domain boundaries for members of their families
