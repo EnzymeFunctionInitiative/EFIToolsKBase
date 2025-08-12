@@ -65,29 +65,29 @@ module EFIToolsKBase {
     typedef structure {
 	string e_value;
 	string max_sequences_retrieved;
-	string sequence_database;	/* currently unused */
+	string sequence_database;	/* unused */
     } initial_blast_options;
 
     typedef structure {
-	string taxonomic_level;		/* currently unused */
-	string filter_string;		/* currently unused */
+	string taxonomic_level;		/* unused */
+	string filter_string;		/* unused */
     } taxonomy_filter_options;
 
     typedef structure {
-	string families_to_add;				/* currently unused */
-	string families_addition_cluster_id_format;	/* currently unused */
-	int fraction;					/* currently unused */
+	string families_to_add;				/* unused */
+	string families_addition_cluster_id_format;	/* unused */
+	int fraction;					/* unused */
     } protein_family_addition_options;
 
     typedef structure {
-	string domain;			/* currently unused */
-	string family_domain_bound;	/* currently unused */
-	int region;			/* currently unused */
+	string domain;			/* unused */
+	string family_domain_bound;	/* unused */
+	int region;			/* unused */
     } family_domain_boundary_options;
 
     typedef structure {
 	string accession_ids;
-	string accession_id_format; 	/* currently unused */
+	string accession_id_format; 	/* unused */
     } accession_id_input;
 
     typedef structure {
@@ -110,40 +110,40 @@ module EFIToolsKBase {
 	string query_sequence;
 	string ssn_e_value;
 	initial_blast_options blast_options;
-	int fragment_option; 						 /* currently unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
-	protein_family_addition_options protein_family_addition_options; /* currently unused */
+	int fragment_option; 						 /* unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
+	protein_family_addition_options protein_family_addition_options; /* unused */
     } run_EFI_EST_Sequence_BLAST_input;
 
     typedef structure {
 	handle workspace_name;
 	string fasta_sequences_file; 					 /* really maps to a KBaseSequences.ProteinSequenceSet */
-	string header_format;						 /* currently unused */
-	int fragment_option; 						 /* currently unused */
-	string family_filter;						 /* currently unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
-	protein_family_addition_options protein_family_addition_options; /* currently unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
+	string header_format;						 /* unused */
+	int fragment_option; 						 /* unused */
+	string family_filter;						 /* unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
+	protein_family_addition_options protein_family_addition_options; /* unused */
+	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
 	string ssn_e_value;
     } run_EFI_EST_FASTA_input;
 
     typedef structure {
 	handle workspace_name;
 	accession_id_input accession_id_input;
-	int fragment_option; 						 /* currently unused */
-	string family_filter;						 /* currently unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
-	protein_family_addition_options protein_family_addition_options; /* currently unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
+	int fragment_option; 						 /* unused */
+	string family_filter;						 /* unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
+	protein_family_addition_options protein_family_addition_options; /* unused */
+	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
 	string ssn_e_value;
     } run_EFI_EST_Accession_IDs_input;
 
     typedef structure {
 	handle workspace_name;
 	protein_family_addition_options protein_family_addition_options;
-	int fragment_option; 						 /* currently unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* currently unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* currently unused */
+	int fragment_option; 						 /* unused */
+	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
+	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
 	string ssn_e_value; 						 /* should map to an int or float */
     } run_EFI_EST_Families_input;
 
