@@ -192,7 +192,7 @@ class EFIGNT(Core):
             params["workspace_name"],
             gnd_view_file_path,
             params["gnd_object_name"],
-            "testing"
+            "testing"   # placeholder for a more descriptive title to be generated and attached to the GNDViewFile object
         )
 
         # create an objects_created list, filled with dicts, each with "ref"
@@ -310,9 +310,6 @@ class EFIGNT(Core):
                     "label":"No matches/no neighbors file",
                     "description": "",
                 },
-#Nextflow pipeline finished. Wrote files to the shared folder (/kb/module/work/tmp):
-#['edgelist.txt', 'nb_pfam', '64dcf239-1981-4a23-97bc-196998804303', 'full_ssn.xgmml', 'cluster_id_map.txt', 'id_index_map.txt', '7a9f5e25-4141-4e1c-b324-e3b077fc3b7a', 'params.yml', 'ssn_sequences.fasta', 'seqid_source_map.txt', 'cluster-data', 'index_seqid_map.txt', 'singletons.txt', 'cluster_num_map.txt', 'stats.txt', 'conv_ratio.txt']
-
                 {
                     "path": os.path.join(self.shared_folder, "cooc_table.txt"),
                     "name": "cooc_table.txt",
@@ -328,7 +325,7 @@ class EFIGNT(Core):
                 {
                     "path": os.path.join(
                         self.shared_folder, 
-                        "cluster-data/id_lists/cluster_sizes.txt"   # NOTE: !!!
+                        "cluster-data/id_lists/cluster_sizes.txt"
                     ),
                     "name": "cluster_sizes.txt",
                     "label":"Cluster size file",
@@ -516,7 +513,8 @@ class EFIGNT(Core):
             ws_name,
             gnd_view_file_path,
             data_obj_name,
-            title):
+            title
+        ):
         """
         Save the GNDViewFile file to the workspace and return its object UPA.
 
@@ -529,9 +527,10 @@ class EFIGNT(Core):
             data_obj_name
                 str, name for the GNDViewFile data object to be used in the
                 data tab.
-            
             title
-                str, ....
+                str, adds a string to the GNDViewFile data attribute's 
+                dictionary to describe the title of the object. Unclear how 
+                this will be used.
 
         Returns
         -------
