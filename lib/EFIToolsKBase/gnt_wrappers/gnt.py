@@ -1,4 +1,5 @@
 
+from typing import Dict, List, Any
 import os
 import logging
 import uuid
@@ -12,7 +13,6 @@ from ..const import *
 
 from base import Core
 
-# temp preamble for stand-in code
 import sqlite3
 
 
@@ -30,7 +30,7 @@ class EFIGNT(Core):
         self.flow = NextflowRunner("pipelines/gnt/gnt.nf", "gnt/kbase.config")
 
 
-    def run_gnt_pipeline(self, params):
+    def run_gnt_pipeline(self, params: Dict[str,str]) -> Dict[str,str]:
         """
         take in App input parameters, validate them, run the nextflow pipeline
         for the GNT tool, save necessary output files to the workspace. 
@@ -251,7 +251,10 @@ class EFIGNT(Core):
                 "report_name": report_output["report_name"]}
 
 
-    def _create_file_links(self, include_zip=True):
+    def _create_file_links(
+            self,
+            include_zip: bool =True
+        ) -> List[Dict[str,str]]:
         """
         !!! NOTE: missing SwissProt annotations by singleton
         
@@ -424,12 +427,15 @@ class EFIGNT(Core):
         return file_links
 
 
-    def generate_report(self, ws_name, template_var_dict, objects_created):
+    def generate_report(
+            self,
+            ws_name: str,
+            template_var_dict: Dict[str,str],
+            objects_created: List[str]
+        ) -> Dict[str, Any]:
         """
         Take in the results dict from run_gnt_pipeline() method, write the 
-        associated html report, link files, ...
-
-        runs the _create_file_links() method
+        associated html report, link files via the _create_file_links() method.
         
         Parameters
         ----------
@@ -510,11 +516,11 @@ class EFIGNT(Core):
 
     def save_gnd_view_file_to_workspace(
             self,
-            ws_name,
-            gnd_view_file_path,
-            data_obj_name,
-            title
-        ):
+            ws_name: str,
+            gnd_view_file_path: str,
+            data_obj_name: str,
+            title: str
+        ) -> str:
         """
         Save the GNDViewFile file to the workspace and return its object UPA.
 
