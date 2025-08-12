@@ -241,14 +241,9 @@ class EFIGNT(Core):
         report_output = self.generate_report(params["workspace_name"], 
                                              report_data, 
                                              objects_created)
-
         
-        logging.info(f"{gnd_obj_ref}")
-        try:
-            temp = os.scandir(gnd_obj_ref)
-            logging.info(f"{[file.name for file in temp]}")
-        except:
-            logging.info("could not scan the gnd_obj_ref file path")
+        # log info about the GNDViewFile data object created 
+        logging.info(f"The GNDViewFile data object is specified by:\n{gnd_obj_ref}")
 
         # NOTE: NEED TO FIGURE OUT WHAT INFO NEEDS TO BE PASSED TO THE IMPL.PY CODE
         return {"gnd_ref": gnd_obj_ref,
