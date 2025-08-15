@@ -4,6 +4,7 @@ import json
 import logging
 import uuid
 import zipfile
+from typing import List, Dict, Any
 
 from jinja2 import DictLoader, Environment, select_autoescape
 
@@ -27,73 +28,178 @@ class EFIEST(Core):
         self.wsClient = self.clients.Workspace
         self.flow = NextflowRunner("pipelines/est/est.nf", "est/kbase.config")
 
-    def do_analysis(self, params):
+    ###########################################################################
+    # interface method
+    ###########################################################################
+    def do_analysis(self, params: Dict[str,Any]):
         """
         child classes should use this to render parameter files
         """
         raise NotImplementedError("Please Implement this method")
 
-    def run_est_pipeline(self, mapping, workspace_name):
+    ###########################################################################
+    # inherited methods, used in each subclass' `do_analysis()` call
+    ###########################################################################
+    def prepare_nf_parameters(
+            self,
+            parameter_dict: Dict[str, str]
+        ) -> Dict[str, Any]:
         """
-        This should be called in do_analysis after rendering parameters
+        Prepare the nextflow parameter file from the provided user-input
+        parameters.
 
-        pipeline: string
-        filename of pipeline to run. ex: "est.nf", "ssn.nf"
-        mapping: dict
-        used to do string substitution on the yml parameter template
-        workspace_name: string
-        passed in from params dict in runner (params["workspace_name"])
+        This should be called in do_analysis before running the est pipeline.
+
+        ARGUMENTS
+        ---------
+            parameter_dict
+                dict, parameters gathered from the App's user input.
+
+        RESULTS
+        -------
+            mapping
+                dict, key:value pairs that have been mapped from the App's
+                user-input to the nextflow parameter keys.
         """
+        mapping = {}
+
+        # fill in with the hardcoded parameters
+        mapping.update(DEFAULT_NF_PARAMETERS)
+
+        # fill in with the user- and app-specific parameters
+        mapping.update(
+            {
+                "blast_evalue": f"1e-{parameter_dict['all_by_all_blast_option']['blast_e_value']}",
+                "blast_num_matches": f"{parameter_dict['all_by_all_blast_option']['blast_num_matches']}",
+                "final_output_dir": self.shared_folder,
+                "sequence_version": parameter_dict["accession_id_input"]["accession_id_format"].lower(),
+                "job_id": 131,  # NOTE: CHANGE THIS
+            }
+        )
+
+        # handle the complex set of filter parameters
+        filter_strs = []
+        for filter_keys in ALL_FILTERS:
+            dict_key = filter_keys.dict_key
+            subdict_key = filter_keys.subdict_key
+            # verify both that the filter parameter's associated subdict exists
+            # and that the value is True-ish
+            if (parameter_dict.get(dict_key)
+                    and type(parameter_dict.get(dict_key)) == dict
+                    and parameter_dict[dict_key].get(subdict_key)):
+                name = filter_keys.nf_filter_name
+                val  = parameter_dict[dict_key].get(subdict_key)
+                filter_strs.append(f"{name}={val}")
+
+        # only add the filter parameter if it is not an empty list
+        if filter_strs:
+            mapping.update({"filter": filter_strs})
+
+        # handle nf's params.fasta_db
+        blast_db_source = ("combined"
+            if parameter_dict["accession_id_format"] == "UniProt"
+            else parameter_dict["accession_id_format"]
+        )
+        fasta_db = BlastDB.get_path(
+            blast_db_source,
+            parameter_dict["fragment_option"]["exclude_fragment"]
+        )
+        # add it to the mapping dict
+        mapping.update({"fasta_db": fasta_db})
+
+        return mapping
+
+
+    def run_est_pipeline(self, mapping: Dict[str, str], workspace_name: str):
+        """
+        This should be called in do_analysis after rendering parameters.
+
+        ARGUMENTS
+        ---------
+            mapping
+                dict, contains key:value pairs for all input parameters used
+                within the est.nf pipeline code.
+            workspace_name
+                str, identifier string for the workspace within which the app
+                is running.
+
+        RESULTS
+        -------
+            output_dict
+                dict, contains key:value pairs of object references and other
+                metadata. Mostly, this dict goes unused.
+        """
+        # prepare the params file
         self.flow.write_params_file(mapping)
+        # generate the `nextflow run` command
         self.flow.generate_run_command()
+        # execute the command
         retcode, stdout, stderr = self.flow.execute()
-        # if retcode != 0:
-        #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+        if retcode != 0:
+            raise ValueError(f"Failed to execute Nextflow pipeline.")
+        
         print(self.shared_folder, os.listdir(self.shared_folder))
-        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, 
-                                                    "pident_sm.png"))
-        length_dataurl = png_to_base64(os.path.join(self.shared_folder, 
-                                                    "length_sm.png"))
-        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, 
-                                                  "edge_sm.png"))
+        
+        # make the images to be shown in the report
+        pident_dataurl = png_to_base64(
+            os.path.join(self.shared_folder, "pident_sm.png")
+        )
+        length_dataurl = png_to_base64(
+            os.path.join(self.shared_folder, "length_sm.png")
+        )
+        edge_dataurl = png_to_base64(
+            os.path.join(self.shared_folder, "edge_sm.png")
+        )
 
-        with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
+        # gather stats output from the workflow
+        with open(os.path.join(self.shared_folder, "stats.json")) as f:
             acc_data = json.load(f)
 
+        # create the data object output from the EST Apps
         print("Create the BlastEdgeFile object")
-        data_ref = self.save_edge_file_to_workspace(
-            workspace_name, 
-            os.path.join(self.shared_folder, "1.out.parquet"), 
+        data_ref = self._save_edge_file_to_workspace(
+            workspace_name,
+            os.path.join(self.shared_folder, "1.out.parquet"),
             os.path.join(self.shared_folder, "all_sequences.fasta"),
             os.path.join(self.shared_folder, "evalue.tab"),
             os.path.join(self.shared_folder, "sequence_metadata.tab"),
             acc_data
         )
         
-        print("Create the HTML report")
+        # prepare the data structures to be used in the report
         report_data = {
-            "pident_img": pident_dataurl, 
-            "length_img": length_dataurl, 
-            "edge_img": edge_dataurl, 
-            "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3f}",
+            "pident_img": pident_dataurl,
+            "length_img": length_dataurl,
+            "edge_img": edge_dataurl,
+            "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3e}",
             "edge_count": acc_data["EdgeCount"],
             "unique_seqs": acc_data["UniqueSeq"]
         }
         # only one object created (the BlastEdgeFile) so list of len 1
         objects_created_list = [
             {
-                "ref": data_ref, 
+                "ref": data_ref,
                 "description": "Edge file and other metadata"
             }
         ]
-        output = self.generate_report(workspace_name, report_data, 
-                                      objects_created_list)
+        
+        print("Create the HTML report")
+        output = self._generate_report(
+            workspace_name,
+            report_data,
+            objects_created_list
+        )
         
         output["edge_ref"] = data_ref
 
+        # add cleaning code to remove unnecessary files that nextflow creates
+
         return output
 
-    def _create_file_links(self, inlcude_zip=True):
+    ###########################################################################
+    # private methods, called within the `run_est_pipeline()` method
+    ###########################################################################
+    def _create_file_links(self, include_zip=True):
         output_file_names = [
             "1.out.parquet",
             "all_sequences.fasta",
@@ -156,9 +262,9 @@ class EFIEST(Core):
             },
         ]
 
-        if inlcude_zip:
+        if include_zip:
             zip_path = os.path.join(self.shared_folder, "all_files.zip")
-            with zipfile.ZipFile(zip_path, 
+            with zipfile.ZipFile(zip_path,
                     "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
                 # loop over files in list and stash in the zip
                 for name in output_file_names:
@@ -175,14 +281,19 @@ class EFIEST(Core):
 
         return file_links
 
-    def generate_report(self, ws_name, template_var_dict, objects_created):
+    def _generate_report(
+            self,
+            ws_name,
+            template_var_dict,
+            objects_created
+        ) -> Dict[str,str]:
         """
         """
         # get the workspace_id
         workspace_id = self.dfu.ws_name_to_id(ws_name)
 
         # output_files is a list of dicts, each element mapping to a file
-        # created by the app. 
+        # created by the app.
         output_files = self._create_file_links()
 
         # hand make the reports_path and file io variables
@@ -237,14 +348,15 @@ class EFIEST(Core):
             "report_ref": report_info["ref"],
         }
 
-    def save_edge_file_to_workspace(
-            self, 
-            workspace_name, 
-            edge_filepath, 
-            fasta_filepath, 
-            evalue_filepath, 
-            seq_meta_filepath, 
-            acc_data):
+    def _save_edge_file_to_workspace(
+            self,
+            workspace_name: str,
+            edge_filepath: str,
+            fasta_filepath: str,
+            evalue_filepath: str,
+            seq_meta_filepath: str,
+            acc_data: Dict[str, str]
+        ) -> str:
         """
         """
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
@@ -259,7 +371,7 @@ class EFIEST(Core):
         # prep the save_objects() parameter dictionary
         save_object_params = {
             "id": workspace_id,
-            # objects is a list of dicts, where each dict element contains info 
+            # objects is a list of dicts, where each dict element contains info
             # about the object to be saved/created
             "objects": [
                 {
@@ -283,3 +395,4 @@ class EFIEST(Core):
         object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
 
         return object_reference
+
