@@ -14,7 +14,7 @@
     "parameters": [
         {
             "id": "accession_ids",
-            "optional": true,
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
@@ -51,8 +51,16 @@
                 ]
             }
         },
+	{
+	    "id": "est_object_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": ["blast_edge_file"],
+            "field_type": "text"
+	},
         {
-            "id": "fragment_option",
+            "id": "exclude_fragments",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
@@ -67,7 +75,7 @@
         },
         {
             "id": "family_filter",
-            "optional": true,
+            "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -78,7 +86,7 @@
         {
             "id": "taxonomic_level",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "Superkingdom"
@@ -124,8 +132,8 @@
         {
             "id": "filter_string",
             "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
+            "advanced": true,
+            "allow_multiple": true,
             "default_values": [
                 ""
             ],
@@ -133,7 +141,7 @@
         },
         {
             "id": "families_to_add",
-            "optional": true,
+            "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -144,10 +152,10 @@
         {
             "id": "families_addition_cluster_id_format",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "UniProt"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
@@ -170,7 +178,7 @@
         {
             "id": "fraction",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "1"
@@ -185,7 +193,7 @@
         {
             "id": "domain",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 false
@@ -197,9 +205,9 @@
             }
         },
         {
-            "id": "family_domain_bound",
-            "optional": true,
-            "advanced": false,
+            "id": "domain_family",
+            "optional": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""
@@ -209,36 +217,50 @@
         {
             "id": "region",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "Domain"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
                 "options": [
                     {
-                        "value": "Domain",
+                        "value": "central",
                         "display": "Domain"
                     },
                     {
-                        "value": "N-Terminal",
+                        "value": "n-terminal",
                         "display": "N-Terminal"
                     },
                     {
-                        "value": "C-Terminal",
+                        "value": "c-terminal",
                         "display": "C-Terminal"
                     }
                 ]
             }
         },
         {
-            "id": "ssn_e_value",
+            "id": "blast_e_value",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "float"
+            }
+        },
+        {
+            "id": "blast_num_matches",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [
+                "250"
             ],
             "field_type": "text",
             "text_options": {
@@ -261,12 +283,32 @@
             "with_border": true
         },
         {
+            "id": "fragment_option",
+            "parameters": [
+                "excludeFragments"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "filter_by_family",
+            "parameters": [
+                "family_filter"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
                 "filter_string"
             ],
-            "optional": true,
+            "optional": false,
             "advanced": true,
             "allow_multiple": true,
             "with_border": true
@@ -287,8 +329,19 @@
             "id": "family_domain_boundary_options",
             "parameters": [
                 "domain",
-                "family_domain_bound",
+                "domain_family",
                 "region"
+            ],
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "all_by_all_blast_options",
+            "parameters": [
+		"blast_e_value",
+		"blast_num_matches"
             ],
             "optional": false,
             "advanced": true,
@@ -311,12 +364,16 @@
                     "target_property": "accession_id_input"
                 },
                 {
+                    "input_parameter": "est_object_name",
+                    "target_property": "est_object_name"
+                },
+                {
                     "input_parameter": "fragment_option",
                     "target_property": "fragment_option"
                 },
                 {
-                    "input_parameter": "family_filter",
-                    "target_property": "family_filter"
+                    "input_parameter": "filter_by_family",
+                    "target_property": "filter_by_family"
                 },
                 {
                     "input_parameter": "taxonomy_filter_options",
@@ -331,8 +388,8 @@
                     "target_property": "family_domain_boundary_options"
                 },
                 {
-                    "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value"
+                    "input_parameter": "all_by_all_blast_options",
+                    "target_property": "all_by_all_blast_options"
                 }
             ],
             "output_mapping": [
