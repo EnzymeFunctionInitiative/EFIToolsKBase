@@ -14,7 +14,6 @@ from ..const import *
 
 from base import Core
 
-
 class EFIEST(Core):
     def __init__(self, ctx, config, clients_class=None):
         """
@@ -33,20 +32,23 @@ class EFIEST(Core):
     ###########################################################################
     def do_analysis(self, params: Dict[str,Any]):
         """
-        child classes should use this to render parameter files
+        child classes should use this method to wrap (a) rendering of the
+        nextflow parameter file and (b) running the `run_est_pipeline()` method.
         """
         raise NotImplementedError("Please Implement this method")
+
 
     ###########################################################################
     # inherited methods, used in each subclass' `do_analysis()` call
     ###########################################################################
     def prepare_nf_parameters(
             self,
-            parameter_dict: Dict[str, str]
+            parameter_dict: Dict[str, str],
+            sequence_version: str
         ) -> Dict[str, Any]:
         """
-        Prepare the nextflow parameter file from the provided user-input
-        parameters.
+        Prepare the nextflow parameter dict, filled with generic and/or 
+        EST input branch-agnostic parameters.
 
         This should be called in do_analysis before running the est pipeline.
 
@@ -54,6 +56,9 @@ class EFIEST(Core):
         ---------
             parameter_dict
                 dict, parameters gathered from the App's user input.
+            sequence_version
+                str, either "UniProt", "UniRef90", or "UniRef50" (or any 
+                capitalization therein).
 
         RESULTS
         -------
@@ -66,39 +71,25 @@ class EFIEST(Core):
         # fill in with the hardcoded parameters
         mapping.update(DEFAULT_NF_PARAMETERS)
 
+        # get values 
+        neg_log_e_value = -1*parameter_dict[blast_evalue_keys.dict_key][blast_evalue_keys.subdict_key]
+        num_matches = parameter_dict[blast_nmatches_keys.dict_key][blast_nmatches_keys.subdict_key]
+        
         # fill in with the user- and app-specific parameters
         mapping.update(
             {
-                "blast_evalue": f"1e-{parameter_dict['all_by_all_blast_option']['blast_e_value']}",
-                "blast_num_matches": f"{parameter_dict['all_by_all_blast_option']['blast_num_matches']}",
+                blast_evalue_keys.nf_parameter_name: 10**neg_log_e_value,
+                blast_nmatches_keys.nf_parameter_name: num_matches,
                 "final_output_dir": self.shared_folder,
-                "sequence_version": parameter_dict["accession_id_input"]["accession_id_format"].lower(),
+                "sequence_version": sequence_version.lower(),
                 "job_id": 131,  # NOTE: CHANGE THIS
             }
         )
 
-        # handle the complex set of filter parameters
-        filter_strs = []
-        for filter_keys in ALL_FILTERS:
-            dict_key = filter_keys.dict_key
-            subdict_key = filter_keys.subdict_key
-            # verify both that the filter parameter's associated subdict exists
-            # and that the value is True-ish
-            if (parameter_dict.get(dict_key)
-                    and type(parameter_dict.get(dict_key)) == dict
-                    and parameter_dict[dict_key].get(subdict_key)):
-                name = filter_keys.nf_filter_name
-                val  = parameter_dict[dict_key].get(subdict_key)
-                filter_strs.append(f"{name}={val}")
-
-        # only add the filter parameter if it is not an empty list
-        if filter_strs:
-            mapping.update({"filter": filter_strs})
-
         # handle nf's params.fasta_db
         blast_db_source = ("combined"
-            if parameter_dict["accession_id_format"] == "UniProt"
-            else parameter_dict["accession_id_format"]
+            if sequence_version.lower() == "uniprot"
+            else sequence_version
         )
         fasta_db = BlastDB.get_path(
             blast_db_source,
@@ -107,10 +98,21 @@ class EFIEST(Core):
         # add it to the mapping dict
         mapping.update({"fasta_db": fasta_db})
 
+        # add the taxonomy_filter() 
+        taxonomy_filters = taxonomy_filter(parameter_dict)
+        # add the first entry to the "filter" keyword, whether the 
+        # taxonomy_filters is an empty list
+        mapping.update({"filter": taxonomy_filters})
+
         return mapping
 
 
-    def run_est_pipeline(self, mapping: Dict[str, str], workspace_name: str):
+    def run_est_pipeline(
+            self,
+            mapping: Dict[str, str],
+            workspace_name: str,
+            data_obj_name: str = "blast_edge_file", 
+        ) -> Dict[str, str]:
         """
         This should be called in do_analysis after rendering parameters.
 
@@ -122,6 +124,9 @@ class EFIEST(Core):
             workspace_name
                 str, identifier string for the workspace within which the app
                 is running.
+            data_obj_name
+                str, to be used as the name for the BlastEdgeFile data object
+                created to contain the EST results.
 
         RESULTS
         -------
@@ -163,7 +168,8 @@ class EFIEST(Core):
             os.path.join(self.shared_folder, "all_sequences.fasta"),
             os.path.join(self.shared_folder, "evalue.tab"),
             os.path.join(self.shared_folder, "sequence_metadata.tab"),
-            acc_data
+            acc_data,
+            data_obj_name
         )
         
         # prepare the data structures to be used in the report
@@ -356,6 +362,7 @@ class EFIEST(Core):
             evalue_filepath: str,
             seq_meta_filepath: str,
             acc_data: Dict[str, str]
+            obj_name: str,
         ) -> str:
         """
         """
@@ -376,7 +383,7 @@ class EFIEST(Core):
             "objects": [
                 {
                     "type": "EFIToolsKBase.BlastEdgeFile",
-                    'name': "blast_edge_file",
+                    'name': obj_name,
                     "data": {
                         "edgefile_handle": edge_file_shock_id,
                         "fasta_handle": fasta_handle_shock_id,
@@ -395,4 +402,98 @@ class EFIEST(Core):
         object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
 
         return object_reference
+
+
+###############################################################################
+# create dictionary key mapping objects from `..const.dict_keys()` namedtuple.
+# only include the generic mappings here. 
+
+FRAGMENT_FILTER = dict_keys(
+    "fragment_option",
+    "exclude_fragments",
+    "fragments"
+)
+
+# NOTE: make the equivalent for taxonomy filtering
+
+# used in option A, C, and D
+ADD_FAMILIES = dict_keys(
+    "protein_family_addition_options",
+    "families_to_add",
+    "families"
+)
+FRACTION_FILTER = dict_keys(
+    "protein_family_addition_options",
+    "fraction",
+    "fraction"
+)
+#families_fmt_keys = dict_keys(
+#    "protein_family_addition_options",
+#    "families_addition_cluster_id_format"
+#    "unknown",
+#)
+
+# EST specific dictionary mappings (via const.dict_keys namedtuples objects)
+blast_evalue_keys = dict_keys("all_by_all_blast_options","blast_e_value","blast_evalue")
+blast_nmatches_keys = dict_keys("all_by_all_blast_options","blast_num_matches","blast_num_matches")
+
+
+###############################################################################
+# parameter handling functions, shared across multiple Apps.
+
+def fragment_filter(parameter_dict: Dict[str, str]) -> str:
+    """
+    Given the appropriate input dictionary, map KBase App UI inputs to relevant
+    nextflow est.nf input parameters. Specific for the fragment filter and
+    called by A, B, and D input paths.
+    """
+    dict_key = FRAGMENT_FILTER.dict_key
+    subdict_key = FRAGMENT_FILTER.subdict_key
+    name = FRAGMENT_FILTER.nf_parameter_name
+    if (
+            parameter_dict.get(dict_key) and 
+            parameter_dict[dict_key].get(subdict_key)
+    ):
+        val = parameter_dict[dict_key].get(subdict_key)
+        return f"{name}={val}"
+
+    return ""
+
+# NOTE: incomplete
+def taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str,str]:
+    """
+    Given the appropriate input dictionary, map KBase App UI inputs to relevant
+    nextflow est.nf input parameters. Specific for the taxonomy filter(s) and
+    called by all input paths.
+    """
+    # INCOMPLETE
+    return []
+
+def family_addition(parameter_dict: Dict[str, str]) -> Dict[str,str]:
+    """
+    Given the appropriate input dictionary, map KBase App UI inputs to relevant
+    nextflow est.nf input parameters. Specific for the Protein Family Addition
+    and called by A, C, and D input paths.
+    """
+    # get the keys to the families subdictionary
+    families_dict_key = ADD_FAMILIES.dict_key
+    families_subdict_key = ADD_FAMILIES.subdict_key
+    families_name = ADD_FAMILIES.nf_parameter_name
+    # get the keys to the fraction subdictionary
+    fraction_dict_key = FRACTION_FILTER.dict_key
+    fraction_subdict_key = FRACTION_FILTER.subdict_key
+    fraction_name = FRACTION_FILTER.nf_parameter_name
+
+    # check that the (sub)dictionary and values exist and/or are true-ish
+    if (
+            parameter_dict.get(families_dict_key) and
+            parameter_dict[families_dict_key].get(families_subdict_key) and
+            parameter_dict[fraction_dict_key].get(fraction_subdict_key)
+    ):
+        return {
+                families_name: params[families_dict_key][families_subdict_key],
+                fraction_name: params[fraction_dict_key][fraction_subdict_key],
+        }
+
+    return {}
 

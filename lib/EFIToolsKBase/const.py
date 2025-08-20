@@ -19,7 +19,7 @@ DEFAULT_NF_PARAMETERS = {
     "multiplex": False,
 }
 
-class BlastDB(Enum):
+class BlastDB(str, Enum):
     """
     Enum to enable clean handling of file paths for the Blast DB files.
     """
@@ -37,41 +37,19 @@ class BlastDB(Enum):
     @classmethod
     def get_path(cls, source_str: str, fragment_bool: bool) -> Enum:
         """
-        Given the source_str and fragment_bool, return the correct Enum value.
+        Given the source_str and fragment_bool, return the correct Enum _value_.
         """
         enum_str = source_str.upper()
         if fragment_bool:
             enum_str += "_NF"
         return cls[enum_str].value
 
-# create a namedtuple object that will contain key, subkey pairs needed to
-# cleanly access the parameters associated with filters to be applied
-_filter_keys = namedtuple(
-    "filter",
-    ["dict_key", "subdict_key", "nf_filter_name"]
+# create a namedtuple object that will contain key-subkey pairs needed to
+# cleanly access parameters stashed in KBase's "parameter-groups" subdicts.
+# Third argument is the nextflow parameter name that the UI parameter should
+# map to; if left as an empty string, no mapping to a params.json file is used.
+dict_keys = namedtuple(
+    "Mapping",  # the object name used in __str__ and __repr__
+    ["dict_key", "subdict_key", "nf_parameter_name"] # list are accepted args
 )
-
-# make the specific filter_keys objects, one for each filter
-fragment_filter = _filter_keys(
-    "fragment_option",
-    "exclude_fragments",
-    "exclude_fragments"
-)
-family_filter = _filter_keys("filter_by_family","family_filter","family_filter")
-fraction_filter = _filter_keys(
-    "protein_family_addition_options",
-    "fraction",
-    "fraction"
-)
-# NOTE: make the equivalent for taxonomy filtering
-
-# create an iterable for all filters
-ALL_FILTERS = (fragment_filter, family_filter, fraction_filter)
-
-# filter param subdict keys:
-#   ["fragment_option"]["exclude_fragments"]
-#   ["filter_by_family"]["family_filter"]
-#   ["protein_family_addition_options"]["fraction"]
-#   [""][""]
-#   [""][""]
 
