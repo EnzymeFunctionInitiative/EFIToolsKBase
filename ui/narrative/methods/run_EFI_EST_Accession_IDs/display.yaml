@@ -42,7 +42,7 @@ parameters:
     est_object_name:
         ui-name: Name for the final BlastEdgeFile Object
         short-hint: |
-            Short, descriptive filename (no spaces) to be used to name the BlastEdgeFile data object created by this App.
+            Short, descriptive filename (no spaces nor dashes) to be used to name the BlastEdgeFile data object created by this App.
 
     #
     # Fragment filter parameter
@@ -51,6 +51,7 @@ parameters:
         ui-name: Exclude UniProt-defined fragments in the results?
         short-hint: |
             Check to exclude UniProt-defined fragments in the results (default: off). For the UniRef90 and UniRef50 databases, clusters are excluded if the cluster ID ("representative sequence") is a fragment. UniProt IDs in UniRef90 and UniRef50 clusters with complete cluster IDs are removed from the clusters if they are fragments.
+        # probably should have a long-hint
     
     #
     # Family filter parameter
@@ -61,14 +62,14 @@ parameters:
             The input format is a single family OR a comma-separated list of family/clan IDs. Family IDs should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
 
     #
-    # Taxonomy filter parameters
+    # Taxonomy filter parameters; NEEDS MAJOR UPDATE
     #
     taxonomic_level:
         ui-name: Taxonomic Level
         short-hint: |
             Which level of taxomony to which the filter string is applied
     
-    filter_string:
+    taxon_filter_string:
         ui-name: Filter string
         short-hint: |
             The filter to apply, may inlcude NOT at the beginning
@@ -76,18 +77,45 @@ parameters:
     #
     # Family Addition parameters
     #
-    families_to_add:
+    families:
         ui-name: Families
         short-hint: |
             The input format is a single family or comma/space separated list of families
         long-hint: |
-            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
+            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans. Added sequences will be gathered from the same source (UniProt, UniRef90, or UniRef50) as the input Accession IDs. 
 
-    families_addition_cluster_id_format:
-        ui-name: Sequence source for the added families:
-        short-hint: |
-            For the families specified above, use this alternate cluster ID format.
-            
+    #families_addition_cluster_id_format:
+    #    ui-name: Sequence source for the added families:
+    #    short-hint: |
+    #        For the families specified above, use this alternate cluster ID format.
+    # FROM THE SPEC FILE:
+    #{
+    #    "id": "families_addition_cluster_id_format",
+    #    "optional": false,
+    #    "advanced": true,
+    #    "allow_multiple": false,
+    #    "default_values": [
+    #        ""
+    #    ],
+    #    "field_type": "dropdown",
+    #    "dropdown_options": {
+    #        "options": [
+    #            {
+    #                "value": "UniProt",
+    #                "display": "UniProt"
+    #            },
+    #            {
+    #                "value": "UniRef90",
+    #                "display": "UniRef90"
+    #            },
+    #            {
+    #                "value": "UniRef50",
+    #                "display": "UniRef50"
+    #            }
+    #        ]
+    #    }
+    #},
+       
     fraction:
         ui-name: Fraction
         short-hint: |
@@ -141,6 +169,8 @@ parameter-groups:
         short-hint: |
             UniProt designates a Sequence Status for each member: "Complete" if the encoding DNA sequence has both start and stop codons; "Fragment" if the start and/or stop codon is missing. Approximately 10% of the entries in UniProt are fragments.
 
+
+
     filter_by_family:
         ui-name: Filter by Family
         short-hint: |
@@ -154,7 +184,7 @@ parameter-groups:
     protein_family_addition_options:
         ui-name: Protein Family Addition Options
         short-hint:
-            Add sequences belonging to Pfam and/or InterPro families to the sequences associated with the Accession IDs provided above.
+            Add sequences belonging to the specified Pfam and/or InterPro families.
     
     family_domain_boundary_options:
         ui-name: Family Domain Boundary Option
