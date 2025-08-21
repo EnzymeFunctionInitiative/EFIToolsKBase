@@ -57,7 +57,7 @@ class EFIAccessionIDs(EFIEST):
         return self.run_est_pipeline(
             nf_parameters,
             params["workspace_name"], 
-            params["est_obj_name"]
+            params["est_object_name"]
         )
 
     def prepare_nf_parameters(
