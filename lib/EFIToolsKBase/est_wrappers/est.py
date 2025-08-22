@@ -216,12 +216,13 @@ class EFIEST(Core):
     # private methods, called within the `run_est_pipeline()` method
     ###########################################################################
     def _create_file_links(self, include_zip=True):
+        # NEED TO REWORK THIS WHOLE METHOD
         output_file_names = [
             "1.out.parquet",
             "all_sequences.fasta",
             "evalue.tab",
             "sequence_metadata.tab",
-            "sunburst_ids.tab",
+            "sunburst_tax.json",
             "length.png",
             "pident.png",
             "edge.png"
