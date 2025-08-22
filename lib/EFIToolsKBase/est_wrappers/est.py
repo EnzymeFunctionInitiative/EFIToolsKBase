@@ -96,9 +96,11 @@ class EFIEST(Core):
         
         print(parameter_dict)
         print(FRAGMENT_FILTER)
-        fragment_filter_bool = (
-            True if parameter_dict.get(FRAGMENT_FILTER.dict_key,{}).get(FRAGMENT_FILTER.subdict_key) 
-            else False)
+        dict_key = FRAGMENT_FILTER.dict_key
+        subdict_key = FRAGMENT_FILTER.subdict_key
+        fragment_filter_bool = bool(
+            parameter_dict.get(dict_key) and parameter_dict[dict_key].get(subdict_key)
+        )
         fasta_db = BlastDB.get_path(
             blast_db_source,
             fragment_filter_bool
@@ -185,9 +187,9 @@ class EFIEST(Core):
             "pident_img": pident_dataurl,
             "length_img": length_dataurl,
             "edge_img": edge_dataurl,
-            "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3e}",
-            "edge_count": acc_data["EdgeCount"],
-            "unique_seqs": acc_data["UniqueSeq"]
+            "convergence_ratio": f"{acc_data['convergence_ratio']:.3e}",
+            "edge_count": acc_data["num_blast_edges"],
+            "unique_seqs": acc_data["num_unique_ids"]
         }
         # only one object created (the BlastEdgeFile) so list of len 1
         objects_created_list = [
@@ -397,9 +399,9 @@ class EFIEST(Core):
                         "fasta_handle": fasta_handle_shock_id,
                         "evalue_handle": evalue_shock_id,
                         "seq_meta_handle": seq_meta_shock_id,
-                        "edge_count": acc_data["EdgeCount"],
-                        "unique_seq": acc_data["UniqueSeq"],
-                        "convergence_ratio": acc_data['ConvergenceRatio'],
+                        "edge_count": acc_data["num_blast_edges"],
+                        "unique_seq": acc_data["num_unique_ids"],
+                        "convergence_ratio": acc_data['convergence_ratio'],
                     }
                 }
             ]
