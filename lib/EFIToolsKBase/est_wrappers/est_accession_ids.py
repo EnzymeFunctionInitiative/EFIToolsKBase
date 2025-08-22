@@ -3,7 +3,7 @@ import re
 import logging
 from typing import Dict, Any
 
-from .est import EFIEST, fragment_filter, taxonomy_filter, family_addition
+from .est import EFIEST, apply_fragment_filter, apply_family_addition
 from ..const import *
 
 IMPORT_MODE = ("import_mode", "accessions")
@@ -45,10 +45,10 @@ class EFIAccessionIDs(EFIEST):
         # log user input from the UI 
         logging.debug(f"User input parameters:\n{params}")
         
-        # do validation
-
         # correctly map and gather all nextflow parameters
         nf_parameters = self.prepare_nf_parameters(params)
+
+        # do validation
 
         # log the nextflow parameters
         logging.debug(f"Nextflow parameter file contains:\n{nf_parameters}")
@@ -111,22 +111,22 @@ class EFIAccessionIDs(EFIEST):
         )
       
         # check for the fragment fitler boolean
-        frag_filter_str = fragment_filter(parameter_dict)
+        frag_filter_str = apply_fragment_filter(parameter_dict)
         if frag_filter_str:
             nf_parameter["filter"].append(frag_filter_str)
 
         # check the family filter
-        fam_filter_str = family_filter(parameter_dict)
+        fam_filter_str = apply_family_filter(parameter_dict)
         if fam_filter_str:
             nf_parameter["filter"].append(fam_filter_str)
 
         # check for domain truncation
-        domain_params = domain_options(parameter_dict)
+        domain_params = apply_domain_options(parameter_dict)
         if domain_params:
             nf_parameter.update(domain_params)
 
         # check for family additions
-        family_addn_params = family_addition(parameter_dict)
+        family_addn_params = apply_family_addition(parameter_dict)
         if family_addn_params:
             nf_parameter.update(family_addn_params)
 
@@ -165,7 +165,7 @@ class EFIAccessionIDs(EFIEST):
 ################################################################################
 # parameter handling functions
 
-def family_filter(parameter_dict: Dict[str, str]) -> str:
+def apply_family_filter(parameter_dict: Dict[str, str]) -> str:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the family filter and only
@@ -183,7 +183,7 @@ def family_filter(parameter_dict: Dict[str, str]) -> str:
 
     return ""
 
-def domain_options(parameter_dict: Dict[str, str]) -> Dict[str,str]:
+def apply_domain_options(parameter_dict: Dict[str, str]) -> Dict[str,str]:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the domain filter/truncation

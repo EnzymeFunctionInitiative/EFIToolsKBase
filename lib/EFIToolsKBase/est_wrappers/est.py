@@ -58,7 +58,9 @@ class EFIEST(Core):
                 dict, parameters gathered from the App's user input.
             sequence_version
                 str, either "UniProt", "UniRef90", or "UniRef50" (or any 
-                capitalization therein).
+                capitalization therein). Accepted as an input argument because
+                this info can be stashed in different UI subdicts that should 
+                be handled in the App specific wrapper.
 
         RESULTS
         -------
@@ -91,15 +93,18 @@ class EFIEST(Core):
             if sequence_version.lower() == "uniprot"
             else sequence_version
         )
+        fragment_filter_bool = (
+            True if parameter_dict.get(FRAGMENT_FILTER.dict_key,{}).get(FRAGMENT_FILTER.subdict_key) 
+            else False)
         fasta_db = BlastDB.get_path(
             blast_db_source,
-            parameter_dict[FRAGMENT_FILTER.dict_key][FRAGMENT_FILTER.subdict_key]
+            fragment_filter_bool
         )
         # add it to the mapping dict
         mapping.update({"fasta_db": fasta_db})
 
         # add the taxonomy_filter() 
-        taxonomy_filters = taxonomy_filter(parameter_dict)
+        taxonomy_filters = apply_taxonomy_filter(parameter_dict)
         # add the first entry to the "filter" keyword, whether the 
         # taxonomy_filters is an empty list
         mapping.update({"filter": taxonomy_filters})
@@ -441,7 +446,7 @@ blast_nmatches_keys = dict_keys("all_by_all_blast_options","blast_num_matches","
 ###############################################################################
 # parameter handling functions, shared across multiple Apps.
 
-def fragment_filter(parameter_dict: Dict[str, str]) -> str:
+def apply_fragment_filter(parameter_dict: Dict[str, str]) -> str:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the fragment filter and
@@ -460,7 +465,7 @@ def fragment_filter(parameter_dict: Dict[str, str]) -> str:
     return ""
 
 # NOTE: incomplete
-def taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
+def apply_taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the taxonomy filter(s) and
@@ -469,7 +474,7 @@ def taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
     # INCOMPLETE
     return []
 
-def family_addition(parameter_dict: Dict[str, str]) -> Dict[str,str]:
+def apply_family_addition(parameter_dict: Dict[str, str]) -> Dict[str,str]:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the Protein Family Addition
