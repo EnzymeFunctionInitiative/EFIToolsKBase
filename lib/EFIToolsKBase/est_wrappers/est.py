@@ -93,7 +93,7 @@ class EFIEST(Core):
         )
         fasta_db = BlastDB.get_path(
             blast_db_source,
-            parameter_dict["fragment_option"]["exclude_fragment"]
+            parameter_dict[FRAGMENT_FILTER.dict_key][FRAGMENT_FILTER.subdict_key]
         )
         # add it to the mapping dict
         mapping.update({"fasta_db": fasta_db})
@@ -361,8 +361,8 @@ class EFIEST(Core):
             fasta_filepath: str,
             evalue_filepath: str,
             seq_meta_filepath: str,
-            acc_data: Dict[str, str]
-            obj_name: str,
+            acc_data: Dict[str, str],
+            obj_name: str
         ) -> str:
         """
         """
@@ -460,7 +460,7 @@ def fragment_filter(parameter_dict: Dict[str, str]) -> str:
     return ""
 
 # NOTE: incomplete
-def taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str,str]:
+def taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the taxonomy filter(s) and

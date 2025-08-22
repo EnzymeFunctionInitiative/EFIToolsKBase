@@ -1,8 +1,9 @@
 import os
 import re
 import logging
+from typing import Dict, Any
 
-from .est import EFIEST, fragment_filter, taxonomy_filter, family_filter, domain_filter, family_addition
+from .est import EFIEST, fragment_filter, taxonomy_filter, family_addition
 from ..const import *
 
 IMPORT_MODE = ("import_mode", "accessions")

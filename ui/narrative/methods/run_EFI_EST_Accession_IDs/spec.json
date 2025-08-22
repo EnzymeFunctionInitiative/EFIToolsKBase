@@ -130,7 +130,7 @@
             }
         },
         {
-            "id": "filter_string",
+            "id": "taxon_filter_string",
             "optional": false,
             "advanced": true,
             "allow_multiple": true,
@@ -259,7 +259,7 @@
         {
             "id": "fragment_option",
             "parameters": [
-                "excludeFragments"
+                "exclude_fragments"
             ],
             "optional": false,
             "advanced": true,
@@ -280,7 +280,7 @@
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
-                "filter_string"
+                "taxon_filter_string"
             ],
             "optional": false,
             "advanced": true,
