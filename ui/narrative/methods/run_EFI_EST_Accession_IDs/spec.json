@@ -75,7 +75,7 @@
         },
         {
             "id": "family_filter",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -85,7 +85,7 @@
         },
         {
             "id": "taxonomic_level",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -131,7 +131,7 @@
         },
         {
             "id": "taxon_filter_string",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": true,
             "default_values": [
@@ -141,7 +141,7 @@
         },
         {
             "id": "families",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -151,7 +151,7 @@
         },
         {
             "id": "fraction",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -166,7 +166,7 @@
         },
         {
             "id": "domain",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -180,7 +180,7 @@
         },
         {
             "id": "domain_family",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -190,7 +190,7 @@
         },
         {
             "id": "region",
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
@@ -261,7 +261,7 @@
             "parameters": [
                 "exclude_fragments"
             ],
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
@@ -271,7 +271,7 @@
             "parameters": [
                 "family_filter"
             ],
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
@@ -282,7 +282,7 @@
                 "taxonomic_level",
                 "taxon_filter_string"
             ],
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": true,
             "with_border": true
@@ -293,7 +293,7 @@
                 "families",
                 "fraction"
             ],
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
@@ -305,7 +305,7 @@
                 "domain_family",
                 "region"
             ],
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
