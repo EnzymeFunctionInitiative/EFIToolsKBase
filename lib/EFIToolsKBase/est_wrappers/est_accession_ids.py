@@ -43,7 +43,7 @@ DOMAIN_REGION = dict_keys(
 class EFIAccessionIDs(EFIEST):
     def do_analysis(self, params):
         # log user input from the UI 
-        logging.debug(f"User input parameters:\n{params}")
+        logging.info(f"User input parameters:\n{params}")
         
         # correctly map and gather all nextflow parameters
         nf_parameters = self.prepare_nf_parameters(params)
@@ -51,7 +51,7 @@ class EFIAccessionIDs(EFIEST):
         # do validation
 
         # log the nextflow parameters
-        logging.debug(f"Nextflow parameter file contains:\n{nf_parameters}")
+        logging.info(f"Nextflow parameter file contains:\n{nf_parameters}")
 
         # run the parent class' run_est_pipeline method with nf-ready parameter
         # dictionary
@@ -113,28 +113,28 @@ class EFIAccessionIDs(EFIEST):
         # check for the fragment fitler boolean
         frag_filter_str = apply_fragment_filter(parameter_dict)
         if frag_filter_str:
-            nf_parameter["filter"].append(frag_filter_str)
+            nf_parameters["filter"].append(frag_filter_str)
 
         # check the family filter
         fam_filter_str = apply_family_filter(parameter_dict)
         if fam_filter_str:
-            nf_parameter["filter"].append(fam_filter_str)
+            nf_parameters["filter"].append(fam_filter_str)
 
         # check for domain truncation
         domain_params = apply_domain_options(parameter_dict)
         if domain_params:
-            nf_parameter.update(domain_params)
+            nf_parameters.update(domain_params)
 
         # check for family additions
         family_addn_params = apply_family_addition(parameter_dict)
         if family_addn_params:
-            nf_parameter.update(family_addn_params)
+            nf_parameters.update(family_addn_params)
 
         # remove the filter parameter if it is an empty list
-        if not nf_parameter.get("filter"):
-            nf_parameter.pop("filter", None)
+        if not nf_parameters.get("filter"):
+            nf_parameters.pop("filter", None)
 
-        return nf_parameter
+        return nf_parameters
 
 
     def _prepare_accessions_file(self, accession_string: str) -> str:
@@ -148,7 +148,7 @@ class EFIAccessionIDs(EFIEST):
         """
         # assume users did not input text in the desired format. Also add 
         # malicious-looking characters for security.
-        accession_list = re.split("\n| |,|;|&|>|<|?", accession_string)
+        accession_list = re.split(r"\n| |,|;|&|>|<|\?", accession_string)
         # remove empty strings if present
         accession_list = [
             accession for accession in accession_list if accession

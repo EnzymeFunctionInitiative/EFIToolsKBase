@@ -93,6 +93,9 @@ class EFIEST(Core):
             if sequence_version.lower() == "uniprot"
             else sequence_version
         )
+        
+        print(parameter_dict)
+        print(FRAGMENT_FILTER)
         fragment_filter_bool = (
             True if parameter_dict.get(FRAGMENT_FILTER.dict_key,{}).get(FRAGMENT_FILTER.subdict_key) 
             else False)
