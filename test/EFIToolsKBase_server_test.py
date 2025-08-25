@@ -132,25 +132,15 @@ class EFIToolsKBaseTest(unittest.TestCase):
                     "accession_ids": "A0A010ZH43\nA0A017RWE5\nA0A017SQS5\nA0A063ZUG7\nA0A073ITR3\nA0A075KES1\nA0A077M284\nA0A078LBK1\nA0A084JAL8\nA0A088TMM5\nA0A090FUD8\nA0A090NBY8\nA0A090V3Y1\nA0A094IHS1\nA0A095ZGF5\nA0A097R141\nA0A098B3F3\nA0A099SB27\nA0A099SFX4\nA0A0A1A2Z3\nA0A0A2DQ68",
                     "accession_id_format": "UniProt"
                 },
-                "family_domain_boundary_options": {
-                    "domain": False, 
-                    "domain_family": "", 
-                    "region": ""
-                }, 
-                "fragment_option": {"exclude_fragments": False},
-                "filter_by_family": {"family_filter": False},
-                "taxonomy_filter_options": {
-                    "taxonomic_level": "",
-                    "filter_string": ""
-                },
-                "protein_family_addition_options": {
-                    "families":"",
-                    "fraction":""
-                },
+                "family_domain_boundary_options": None,
+                "fragment_option": None,
+                "filter_by_family": None,
+                "taxonomy_filter_options": None,
+                "protein_family_addition_options": None,
                 "all_by_all_blast_options": {
                     "blast_e_value": 5,
                     "blast_num_matches": 250
-                } 
+                }
             }
         )
         print(ret)

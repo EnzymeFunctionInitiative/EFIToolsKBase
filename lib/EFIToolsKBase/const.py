@@ -50,7 +50,7 @@ class BlastDB(str, Enum):
 def clean_dict(parameter_dict: Dict[str,Any]) -> Dict[str,Any]:
     """ Helper to remove parameter keys that are left blank in the KBase UI """
     try:
-        for key, value in parameter_dict.items():
+        for key, value in list(parameter_dict.items()):
             if value == None:
                 parameter_dict.pop(key)
     except AttributeError:
