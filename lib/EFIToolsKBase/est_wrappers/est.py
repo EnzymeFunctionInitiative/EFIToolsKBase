@@ -74,14 +74,14 @@ class EFIEST(Core):
         mapping.update(DEFAULT_NF_PARAMETERS)
 
         # get values 
-        neg_log_e_value = -1*parameter_dict[blast_evalue_keys.dict_key][blast_evalue_keys.subdict_key]
-        num_matches = parameter_dict[blast_nmatches_keys.dict_key][blast_nmatches_keys.subdict_key]
+        neg_log_e_value = -1*get_param_value(parameter_dict, BLAST_EVALUE)
+        num_matches = get_param_value(parameter_dict, BLAST_NMATCHES)
         
         # fill in with the user- and app-specific parameters
         mapping.update(
             {
-                blast_evalue_keys.nf_parameter_name: 10**neg_log_e_value,
-                blast_nmatches_keys.nf_parameter_name: num_matches,
+                BLAST_EVALUE.nf_parameter_name: 10**neg_log_e_value,
+                BLAST_NMATCHES.nf_parameter_name: num_matches,
                 "final_output_dir": self.shared_folder,
                 "sequence_version": sequence_version.lower(),
                 "job_id": 131,  # NOTE: CHANGE THIS
@@ -95,11 +95,8 @@ class EFIEST(Core):
         )
         
         print(parameter_dict)
-        print(FRAGMENT_FILTER)
-        dict_key = FRAGMENT_FILTER.dict_key
-        subdict_key = FRAGMENT_FILTER.subdict_key
         fragment_filter_bool = bool(
-            parameter_dict.get(dict_key) and parameter_dict[dict_key].get(subdict_key)
+            get_param_value(parameter_dict, FRAGMENT_FILTER)
         )
         fasta_db = BlastDB.get_path(
             blast_db_source,
@@ -416,10 +413,10 @@ class EFIEST(Core):
 
 
 ###############################################################################
-# create dictionary key mapping objects from `..const.dict_keys()` namedtuple.
+# create dictionary key mapping objects from `..const.KBaseMapping()` namedtuple.
 # only include the generic mappings here. 
 
-FRAGMENT_FILTER = dict_keys(
+FRAGMENT_FILTER = KBaseMapping(
     "fragment_option",
     "exclude_fragments",
     "fragments"
@@ -428,25 +425,33 @@ FRAGMENT_FILTER = dict_keys(
 # NOTE: make the equivalent for taxonomy filtering
 
 # used in option A, C, and D
-ADD_FAMILIES = dict_keys(
+ADD_FAMILIES = KBaseMapping(
     "protein_family_addition_options",
     "families_to_add",
     "families"
 )
-FRACTION_FILTER = dict_keys(
+FRACTION_FILTER = KBaseMapping(
     "protein_family_addition_options",
     "fraction",
     "fraction"
 )
-#families_fmt_keys = dict_keys(
+#families_fmt_keys = KBaseMapping(
 #    "protein_family_addition_options",
 #    "families_addition_cluster_id_format"
 #    "unknown",
 #)
 
-# EST specific dictionary mappings (via const.dict_keys namedtuples objects)
-blast_evalue_keys = dict_keys("all_by_all_blast_options","blast_e_value","blast_evalue")
-blast_nmatches_keys = dict_keys("all_by_all_blast_options","blast_num_matches","blast_num_matches")
+# EST specific dictionary mappings (via const.KBaseMapping namedtuples objects)
+BLAST_EVALUE = KBaseMapping(
+    "all_by_all_blast_options",
+    "blast_e_value",
+    "blast_evalue"
+)
+BLAST_NMATCHES = KBaseMapping(
+    "all_by_all_blast_options",
+    "blast_num_matches",
+    "blast_num_matches"
+)
 
 
 ###############################################################################
@@ -458,16 +463,10 @@ def apply_fragment_filter(parameter_dict: Dict[str, str]) -> str:
     nextflow est.nf input parameters. Specific for the fragment filter and
     called by A, B, and D input paths.
     """
-    dict_key = FRAGMENT_FILTER.dict_key
-    subdict_key = FRAGMENT_FILTER.subdict_key
+    val = get_param_value(parameter_dict, FRAGMENT_FILTER)
     name = FRAGMENT_FILTER.nf_parameter_name
-    if (
-            parameter_dict.get(dict_key) and 
-            parameter_dict[dict_key].get(subdict_key)
-    ):
-        val = parameter_dict[dict_key].get(subdict_key)
+    if val:
         return f"{name}={val}"
-
     return ""
 
 # NOTE: incomplete
@@ -487,24 +486,14 @@ def apply_family_addition(parameter_dict: Dict[str, str]) -> Dict[str,str]:
     and called by A, C, and D input paths.
     """
     # get the keys to the families subdictionary
-    families_dict_key = ADD_FAMILIES.dict_key
-    families_subdict_key = ADD_FAMILIES.subdict_key
+    families_val = get_param_value(parameter_dict, ADD_FAMILIES)
     families_name = ADD_FAMILIES.nf_parameter_name
     # get the keys to the fraction subdictionary
-    fraction_dict_key = FRACTION_FILTER.dict_key
-    fraction_subdict_key = FRACTION_FILTER.subdict_key
+    fraction_val = get_param_value(parameter_dict, FRACTION_FILTER)
     fraction_name = FRACTION_FILTER.nf_parameter_name
 
-    # check that the (sub)dictionary and values exist and/or are true-ish
-    if (
-            parameter_dict.get(families_dict_key) and
-            parameter_dict[families_dict_key].get(families_subdict_key) and
-            parameter_dict[fraction_dict_key].get(fraction_subdict_key)
-    ):
-        return {
-                families_name: params[families_dict_key][families_subdict_key],
-                fraction_name: params[fraction_dict_key][fraction_subdict_key],
-        }
-
+    # check that the values are both true-ish
+    if families_val and fraction_val:
+        return {families_name: families_val, fraction_name: fraction_val}
     return {}
 

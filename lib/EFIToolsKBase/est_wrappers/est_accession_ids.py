@@ -9,32 +9,32 @@ from ..const import *
 IMPORT_MODE = ("import_mode", "accessions")
 
 # create the accession id dictionary mapping objects
-accession_ids_keys = dict_keys(
+ACCESSION_IDS = KBaseMapping(
     "accession_id_input",
     "accession_ids",
     ""
 )
-accession_fmt_keys = dict_keys(
+ACCESSION_FMT = KBaseMapping(
     "accession_id_input",
     "accession_id_format",
     ""
 )
 
 # only used in Option D (AccessionIds)
-FAMILY_FILTER = dict_keys("filter_by_family", "family_filter", "family")
+FAMILY_FILTER = KBaseMapping("filter_by_family", "family_filter", "family")
 
 # create the domain filtering/truncating dictionary mapping objects
-DOMAIN_FILTER = dict_keys(
+DOMAIN_FILTER = KBaseMapping(
     "family_domain_boundary_options",
     "domain",
     ""  # does not get written in the param file
 )
-DOMAIN_FAMILY = dict_keys(
+DOMAIN_FAMILY = KBaseMapping(
     "family_domain_boundary_options",
     "domain_family",
     "domain_family"
 )
-DOMAIN_REGION = dict_keys(
+DOMAIN_REGION = KBaseMapping(
     "family_domain_boundary_options",
     "region",
     "domain"
@@ -42,9 +42,19 @@ DOMAIN_REGION = dict_keys(
 
 class EFIAccessionIDs(EFIEST):
     def do_analysis(self, params):
-        # log user input from the UI 
+        # log user input from the UI
         logging.info(f"User input parameters:\n{params}")
-        
+       
+        # clean the input params dict and subdict values
+        # step 1. remove un-mapped keys in the outer dict; these are created
+        # because parameter_groups are "optional" but are always included in
+        # the params dict from the UI. If left un-enabled, the parameter
+        # group's key maps to a NoneType object.
+        params = clean_dict(params)
+        # step 2. do the same for inner subdicts.
+        for key in params.keys():
+            params[key] = clean_dict(params[key])
+
         # correctly map and gather all nextflow parameters
         nf_parameters = self.prepare_nf_parameters(params)
 
@@ -57,13 +67,13 @@ class EFIAccessionIDs(EFIEST):
         # dictionary
         return self.run_est_pipeline(
             nf_parameters,
-            params["workspace_name"], 
+            params["workspace_name"],
             params["est_object_name"]
         )
 
     def prepare_nf_parameters(
             self,
-            parameter_dict: Dict[str, str],
+            parameter_dict: Dict[str, Any],
         ) -> Dict[str, Any]:
         """
         Prepare the nextflow parameter dict from the user input in
@@ -72,34 +82,30 @@ class EFIAccessionIDs(EFIEST):
         ARGUMENTS
         ---------
             parameter_dict
-                dict, parameters gathered from the App's user input. 
+                dict, parameters gathered from the App's user input.
 
         RESULTS
         -------
             nf_parameters
                 dict, contains parameters' key:value pairs ready for use in the
-                EFI nextflow pipeline. 
+                EFI nextflow pipeline.
         """
         # gather generic parameters by calling the parent class'
         # `prepare_nf_parameters()` method.
-        fmt_dict_key = accession_fmt_keys.dict_key
-        fmt_subdict_key = accession_fmt_keys.subdict_key
         nf_parameters = super().prepare_nf_parameters(
             parameter_dict,
-            parameter_dict[fmt_dict_key][fmt_subdict_key]
+            get_param_value(parameter_dict, ACCESSION_FMT)
         )
         # at this point, the nf_parameters contain the generic parameters in
-        # const.DEFAULT_NF_PARAMETERS, all_by_all_blast parameters, 
+        # const.DEFAULT_NF_PARAMETERS, all_by_all_blast parameters,
         # "final_output_dir", "sequence_version", "job_id", "fasta_db", and
         # "filter". The "filter" key maps to a list of strings or an empty list
         # if no taxonomy filters are being applied.
 
         # write the pasted accession ID list to a file; needed in a specific
         # file format for the EST backend code
-        ids_dict_key = accession_ids_keys.dict_key
-        ids_subdict_key = accession_ids_keys.subdict_key
         accessions_file = self._prepare_accessions_file(
-            parameter_dict[ids_dict_key][ids_subdict_key]
+            get_param_value(parameter_dict, ACCESSION_IDS)
         )
         
         # add the accession input parameters to the nf_parameters dict
@@ -143,10 +149,10 @@ class EFIAccessionIDs(EFIEST):
         
         EST/pipelines/est/import/get_sequence_ids.pl docs say that the file
         must have sequence IDs on a separate line; no additional delimiters
-        are expected. This code assumes that the user does not follow the 
+        are expected. This code assumes that the user does not follow the
         suggested format.
         """
-        # assume users did not input text in the desired format. Also add 
+        # assume users did not input text in the desired format. Also add
         # malicious-looking characters for security.
         accession_list = re.split(r"\n| |,|;|&|>|<|\?", accession_string)
         # remove empty strings if present
@@ -169,18 +175,12 @@ def apply_family_filter(parameter_dict: Dict[str, str]) -> str:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the family filter and only
-    called by D input path. 
+    called by D input path.
     """
-    dict_key = FAMILY_FILTER.dict_key
-    subdict_key = FAMILY_FILTER.subdict_key
+    val = get_param_value(parameter_dict, FAMILY_FILTER)
     name = FAMILY_FILTER.nf_parameter_name
-    if (
-            parameter_dict.get(dict_key) and 
-            parameter_dict[dict_key].get(subdict_key)
-    ):
-        val = parameter_dict[dict_key].get(subdict_key)
+    if val:
         return f"{name}={val}"
-
     return ""
 
 def apply_domain_options(parameter_dict: Dict[str, str]) -> Dict[str,str]:
@@ -190,30 +190,23 @@ def apply_domain_options(parameter_dict: Dict[str, str]) -> Dict[str,str]:
     and only called by D input path (in this fashion).
     """
     # get and check the domain boolean;
+    domain_val = get_param_value(parameter_dict, DOMAIN_FILTER)
     dict_key = DOMAIN_FILTER.dict_key
     subdict_key = DOMAIN_FILTER.subdict_key
-    if (
-        parameter_dict.get(dict_key) and
-        parameter_dict[dict_key].get(subdict_key)
-    ):
-        #  if both are true, then a domain has been specified
-        fam_dict_key = DOMAIN_FAMILY.dict_key
-        fam_subdict_key = DOMAIN_FAMILY.subdict_key
+    if domain_val:
+        # region values are from a drop down menu; no handling of the value
+        # is needed.
+        result = apply_mapping(parameter_dict, DOMAIN_REGION)
+
+        # gather the domain family string, validate it, and add to the result
+        # dict
+        fam_val = get_param_value(parameter_dict, DOMAIN_FAMILY)
         fam_name = DOMAIN_FAMILY.nf_parameter_name
-        fam_value = parameter_dict[fam_dict_key].get(fam_subdict_key)
         # validate that only a single family is entered by grabbing the first
         # word in the string.
-        fam_value = re.split("\n| |,|;",fam_value.strip())[0]
-
-        # region values are from a drop down menu
-        region_dict_key = DOMAIN_REGION.dict_key
-        region_subdict_key = DOMAIN_REGION.subdict_key
-        region_name = DOMAIN_REGION.nf_parameter_name
-        region_value = parameter_dict[region_dict_key].get(region_subdict_key)
-        
-        if fam_value and region_value: 
-            return {fam_name: fam_value, region_name: region_value}
-    
+        fam_val = re.split("\n| |,|;",fam_val.strip())[0]
+        result.update({fam_name: fam_val})
+        return result
     return {}
     
 
