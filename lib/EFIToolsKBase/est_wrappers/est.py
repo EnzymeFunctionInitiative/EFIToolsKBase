@@ -481,7 +481,7 @@ def apply_taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
 
 def apply_family_addition(
         parameter_dict: Dict[str, str]
-    ) -> Tuple[Dict[str,str] | None, str | None]:
+    ) -> Tuple[Dict[str,str], str]:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the Protein Family Addition
