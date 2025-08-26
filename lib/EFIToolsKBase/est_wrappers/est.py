@@ -4,7 +4,7 @@ import json
 import logging
 import uuid
 import zipfile
-from typing import List, Dict, Any
+from typing import List, Dict, Tuple, Any
 
 from jinja2 import DictLoader, Environment, select_autoescape
 
@@ -481,7 +481,7 @@ def apply_taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
 
 def apply_family_addition(
         parameter_dict: Dict[str, str]
-    ) -> Dict[str,str] | None, str | None:
+    ) -> Tuple[Dict[str,str] | None, str | None]:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the Protein Family Addition

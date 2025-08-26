@@ -51,14 +51,14 @@
                 ]
             }
         },
-	{
-	    "id": "est_object_name",
+        {
+            "id": "est_object_name",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": ["blast_edge_file"],
             "field_type": "text"
-	},
+        },
         {
             "id": "exclude_fragments",
             "optional": false,
@@ -313,8 +313,8 @@
         {
             "id": "all_by_all_blast_options",
             "parameters": [
-		"blast_e_value",
-		"blast_num_matches"
+                "blast_e_value",
+                "blast_num_matches"
             ],
             "optional": false,
             "advanced": true,
