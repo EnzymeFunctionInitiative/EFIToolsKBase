@@ -129,7 +129,7 @@ parameters:
     domain:
         ui-name: Sequences trimmed to the domain boundaries defined by the input family will be used for the calculations.
         short-hint: |
-            If checked, input sequences are truncated to the specified region around the specified Pfam or InterPro family.
+            If checked, input sequences are truncated to the specified region around the specified Pfam family.
 
     domain_family:
         ui-name: Family
