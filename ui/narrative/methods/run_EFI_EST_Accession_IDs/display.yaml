@@ -134,7 +134,7 @@ parameters:
     domain_family:
         ui-name: Family
         short-hint: |
-            Use domain boundaries from this specified family (enter only one family), which must be defined by a single database.
+            Use domain boundaries from this specified Pfam family (enter only one family ID), which must be defined in the Pfam database.
     
     region:
         ui-name: Region
@@ -187,7 +187,7 @@ parameter-groups:
     family_domain_boundary_options:
         ui-name: Family Domain Boundary Option
         short-hint: |
-            Pfam and InterPro databases define domain boundaries for members of their families. Use those boundaries to truncate input sequences to specific regions.
+            The Pfam database defines domain boundaries for members of their families. Use those boundaries to truncate input sequences to specific regions.
 
     all_by_all_blast_options:
         ui-name: All-By-All Blast Options
