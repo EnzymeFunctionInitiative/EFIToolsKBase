@@ -4,6 +4,7 @@ import json
 import logging
 import uuid
 import zipfile
+from typing import List, Dict, Tuple, Any
 
 from jinja2 import DictLoader, Environment, select_autoescape
 
@@ -12,7 +13,6 @@ from ..utils import png_to_base64
 from ..const import *
 
 from base import Core
-
 
 class EFIEST(Core):
     def __init__(self, ctx, config, clients_class=None):
@@ -27,79 +27,199 @@ class EFIEST(Core):
         self.wsClient = self.clients.Workspace
         self.flow = NextflowRunner("pipelines/est/est.nf", "est/kbase.config")
 
-    def do_analysis(self, params):
+    ###########################################################################
+    # interface method
+    ###########################################################################
+    def do_analysis(self, params: Dict[str,Any]):
         """
-        child classes should use this to render parameter files
+        child classes should use this method to wrap (a) rendering of the
+        nextflow parameter file and (b) running the `run_est_pipeline()` method.
         """
         raise NotImplementedError("Please Implement this method")
 
-    def run_est_pipeline(self, mapping, workspace_name):
-        """
-        This should be called in do_analysis after rendering parameters
 
-        pipeline: string
-        filename of pipeline to run. ex: "est.nf", "ssn.nf"
-        mapping: dict
-        used to do string substitution on the yml parameter template
-        workspace_name: string
-        passed in from params dict in runner (params["workspace_name"])
+    ###########################################################################
+    # inherited methods, used in each subclass' `do_analysis()` call
+    ###########################################################################
+    def prepare_nf_parameters(
+            self,
+            parameter_dict: Dict[str, str],
+            sequence_version: str
+        ) -> Dict[str, Any]:
         """
+        Prepare the nextflow parameter dict, filled with generic and/or 
+        EST input branch-agnostic parameters.
+
+        This should be called in do_analysis before running the est pipeline.
+
+        ARGUMENTS
+        ---------
+            parameter_dict
+                dict, parameters gathered from the App's user input.
+            sequence_version
+                str, either "UniProt", "UniRef90", or "UniRef50" (or any 
+                capitalization therein). Accepted as an input argument because
+                this info can be stashed in different UI subdicts that should 
+                be handled in the App specific wrapper.
+
+        RESULTS
+        -------
+            mapping
+                dict, key:value pairs that have been mapped from the App's
+                user-input to the nextflow parameter keys.
+        """
+        mapping = {}
+
+        # fill in with the hardcoded parameters
+        mapping.update(DEFAULT_NF_PARAMETERS)
+
+        # get values 
+        neg_log_e_value = -1*get_param_value(parameter_dict, BLAST_EVALUE)
+        num_matches = get_param_value(parameter_dict, BLAST_NMATCHES)
+        
+        # fill in with the user- and app-specific parameters
+        mapping.update(
+            {
+                BLAST_EVALUE.nf_parameter_name: 10**neg_log_e_value,
+                BLAST_NMATCHES.nf_parameter_name: num_matches,
+                "final_output_dir": self.shared_folder,
+                "sequence_version": sequence_version.lower(),
+                "job_id": 131,  # NOTE: CHANGE THIS
+            }
+        )
+
+        # handle nf's params.fasta_db
+        blast_db_source = ("combined"
+            if sequence_version.lower() == "uniprot"
+            else sequence_version
+        )
+        
+        print(parameter_dict)
+        fragment_filter_bool = bool(
+            get_param_value(parameter_dict, FRAGMENT_FILTER)
+        )
+        fasta_db = BlastDB.get_path(
+            blast_db_source,
+            fragment_filter_bool
+        )
+        # add it to the mapping dict
+        mapping.update({"fasta_db": fasta_db})
+
+        # add the taxonomy_filter() 
+        taxonomy_filters = apply_taxonomy_filter(parameter_dict)
+        # add the first entry to the "filter" keyword, whether the 
+        # taxonomy_filters is an empty list
+        mapping.update({"filter": taxonomy_filters})
+
+        return mapping
+
+
+    def run_est_pipeline(
+            self,
+            mapping: Dict[str, str],
+            workspace_name: str,
+            data_obj_name: str = "blast_edge_file", 
+        ) -> Dict[str, str]:
+        """
+        This should be called in do_analysis after rendering parameters.
+
+        ARGUMENTS
+        ---------
+            mapping
+                dict, contains key:value pairs for all input parameters used
+                within the est.nf pipeline code.
+            workspace_name
+                str, identifier string for the workspace within which the app
+                is running.
+            data_obj_name
+                str, to be used as the name for the BlastEdgeFile data object
+                created to contain the EST results.
+
+        RESULTS
+        -------
+            output_dict
+                dict, contains key:value pairs of object references and other
+                metadata. Mostly, this dict goes unused.
+        """
+        # prepare the params file
         self.flow.write_params_file(mapping)
+        # generate the `nextflow run` command
         self.flow.generate_run_command()
+        # execute the command
         retcode, stdout, stderr = self.flow.execute()
-        # if retcode != 0:
-        #     raise ValueError(f"Failed to execute Nextflow pipeline\n{stderr}")
+        if retcode != 0:
+            raise ValueError(f"Failed to execute Nextflow pipeline.")
+        
         print(self.shared_folder, os.listdir(self.shared_folder))
-        pident_dataurl = png_to_base64(os.path.join(self.shared_folder, 
-                                                    "pident_sm.png"))
-        length_dataurl = png_to_base64(os.path.join(self.shared_folder, 
-                                                    "length_sm.png"))
-        edge_dataurl = png_to_base64(os.path.join(self.shared_folder, 
-                                                  "edge_sm.png"))
+        
+        # make the images to be shown in the report
+        pident_dataurl = png_to_base64(
+            os.path.join(self.shared_folder, "pident_sm.png")
+        )
+        length_dataurl = png_to_base64(
+            os.path.join(self.shared_folder, "length_sm.png")
+        )
+        edge_dataurl = png_to_base64(
+            os.path.join(self.shared_folder, "edge_sm.png")
+        )
 
-        with open(os.path.join(self.shared_folder, "acc_counts.json")) as f:
+        # gather stats output from the workflow
+        with open(os.path.join(self.shared_folder, "stats.json")) as f:
             acc_data = json.load(f)
 
+        # create the data object output from the EST Apps
         print("Create the BlastEdgeFile object")
-        data_ref = self.save_edge_file_to_workspace(
-            workspace_name, 
-            os.path.join(self.shared_folder, "1.out.parquet"), 
+        data_ref = self._save_edge_file_to_workspace(
+            workspace_name,
+            os.path.join(self.shared_folder, "1.out.parquet"),
             os.path.join(self.shared_folder, "all_sequences.fasta"),
             os.path.join(self.shared_folder, "evalue.tab"),
             os.path.join(self.shared_folder, "sequence_metadata.tab"),
-            acc_data
+            acc_data,
+            data_obj_name
         )
         
-        print("Create the HTML report")
+        # prepare the data structures to be used in the report
         report_data = {
-            "pident_img": pident_dataurl, 
-            "length_img": length_dataurl, 
-            "edge_img": edge_dataurl, 
-            "convergence_ratio": f"{acc_data['ConvergenceRatio']:.3f}",
-            "edge_count": acc_data["EdgeCount"],
-            "unique_seqs": acc_data["UniqueSeq"]
+            "pident_img": pident_dataurl,
+            "length_img": length_dataurl,
+            "edge_img": edge_dataurl,
+            "convergence_ratio": f"{acc_data['convergence_ratio']:.3e}",
+            "edge_count": acc_data["num_blast_edges"],
+            "unique_seqs": acc_data["num_unique_ids"]
         }
         # only one object created (the BlastEdgeFile) so list of len 1
         objects_created_list = [
             {
-                "ref": data_ref, 
+                "ref": data_ref,
                 "description": "Edge file and other metadata"
             }
         ]
-        output = self.generate_report(workspace_name, report_data, 
-                                      objects_created_list)
+        
+        print("Create the HTML report")
+        output = self._generate_report(
+            workspace_name,
+            report_data,
+            objects_created_list
+        )
         
         output["edge_ref"] = data_ref
 
+        # add cleaning code to remove unnecessary files that nextflow creates
+
         return output
 
-    def _create_file_links(self, inlcude_zip=True):
+    ###########################################################################
+    # private methods, called within the `run_est_pipeline()` method
+    ###########################################################################
+    def _create_file_links(self, include_zip=True):
+        # NEED TO REWORK THIS WHOLE METHOD
         output_file_names = [
             "1.out.parquet",
             "all_sequences.fasta",
             "evalue.tab",
             "sequence_metadata.tab",
-            "sunburst_ids.tab",
+            "sunburst_tax.json",
             "length.png",
             "pident.png",
             "edge.png"
@@ -156,9 +276,9 @@ class EFIEST(Core):
             },
         ]
 
-        if inlcude_zip:
+        if include_zip:
             zip_path = os.path.join(self.shared_folder, "all_files.zip")
-            with zipfile.ZipFile(zip_path, 
+            with zipfile.ZipFile(zip_path,
                     "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
                 # loop over files in list and stash in the zip
                 for name in output_file_names:
@@ -175,14 +295,19 @@ class EFIEST(Core):
 
         return file_links
 
-    def generate_report(self, ws_name, template_var_dict, objects_created):
+    def _generate_report(
+            self,
+            ws_name,
+            template_var_dict,
+            objects_created
+        ) -> Dict[str,str]:
         """
         """
         # get the workspace_id
         workspace_id = self.dfu.ws_name_to_id(ws_name)
 
         # output_files is a list of dicts, each element mapping to a file
-        # created by the app. 
+        # created by the app.
         output_files = self._create_file_links()
 
         # hand make the reports_path and file io variables
@@ -237,14 +362,16 @@ class EFIEST(Core):
             "report_ref": report_info["ref"],
         }
 
-    def save_edge_file_to_workspace(
-            self, 
-            workspace_name, 
-            edge_filepath, 
-            fasta_filepath, 
-            evalue_filepath, 
-            seq_meta_filepath, 
-            acc_data):
+    def _save_edge_file_to_workspace(
+            self,
+            workspace_name: str,
+            edge_filepath: str,
+            fasta_filepath: str,
+            evalue_filepath: str,
+            seq_meta_filepath: str,
+            acc_data: Dict[str, str],
+            obj_name: str
+        ) -> str:
         """
         """
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
@@ -259,20 +386,20 @@ class EFIEST(Core):
         # prep the save_objects() parameter dictionary
         save_object_params = {
             "id": workspace_id,
-            # objects is a list of dicts, where each dict element contains info 
+            # objects is a list of dicts, where each dict element contains info
             # about the object to be saved/created
             "objects": [
                 {
                     "type": "EFIToolsKBase.BlastEdgeFile",
-                    'name': "blast_edge_file",
+                    'name': obj_name,
                     "data": {
                         "edgefile_handle": edge_file_shock_id,
                         "fasta_handle": fasta_handle_shock_id,
                         "evalue_handle": evalue_shock_id,
                         "seq_meta_handle": seq_meta_shock_id,
-                        "edge_count": acc_data["EdgeCount"],
-                        "unique_seq": acc_data["UniqueSeq"],
-                        "convergence_ratio": acc_data['ConvergenceRatio'],
+                        "edge_count": acc_data["num_blast_edges"],
+                        "unique_seq": acc_data["num_unique_ids"],
+                        "convergence_ratio": acc_data['convergence_ratio'],
                     }
                 }
             ]
@@ -283,3 +410,92 @@ class EFIEST(Core):
         object_reference = f"{dfu_oi[6]}/{dfu_oi[0]}/{dfu_oi[4]}"
 
         return object_reference
+
+
+###############################################################################
+# create dictionary key mapping objects from `..const.KBaseMapping()` namedtuple.
+# only include the generic mappings here. 
+
+FRAGMENT_FILTER = KBaseMapping(
+    "fragment_option",
+    "exclude_fragments",
+    "fragments"
+)
+
+# NOTE: make the equivalent for taxonomy filtering
+
+# used in option A, C, and D
+ADD_FAMILIES = KBaseMapping(
+    "protein_family_addition_options",
+    "families",
+    "families"
+)
+FRACTION_FILTER = KBaseMapping(
+    "protein_family_addition_options",
+    "fraction",
+    "fraction"
+)
+#families_fmt_keys = KBaseMapping(
+#    "protein_family_addition_options",
+#    "families_addition_cluster_id_format"
+#    "unknown",
+#)
+
+# EST specific dictionary mappings (via const.KBaseMapping namedtuples objects)
+BLAST_EVALUE = KBaseMapping(
+    "all_by_all_blast_options",
+    "blast_e_value",
+    "blast_evalue"
+)
+BLAST_NMATCHES = KBaseMapping(
+    "all_by_all_blast_options",
+    "blast_num_matches",
+    "blast_num_matches"
+)
+
+
+###############################################################################
+# parameter handling functions, shared across multiple Apps.
+
+def apply_fragment_filter(parameter_dict: Dict[str, str]) -> str:
+    """
+    Given the appropriate input dictionary, map KBase App UI inputs to relevant
+    nextflow est.nf input parameters. Specific for the fragment filter and
+    called by A, B, and D input paths.
+    """
+    val = get_param_value(parameter_dict, FRAGMENT_FILTER)
+    name = FRAGMENT_FILTER.nf_parameter_name
+    if val:
+        return f"{name}={val}"
+    return ""
+
+# NOTE: incomplete
+def apply_taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
+    """
+    Given the appropriate input dictionary, map KBase App UI inputs to relevant
+    nextflow est.nf input parameters. Specific for the taxonomy filter(s) and
+    called by all input paths.
+    """
+    # INCOMPLETE
+    return []
+
+def apply_family_addition(
+        parameter_dict: Dict[str, str]
+    ) -> Tuple[Dict[str,str], str]:
+    """
+    Given the appropriate input dictionary, map KBase App UI inputs to relevant
+    nextflow est.nf input parameters. Specific for the Protein Family Addition
+    and called by A, C, and D input paths.
+    """
+    # get the keys to the families subdictionary
+    families_val = get_param_value(parameter_dict, ADD_FAMILIES)
+    families_name = ADD_FAMILIES.nf_parameter_name
+    # get the keys to the fraction subdictionary
+    fraction_val = get_param_value(parameter_dict, FRACTION_FILTER)
+    fraction_name = FRACTION_FILTER.nf_parameter_name
+
+    # check that the values are both true-ish
+    if families_val and fraction_val:
+        return {families_name: families_val}, f"{fraction_name}={fraction_val}"
+    return None, None
+

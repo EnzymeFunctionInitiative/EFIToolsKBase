@@ -70,25 +70,32 @@ module EFIToolsKBase {
 
     typedef structure {
 	string taxonomic_level;		/* unused */
-	string filter_string;		/* unused */
+	string taxon_filter_string;	/* unused */
     } taxonomy_filter_options;
 
     typedef structure {
-	string families_to_add;				/* unused */
-	string families_addition_cluster_id_format;	/* unused */
-	int fraction;					/* unused */
+	string families;
+	int fraction;
     } protein_family_addition_options;
 
     typedef structure {
-	string domain;			/* unused */
-	string family_domain_bound;	/* unused */
-	int region;			/* unused */
+	string domain;
+	string domain_family;
+	int region;
     } family_domain_boundary_options;
 
     typedef structure {
 	string accession_ids;
-	string accession_id_format; 	/* unused */
+	string accession_id_format;
     } accession_id_input;
+
+    typedef structure {
+	string family_filter;
+    } filter_by_family_option;
+
+    typedef structure {
+	int exclude_fragments;
+    } fragment_option;
 
     typedef structure {
 	string filter_parameters;
@@ -101,6 +108,10 @@ module EFIToolsKBase {
 	float cooc_threshold;
     } gnt_inputs;
 
+    typedef structure {
+	int blast_e_value;
+	int blast_num_matches;
+    } all_by_all_blast_options;
 
     /* 
 	App input data structures
@@ -129,13 +140,14 @@ module EFIToolsKBase {
 
     typedef structure {
 	handle workspace_name;
+	string est_object_name;
 	accession_id_input accession_id_input;
-	int fragment_option; 						 /* unused */
-	string family_filter;						 /* unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	protein_family_addition_options protein_family_addition_options; /* unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
-	string ssn_e_value;
+	family_domain_boundary_options family_domain_boundary_options;
+	fragment_option fragment_option;
+	filter_by_family_option filter_by_family;
+	protein_family_addition_options protein_family_addition_options;
+	all_by_all_blast_options all_by_all_blast_options;
+	taxonomy_filter_options taxonomy_filter_options;	/* unused */
     } run_EFI_EST_Accession_IDs_input;
 
     typedef structure {

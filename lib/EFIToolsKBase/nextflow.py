@@ -14,7 +14,7 @@ class NextflowRunner():
     
     def write_params_file(self, mapping):
         os.makedirs(mapping["final_output_dir"], exist_ok=True)
-        params_output = os.path.join(mapping["final_output_dir"], "params.yml")
+        params_output = os.path.join(mapping["final_output_dir"], "params.json")
 
         with open(params_output, "w") as f:
             json.dump(mapping, f, indent=4)
@@ -22,7 +22,9 @@ class NextflowRunner():
 
     def generate_run_command(self, stub=False):
         if self.params_file == "":
-            raise ValueError("Must render params with `write_params_file()` before generating run command")
+            raise ValueError("Must render params with `write_params_file()`"
+                + " before generating run command.")
+        
         cmd = [
                 "nextflow",
                 "-C",  f"{self.config_file}",
@@ -31,13 +33,12 @@ class NextflowRunner():
                 "-offline",
                 "-params-file", f"{self.params_file}"
         ]
-        if stub:
-            cmd.append("-stub")
         self.run_command = cmd
 
     def execute(self):
         if self.run_command == "":
-            raise ValueError("Must call `generate_run_command()` before executing")
+            raise ValueError("Must call `generate_run_command()` before"
+                + " executing.")
         nf_env = os.environ.copy()
         ran = subprocess.run(self.run_command, text=True, env=nf_env)
         return ran.returncode, ran.stdout, ran.stderr
