@@ -132,9 +132,10 @@ class EFIAccessionIDs(EFIEST):
             nf_parameters.update(domain_params)
 
         # check for family additions
-        family_addn_params = apply_family_addition(parameter_dict)
+        family_addn_params, frac_str = apply_family_addition(parameter_dict)
         if family_addn_params:
             nf_parameters.update(family_addn_params)
+            nf_parameters["filter"].append(frac_str)
 
         # remove the filter parameter if it is an empty list
         if not nf_parameters.get("filter"):

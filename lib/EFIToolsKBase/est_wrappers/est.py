@@ -427,7 +427,7 @@ FRAGMENT_FILTER = KBaseMapping(
 # used in option A, C, and D
 ADD_FAMILIES = KBaseMapping(
     "protein_family_addition_options",
-    "families_to_add",
+    "families",
     "families"
 )
 FRACTION_FILTER = KBaseMapping(
@@ -479,7 +479,9 @@ def apply_taxonomy_filter(parameter_dict: Dict[str, str]) -> List[str]:
     # INCOMPLETE
     return []
 
-def apply_family_addition(parameter_dict: Dict[str, str]) -> Dict[str,str]:
+def apply_family_addition(
+        parameter_dict: Dict[str, str]
+    ) -> Dict[str,str] | None, str | None:
     """
     Given the appropriate input dictionary, map KBase App UI inputs to relevant
     nextflow est.nf input parameters. Specific for the Protein Family Addition
@@ -494,6 +496,6 @@ def apply_family_addition(parameter_dict: Dict[str, str]) -> Dict[str,str]:
 
     # check that the values are both true-ish
     if families_val and fraction_val:
-        return {families_name: families_val, fraction_name: fraction_val}
-    return {}
+        return {families_name: families_val}, f"{fraction_name}={fraction_val}"
+    return None, None
 
