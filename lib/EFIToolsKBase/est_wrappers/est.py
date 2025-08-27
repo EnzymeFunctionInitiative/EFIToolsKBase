@@ -424,7 +424,7 @@ FRAGMENT_FILTER = KBaseMapping(
 
 # NOTE: make the equivalent for taxonomy filtering
 
-# used in option A, C, and D
+# used in A, C, and D option
 ADD_FAMILIES = KBaseMapping(
     "protein_family_addition_options",
     "families",

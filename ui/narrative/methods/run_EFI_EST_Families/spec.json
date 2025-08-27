@@ -13,17 +13,20 @@
     },
     "parameters": [
         {
-            "id": "families_to_add",
-            "optional": true,
+            "id": "families",
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
                 ""
             ],
-            "field_type": "text"
+            "field_type": "text",
+            "textarea_options": {
+                "n_rows": 10
+            }
         },
         {
-            "id": "families_addition_cluster_id_format",
+            "id": "families_id_format",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -49,7 +52,15 @@
             }
         },
         {
-            "id": "fragment_option",
+            "id": "est_object_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": ["blast_edge_file"],
+            "field_type": "text"
+        },
+        {
+            "id": "exclude_fragments",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
@@ -65,10 +76,10 @@
         {
             "id": "taxonomic_level",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "Superkingdom"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
@@ -109,10 +120,10 @@
             }
         },
         {
-            "id": "filter_string",
+            "id": "taxon_filter_string",
             "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
+            "advanced": true,
+            "allow_multiple": true,
             "default_values": [
                 ""
             ],
@@ -153,33 +164,47 @@
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "Domain"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
                 "options": [
                     {
-                        "value": "Domain",
+                        "value": "central",
                         "display": "Domain"
                     },
                     {
-                        "value": "N-Terminal",
+                        "value": "n-terminal",
                         "display": "N-Terminal"
                     },
                     {
-                        "value": "C-Terminal",
+                        "value": "c-terminal",
                         "display": "C-Terminal"
                     }
                 ]
             }
         },
         {
-            "id": "ssn_e_value",
+            "id": "blast_e_value",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int"
+            }
+        },
+        {
+            "id": "blast_num_matches",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [
+                "250"
             ],
             "field_type": "text",
             "text_options": {
@@ -193,9 +218,8 @@
         {
             "id": "protein_family_addition_options",
             "parameters": [
-                "families_to_add",
-                "families_addition_cluster_id_format",
-		"fraction"
+                "families",
+                "families_id_format"
             ],
             "optional": false,
             "advanced": false,
@@ -203,21 +227,52 @@
             "with_border": true
         },
         {
+            "id": "fragment_option",
+            "parameters": [
+                "exclude_fragments"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
-                "filter_string"
+                "taxon_filter_string"
             ],
             "optional": true,
             "advanced": true,
             "allow_multiple": true,
             "with_border": true
         },
+	{
+            "id": "protein_family_size_option",
+            "parameters": [
+                "fraction"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+	},
         {
             "id": "family_domain_boundary_options",
             "parameters": [
                 "domain",
                 "region"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "all_by_all_blast_options",
+            "parameters": [
+                "blast_e_value",
+                "blast_num_matches"
             ],
             "optional": false,
             "advanced": true,
@@ -236,6 +291,14 @@
                     "target_property": "workspace_name"
                 },
                 {
+                    "input_parameter": "protein_family_addition_options",
+                    "target_property": "protein_family_addition_options"
+                },
+                {
+                    "input_parameter": "est_object_name",
+                    "target_property": "est_object_name"
+                },
+                {
                     "input_parameter": "fragment_option",
                     "target_property": "fragment_option"
                 },
@@ -244,16 +307,16 @@
                     "target_property": "taxonomy_filter_options"
                 },
                 {
+                    "input_parameter": "protein_family_size_option",
+                    "target_property": "protein_family_size_option"
+                },
+                {
                     "input_parameter": "family_domain_boundary_options",
                     "target_property": "family_domain_boundary_options"
                 },
                 {
-                    "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value"
-                },
-                {
-                    "input_parameter": "protein_family_addition_options",
-                    "target_property": "protein_family_addition_options"
+                    "input_parameter": "all_by_all_blast_options",
+                    "target_property": "all_by_all_blast_options"
                 }
             ],
             "output_mapping": [
