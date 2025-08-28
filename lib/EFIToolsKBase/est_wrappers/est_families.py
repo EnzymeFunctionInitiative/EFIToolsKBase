@@ -52,13 +52,19 @@ class EFIFamilies(EFIEST):
         # correctly map and gather all nextflow parameters
         nf_parameters = self.prepare_nf_parameters(params)
 
+        # log the number of family IDs used to get sequences
+        logging.info(
+            f"Using {len(nf_parameters[ADD_FAMILIES.nf_parameter_name])}"
+            + " Family IDs for gathering sequences."
+        )
+
         # do validation
 
         # log the nextflow parameters
         logging.info(f"Nextflow parameter file contains:\n{nf_parameters}")
 
         return self.run_est_pipeline(
-            nf_parameters, 
+            nf_parameters,
             params["workspace_name"],
             params["est_object_name"]
         )
