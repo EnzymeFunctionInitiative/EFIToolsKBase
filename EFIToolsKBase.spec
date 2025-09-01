@@ -127,17 +127,24 @@ module EFIToolsKBase {
 	int blast_num_matches;
     } all_by_all_blast_options;
 
+    typedef structure {
+	string import_sequence;
+	int import_blast_evalue;
+	int import_blast_num_matches;
+	string sequence_database;
+    } import_blast_sequence_options;
+
     /* 
 	App input data structures
     */
     typedef structure {
 	handle workspace_name;
-	string query_sequence;
-	string ssn_e_value;
-	initial_blast_options blast_options;
-	int fragment_option; 						 /* unused */
+	string est_object_name;
+	import_blast_sequence_options import_blast_sequence_options;
+	fragment_option fragment_option;
+	protein_family_addition_options protein_family_addition_options;
+	all_by_all_blast_options all_by_all_blast_options;
 	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	protein_family_addition_options protein_family_addition_options; /* unused */
     } run_EFI_EST_Sequence_BLAST_input;
 
     typedef structure {

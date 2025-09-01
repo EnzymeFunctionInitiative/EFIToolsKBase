@@ -84,16 +84,26 @@ class EFIToolsKBaseTest(unittest.TestCase):
         # - assert that the report has expected contents
 
     def test_run_EFI_EST_Sequence_BLAST(self):
-        ret = self.serviceImpl.run_EFI_EST_Sequence_BLAST(self.ctx, {
-            "query_sequence": ">seq1\nMKVKKVLCSEALTGFYMDDKEAIKSGAKSDGFVYKGAPVTPGFKSIRQPGVAVSVMFVLEDGHVVYGDCAVAQYAASGGR\nEVPNTAAALIKVIEKYVTPYFEGMDIKEFKSTAEKFDRYEFDGERLPASIRYGVTQAILEAAAYEQKLTMCEVILNEYNL\nPVDLTPVRINAQSGDERYTNVDKMILKKVGMMPHGLINNVEEKLGKDGQIFLDWVKWVTKRISDIGEPDYKPVMRYDVYG\nCMGKAFDNDLDKVGEYLIKVADACAPYEVFVEMPVDMKSNEKQLEAMKYLRKYLDDAGCRLKLIIDEYANTYEEIVEWVD\nAKGADMVQVKTIDLGGINNIVEADLYCKAHGVLAYQGGTCNQTDKAAIVCANLAVATKPFAMAGTPGMGVDEGVMIVSNE\nQERLLAILKAKQEGKI",
-            "blast_options": {
-                "max_sequences_retrieved": 250,
-                "e_value": "5",
-                "sequence_database": "UniProt",
-            },
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_Sequence_BLAST(
+            self.ctx, 
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "import_blast_sequence_options": {
+                    "import_sequence": ">seq1\nMKVKKVLCSEALTGFYMDDKEAIKSGAKSDGFVYKGAPVTPGFKSIRQPGVAVSVMFVLEDGHVVYGDCAVAQYAASGGR\nEVPNTAAALIKVIEKYVTPYFEGMDIKEFKSTAEKFDRYEFDGERLPASIRYGVTQAILEAAAYEQKLTMCEVILNEYNL\nPVDLTPVRINAQSGDERYTNVDKMILKKVGMMPHGLINNVEEKLGKDGQIFLDWVKWVTKRISDIGEPDYKPVMRYDVYG\nCMGKAFDNDLDKVGEYLIKVADACAPYEVFVEMPVDMKSNEKQLEAMKYLRKYLDDAGCRLKLIIDEYANTYEEIVEWVD\nAKGADMVQVKTIDLGGINNIVEADLYCKAHGVLAYQGGTCNQTDKAAIVCANLAVATKPFAMAGTPGMGVDEGVMIVSNE\nQERLLAILKAKQEGKI",
+                    "import_blast_evalue": 5,
+                    "import_blast_num_matches": 100,
+                    "sequence_database": "UniProt"
+                },
+                "fragment_option": None,
+                "taxonomy_filter_options": None,
+                "protein_family_addition_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))
