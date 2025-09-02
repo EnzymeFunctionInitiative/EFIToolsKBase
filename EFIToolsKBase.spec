@@ -134,6 +134,11 @@ module EFIToolsKBase {
 	string sequence_database;
     } import_blast_sequence_options;
 
+    typedef structure {
+	string protein_sequence_set_data_obj;
+	string header_format;
+    } import_fasta_options;
+
     /* 
 	App input data structures
     */
@@ -149,14 +154,11 @@ module EFIToolsKBase {
 
     typedef structure {
 	handle workspace_name;
-	string fasta_sequences_file; 					 /* really maps to a KBaseSequences.ProteinSequenceSet */
-	string header_format;						 /* unused */
-	int fragment_option; 						 /* unused */
-	string family_filter;						 /* unused */
+	string est_object_name;
+	import_fasta_options import_fasta_options;
+	protein_family_addition_options protein_family_addition_options;
+	all_by_all_blast_options all_by_all_blast_options;
 	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	protein_family_addition_options protein_family_addition_options; /* unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
-	string ssn_e_value;
     } run_EFI_EST_FASTA_input;
 
     typedef structure {
