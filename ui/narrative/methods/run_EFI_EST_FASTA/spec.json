@@ -1,20 +1,21 @@
 {
-    "ver": "0.0.1",
+    "ver": "0.4.4",
     "authors": [
+        "rbdavid",
         "hdemeyer"
     ],
-    "contact": "",
+    "contact": "efi@enzymefunction.org",
     "categories": [
         "active"
     ],
     "widgets": {
-        "input": "",
+        "input": null,
         "output": "no-display"
     },
     "parameters": [
         {
-            "id": "fasta_sequences_file",
-            "optional": true,
+            "id": "protein_sequence_set_data_obj",
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "field_type": "text",
@@ -35,50 +36,34 @@
                 "options": [
                     {
                         "value": "UniProt",
-                        "display": "UniProt"
+                        "display": "UniProt IDs"
                     },
                     {
                         "value": "UniRef90",
-                        "display": "UniRef90"
+                        "display": "UniRef90 Cluster IDs"
                     },
                     {
                         "value": "UniRef50",
-                        "display": "UniRef50"
+                        "display": "UniRef50 Cluster IDs"
                     }
                 ]
             }
         },
         {
-            "id": "fragment_option",
+            "id": "est_object_name",
             "optional": false,
-            "advanced": true,
+            "advanced": false,
             "allow_multiple": false,
-            "default_values": [
-                false
-            ],
-            "field_type": "checkbox",
-            "checkbox_options": {
-                "unchecked_value": false,
-                "checked_value": true
-            }
-        },
-        {
-            "id": "family_filter",
-            "optional": true,
-            "advanced": true,
-            "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
+            "default_values": ["blast_edge_file"],
             "field_type": "text"
         },
         {
             "id": "taxonomic_level",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "Superkingdom"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
@@ -119,9 +104,9 @@
             }
         },
         {
-            "id": "filter_string",
+            "id": "taxon_filter_string",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""
@@ -129,45 +114,19 @@
             "field_type": "text"
         },
         {
-            "id": "families_to_add",
-            "optional": true,
-            "advanced": false,
+            "id": "families",
+            "optional": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""
             ],
             "field_type": "text"
-        },
-        {
-            "id": "families_addition_cluster_id_format",
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                "UniProt"
-            ],
-            "field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": "UniProt",
-                        "display": "UniProt"
-                    },
-                    {
-                        "value": "UniRef90",
-                        "display": "UniRef90"
-                    },
-                    {
-                        "value": "UniRef50",
-                        "display": "UniRef50"
-                    }
-                ]
-            }
         },
         {
             "id": "fraction",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "1"
@@ -180,62 +139,26 @@
             }
         },
         {
-            "id": "domain",
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                false
-            ],
-            "field_type": "checkbox",
-            "checkbox_options": {
-                "unchecked_value": false,
-                "checked_value": true
-            }
-        },
-        {
-            "id": "family_domain_bound",
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "text"
-        },
-        {
-            "id": "region",
-            "optional": false,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                "Domain"
-            ],
-            "field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": "Domain",
-                        "display": "Domain"
-                    },
-                    {
-                        "value": "N-Terminal",
-                        "display": "N-Terminal"
-                    },
-                    {
-                        "value": "C-Terminal",
-                        "display": "C-Terminal"
-                    }
-                ]
-            }
-        },
-        {
-            "id": "ssn_e_value",
+            "id": "blast_e_value",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 "5"
+            ],
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int"
+            }
+        },
+        {
+            "id": "blast_num_matches",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [
+                "250"
             ],
             "field_type": "text",
             "text_options": {
@@ -247,10 +170,21 @@
     ],
     "parameter-groups": [
         {
+            "id": "import_fasta_options",
+            "parameters": [
+                "protein_sequence_set_data_obj",
+                "header_format"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
-                "filter_string"
+                "taxon_filter_string"
             ],
             "optional": true,
             "advanced": true,
@@ -260,21 +194,19 @@
         {
             "id": "protein_family_addition_options",
             "parameters": [
-                "families_to_add",
-                "families_addition_cluster_id_format",
+                "families",
                 "fraction"
             ],
-            "optional": false,
+            "optional": true,
             "advanced": true,
             "allow_multiple": false,
             "with_border": true
         },
         {
-            "id": "family_domain_boundary_options",
+            "id": "all_by_all_blast_options",
             "parameters": [
-                "domain",
-                "family_domain_bound",
-                "region"
+                "blast_e_value",
+                "blast_num_matches"
             ],
             "optional": false,
             "advanced": true,
@@ -293,21 +225,12 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "input_parameter": "fasta_sequences_file",
-                    "target_property": "fasta_sequences_file",
-                    "target_type_transform": "resolved-ref"
+                    "input_parameter": "import_fasta_options",
+                    "target_property": "import_fasta_options"
                 },
                 {
-                    "input_parameter": "header_format",
-                    "target_property": "header_format"
-                },
-                {
-                    "input_parameter": "fragment_option",
-                    "target_property": "fragment_option"
-                },
-                {
-                    "input_parameter": "family_filter",
-                    "target_property": "family_filter"
+                    "input_parameter": "est_object_name",
+                    "target_property": "est_object_name"
                 },
                 {
                     "input_parameter": "taxonomy_filter_options",
@@ -318,12 +241,8 @@
                     "target_property": "protein_family_addition_options"
                 },
                 {
-                    "input_parameter": "family_domain_boundary_options",
-                    "target_property": "family_domain_boundary_options"
-                },
-                {
-                    "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value"
+                    "input_parameter": "all_by_all_blast_options",
+                    "target_property": "all_by_all_blast_options"
                 }
             ],
             "output_mapping": [

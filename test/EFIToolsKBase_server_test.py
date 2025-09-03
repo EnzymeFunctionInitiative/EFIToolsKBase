@@ -84,50 +84,97 @@ class EFIToolsKBaseTest(unittest.TestCase):
         # - assert that the report has expected contents
 
     def test_run_EFI_EST_Sequence_BLAST(self):
-        ret = self.serviceImpl.run_EFI_EST_Sequence_BLAST(self.ctx, {
-            "query_sequence": ">seq1\nMKVKKVLCSEALTGFYMDDKEAIKSGAKSDGFVYKGAPVTPGFKSIRQPGVAVSVMFVLEDGHVVYGDCAVAQYAASGGR\nEVPNTAAALIKVIEKYVTPYFEGMDIKEFKSTAEKFDRYEFDGERLPASIRYGVTQAILEAAAYEQKLTMCEVILNEYNL\nPVDLTPVRINAQSGDERYTNVDKMILKKVGMMPHGLINNVEEKLGKDGQIFLDWVKWVTKRISDIGEPDYKPVMRYDVYG\nCMGKAFDNDLDKVGEYLIKVADACAPYEVFVEMPVDMKSNEKQLEAMKYLRKYLDDAGCRLKLIIDEYANTYEEIVEWVD\nAKGADMVQVKTIDLGGINNIVEADLYCKAHGVLAYQGGTCNQTDKAAIVCANLAVATKPFAMAGTPGMGVDEGVMIVSNE\nQERLLAILKAKQEGKI",
-            "blast_options": {
-                "max_sequences_retrieved": 250,
-                "e_value": "5",
-                "sequence_database": "UniProt",
-            },
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_Sequence_BLAST(
+            self.ctx, 
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "import_blast_sequence_options": {
+                    "import_sequence": ">seq1\nMKVKKVLCSEALTGFYMDDKEAIKSGAKSDGFVYKGAPVTPGFKSIRQPGVAVSVMFVLEDGHVVYGDCAVAQYAASGGR\nEVPNTAAALIKVIEKYVTPYFEGMDIKEFKSTAEKFDRYEFDGERLPASIRYGVTQAILEAAAYEQKLTMCEVILNEYNL\nPVDLTPVRINAQSGDERYTNVDKMILKKVGMMPHGLINNVEEKLGKDGQIFLDWVKWVTKRISDIGEPDYKPVMRYDVYG\nCMGKAFDNDLDKVGEYLIKVADACAPYEVFVEMPVDMKSNEKQLEAMKYLRKYLDDAGCRLKLIIDEYANTYEEIVEWVD\nAKGADMVQVKTIDLGGINNIVEADLYCKAHGVLAYQGGTCNQTDKAAIVCANLAVATKPFAMAGTPGMGVDEGVMIVSNE\nQERLLAILKAKQEGKI",
+                    "import_blast_evalue": 5,
+                    "import_blast_num_matches": 100,
+                    "sequence_database": "UniProt"
+                },
+                "fragment_option": None,
+                "taxonomy_filter_options": None,
+                "protein_family_addition_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_Families(self):
-        ret = self.serviceImpl.run_EFI_EST_Families(self.ctx, {
-            "fragment_option": False,
-            "protein_family_addition_options": {
-                "families_addition_cluster_id_format": "UniProt",
-                "families_to_add": "PF07476"
-            },
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_Families(
+            self.ctx, 
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "protein_family_addition_options": {
+                    "families": "PF07476",
+                    "families_id_format": "uniprot"
+                },
+                "fragment_option": None,
+                "taxonomy_filter_options": None,
+                "protein_family_size_option": None,
+                "family_domain_boundary_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_FASTA(self):
-        ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
-            "fasta_sequences_file": "73509/92/1",
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_FASTA(
+            self.ctx, 
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "import_fasta_options": {
+                    "protein_sequence_set_data_obj": "73509/92/1",
+                    "header_format": "UniProt"
+                },
+                "taxonomy_filter_options": None,
+                "protein_family_addition_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_AccessionIDs(self):
-        ret = self.serviceImpl.run_EFI_EST_Accession_IDs(self.ctx, {
-            "accession_id_input": {"accession_ids": "A0A010ZH43\nA0A017RWE5\nA0A017SQS5\nA0A063ZUG7\nA0A073ITR3\nA0A075KES1\nA0A077M284\nA0A078LBK1\nA0A084JAL8\nA0A088TMM5\nA0A090FUD8\nA0A090NBY8\nA0A090V3Y1\nA0A094IHS1\nA0A095ZGF5\nA0A097R141\nA0A098B3F3\nA0A099SB27\nA0A099SFX4\nA0A0A1A2Z3\nA0A0A2DQ68\nA0A0A2EEM4\nA0A0A2EMT4\nA0A0A2FQ19\nA0A0A2JHA1\nA0A0A2R940\nA0A0A6ZP69\nA0A0B3W871\nA0A0B5GQM8\nA0A0B7MAU0\nA0A0C1R2W2\nA0A0C6P9L1\nA0A0C6PC75\nA0A0D7LWZ5\nA0A0D8IBG0\nA0A0E1NIT1\nA0A0E2EIB4\nA0A0E2N462\nA0A0E2NZK5\nA0A0E3M9V7\nA0A0E7UUD8\nA0A0F0IK83\nA0A0F1BBX8\nA0A0F2JI16\nA0A0F2SEG8\nA0A0F6MQD1\nA0A0F6TU15\nA0A0F9RVE4\nA0A0H2R0M1\nA0A0H3HAS8\nA0A0H3LSV2\nA0A0H3LX20\nA0A0H3MEI1\nA0A0H3NZI0\nA0A0H3PR78\nA0A0J1DN26\nA0A0J1F8K5\nA0A0J1FLT2\nA0A0J1LJU5\nA0A0J1QVJ5\nA0A0J2DKC3\nA0A0J7JDM6\nA0A0J9AS39\nA0A0K1IYI9"},
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_Accession_IDs(
+            self.ctx,
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "accession_id_input": {
+                    "accession_ids": "A0A010ZH43\nA0A017RWE5\nA0A017SQS5\nA0A063ZUG7\nA0A073ITR3\nA0A075KES1\nA0A077M284\nA0A078LBK1\nA0A084JAL8\nA0A088TMM5\nA0A090FUD8\nA0A090NBY8\nA0A090V3Y1\nA0A094IHS1\nA0A095ZGF5\nA0A097R141\nA0A098B3F3\nA0A099SB27\nA0A099SFX4\nA0A0A1A2Z3\nA0A0A2DQ68",
+                    "accession_id_format": "UniProt"
+                },
+                "family_domain_boundary_options": None,
+                "fragment_option": None,
+                "filter_by_family": None,
+                "taxonomy_filter_options": None,
+                "protein_family_addition_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))

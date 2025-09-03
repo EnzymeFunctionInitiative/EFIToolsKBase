@@ -70,25 +70,46 @@ module EFIToolsKBase {
 
     typedef structure {
 	string taxonomic_level;		/* unused */
-	string filter_string;		/* unused */
+	string taxon_filter_string;	/* unused */
     } taxonomy_filter_options;
 
     typedef structure {
-	string families_to_add;				/* unused */
-	string families_addition_cluster_id_format;	/* unused */
-	int fraction;					/* unused */
+	string families;
+	string families_id_format;
+    } families_input_options;
+
+    typedef structure {
+        int fraction;
+    } protein_family_size_option;
+
+    typedef structure {
+	string families;
+	int fraction;
     } protein_family_addition_options;
 
     typedef structure {
-	string domain;			/* unused */
-	string family_domain_bound;	/* unused */
-	int region;			/* unused */
+	string domain;
+	string domain_family;
+	int region;
     } family_domain_boundary_options;
 
     typedef structure {
+	string domain;
+	int region;
+    } domain_boundary_options;
+
+    typedef structure {
 	string accession_ids;
-	string accession_id_format; 	/* unused */
+	string accession_id_format;
     } accession_id_input;
+
+    typedef structure {
+	string family_filter;
+    } filter_by_family_option;
+
+    typedef structure {
+	int exclude_fragments;
+    } fragment_option;
 
     typedef structure {
 	string filter_parameters;
@@ -101,50 +122,66 @@ module EFIToolsKBase {
 	float cooc_threshold;
     } gnt_inputs;
 
+    typedef structure {
+	int blast_e_value;
+	int blast_num_matches;
+    } all_by_all_blast_options;
+
+    typedef structure {
+	string import_sequence;
+	int import_blast_evalue;
+	int import_blast_num_matches;
+	string sequence_database;
+    } import_blast_sequence_options;
+
+    typedef structure {
+	string protein_sequence_set_data_obj;
+	string header_format;
+    } import_fasta_options;
 
     /* 
 	App input data structures
     */
     typedef structure {
 	handle workspace_name;
-	string query_sequence;
-	string ssn_e_value;
-	initial_blast_options blast_options;
-	int fragment_option; 						 /* unused */
+	string est_object_name;
+	import_blast_sequence_options import_blast_sequence_options;
+	fragment_option fragment_option;
+	protein_family_addition_options protein_family_addition_options;
+	all_by_all_blast_options all_by_all_blast_options;
 	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	protein_family_addition_options protein_family_addition_options; /* unused */
     } run_EFI_EST_Sequence_BLAST_input;
 
     typedef structure {
 	handle workspace_name;
-	string fasta_sequences_file; 					 /* really maps to a KBaseSequences.ProteinSequenceSet */
-	string header_format;						 /* unused */
-	int fragment_option; 						 /* unused */
-	string family_filter;						 /* unused */
+	string est_object_name;
+	import_fasta_options import_fasta_options;
+	protein_family_addition_options protein_family_addition_options;
+	all_by_all_blast_options all_by_all_blast_options;
 	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	protein_family_addition_options protein_family_addition_options; /* unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
-	string ssn_e_value;
     } run_EFI_EST_FASTA_input;
 
     typedef structure {
 	handle workspace_name;
+	string est_object_name;
 	accession_id_input accession_id_input;
-	int fragment_option; 						 /* unused */
-	string family_filter;						 /* unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	protein_family_addition_options protein_family_addition_options; /* unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
-	string ssn_e_value;
+	family_domain_boundary_options family_domain_boundary_options;
+	fragment_option fragment_option;
+	filter_by_family_option filter_by_family;
+	protein_family_addition_options protein_family_addition_options;
+	all_by_all_blast_options all_by_all_blast_options;
+	taxonomy_filter_options taxonomy_filter_options;	/* unused */
     } run_EFI_EST_Accession_IDs_input;
 
     typedef structure {
 	handle workspace_name;
-	protein_family_addition_options protein_family_addition_options;
-	int fragment_option; 						 /* unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
-	string ssn_e_value; 						 /* should map to an int or float */
+	string est_object_name;
+	families_input_options protein_family_addition_options;
+	fragment_option fragment_option;
+	protein_family_size_option protein_family_size_option;
+	domain_boundary_options family_domain_boundary_options;
+	all_by_all_blast_options all_by_all_blast_options;
+	taxonomy_filter_options taxonomy_filter_options;	/* unused */
     } run_EFI_EST_Families_input;
 
     typedef structure {

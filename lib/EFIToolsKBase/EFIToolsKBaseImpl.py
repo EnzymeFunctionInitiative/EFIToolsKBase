@@ -37,7 +37,7 @@ class EFIToolsKBase:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "0.2.0"
+    VERSION = "0.4.4"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
     GIT_COMMIT_HASH = "4777308f04a169666b063f3eb576263da162c9ae"
 
@@ -141,7 +141,6 @@ class EFIToolsKBase:
         # return variables are: output
         #BEGIN run_EFI_EST_Families
         efi = EFIFamilies(ctx, config=self.config)
-        logging.info(params)
         output = efi.do_analysis(params)
         #END run_EFI_EST_Families
 

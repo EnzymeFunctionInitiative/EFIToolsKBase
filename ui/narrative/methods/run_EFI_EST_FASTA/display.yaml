@@ -15,7 +15,7 @@ icon: efi-est_logo.png
 #
 suggestions:
     apps:
-        related: [run_EFI_EST_Sequence_BLAST, run_EFI_EST_Families, run_EFI_EST_Accession_IDs]
+        related: [run_EFI_EST_Sequence_BLAST, run_EFI_EST_Families, run_EFI_EST_FASTA, run_EFI_EST_Accession_IDs]
         next: [run_EFI_EST_SSN_Creation]
 
 publications:
@@ -29,87 +29,68 @@ publications:
 # Configure the display and description of parameters
 #
 parameters:
-    fasta_sequences_file:
+    protein_sequence_set_data_obj:
         ui-name: Sequences (upload)
         short-hint: |
-            Upload FASTA-formatted sequences with the selected accession IDs in the header.
+            Select the ProteinSequenceSet data object from the Data tab.
             
     header_format:
-        ui-name: Header Format
+        ui-name: Sequence Database Source
         short-hint: |
-            The database-format used in the FASTA headers
+            Specify the source of the sequences in the ProteinSequenceSet.
     
-    fragment_option:
-        ui-name: Exclude UniProt-defined fragments in the results
+    est_object_name:
+        ui-name: Name for the final BlastEdgeFile Object
         short-hint: |
-            Exclude UniProt-defined fragments in the results
-        long-hint: |
-            UniProt designates a Sequence Status for each member: Complete if the encoding DNA sequence has both start and stop codons; Fragment if the start and/or stop codon is missing. Approximately 10% of the entries in UniProt are fragments. 
-    
-    family_filter:
-        ui-name: Input a list of Pfam families, InterPro families, and/or Pfam clans to restrict the UniProt and/or UniRef IDs in the SSN to these families.
-        short-hint: |
-            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans. 
+            Short, descriptive filename (no spaces nor dashes) to be used to name the BlastEdgeFile data object created by this App.
 
     taxonomic_level:
         ui-name: Taxonomic Level
         short-hint: |
             Which level of taxomony to which the filter string is applied
     
-    filter_string:
+    taxon_filter_string:
         ui-name: Filter string
         short-hint: |
             The filter to apply, may inlcude NOT at the beginning
 
-    families_to_add:
+    families:
         ui-name: Families
         short-hint: |
             The input format is a single family or comma/space separated list of families
         long-hint: |
-            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans.
+            The input format is a single family or comma/space separated list of families. Families should be specified as PFxxxxx (five digits), IPRxxxxxx (six digits) or CLxxxx (four digits) for Pfam clans. Added sequences will be gathered from the same source (UniProt, UniRef90, or UniRef50) as the input Accession IDs.
 
-    use_alternate_cluster_id_format:
-        ui-name: Use alternate cluster ID format
-        short-hint: |
-            Use selected cluster ID format instead of UniProt IDs
-            
     fraction:
         ui-name: Fraction
         short-hint: |
-            Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
+            Reduce the number of added families' sequences to a fraction of the full family size (≥ 1; default: 1). Note, either Fraction or a UniRef sequence source can be used. Not both.
         long-hint: |
             Selects every Nth sequence in the family; the sequences are assumed to be added randomly to UniProtKB, so the selected sequences are assumed to be a representative sampling of the family. This allows reduction of the size of the SSN. Sequences in the family with SwissProt annotations will always be included; this may result in the size of the resulting data set being slightly larger than the fraction specified.
 
-
-    domain:
-        ui-name: Sequences trimmed to the domain boundaries defined by the input family will be used for the calculations
-        short-hint: |
-            Sequences trimmed to the domain boundaries defined by the input family will be used for the calculations
-    
-    family_domain_bound:
-        ui-name: Family
-        short-hint: |
-            Use domain boundaries from the specified family (enter only one family).
-    
-    region:
-        ui-name: Region
-        short-hint: |
-            N-terminal will select the portion of the sequence that is N-terminal to the specified domain to generate the SSN. C-terminal will select the portion of the sequence that is C-terminal to the specified domain to generate the SSN. Domain will use the specified domain. 
-
-    ssn_e_value:
+    #
+    # all-by-all blast parameters
+    #
+    blast_e_value:
         ui-name: Negative log of e-value for all-by-all BLAST
         short-hint: |
-            Negative log of e-value for all-by-all BLAST
+            Negative log of e-value applied during the all-by-all BLAST sequence alignment calculations.
         long-hint: |
-            Input an alternate e-value for BLAST to calculate similarities/edge alignment scores similarities. The default parameter (5) is useful for most sequences. However, a larger e-value/smaller negative log should be used for short sequences or when low pairwise identities may be useful for separating functionally distinct SSN clusters. 
+            Input a negative log'd value of the desired expect value (e-value) to be applied during the all-to-all BLAST sequence alignment calculations. The default parameter (5) equates to a 1x10^{-5} e-value cutoff; alignments with an e-value above this cutoff will be ignored. This is a useful cutoff value for most sequence sets. However, a smaller input value (larger, less stringent e-value cutoff) should be used when sequences are short or when low pairwise identity is hindering classifying distinct SSN clusters.
 
-    families_addition_cluster_id_format:
-        ui-name: |
-            Family Addition Format
-        short-hint:
-            The type of ID entered in the Families text box above
+    blast_num_matches:
+        ui-name: Number of alignment hits
+        short-hint: |
+            The maximum number of sequence alignment hits reported from Blast for each input sequence. Default value is 250.
+        long-hint: |
+            The top N alignment hits are reported for each sequence in the input set from the all-by-all Blast calculations. The default value is 250, which provides a reasonable number of similarity scores for each sequence to produce informative SSN clustering while decreasing SSN size. Decreasing this value will lose clustering resolution. Increasing the value will increase resolution but can also greatly increase the SSN .xgmml file size.
 
 parameter-groups:
+    import_fasta_options:
+        ui-name: Specify FASTA-formatted sequences
+        short-hint: |
+            Sequences contained in the ProteinSequenceSet data object will be used to calculate the SSN.
+    
     taxonomy_filter_options:
         ui-name: Filter by Taxonomy
         short-hint: |
@@ -118,12 +99,12 @@ parameter-groups:
     protein_family_addition_options:
         ui-name: Protein Family Addition Options
         short-hint:
-            Add sequences belonging to Pfam and/or InterPro families to the sequences used to generate the SSN. 
+            Add sequences belonging to the specified Pfam and/or InterPro families.
     
-    family_domain_boundary_options:
-        ui-name: Family Domain Boundary Option
+    all_by_all_blast_options:
+        ui-name: All-By-All Blast Options
         short-hint: |
-            Pfam and InterPro databases define domain boundaries for members of their families
+            Set parameters to be used when performing the `blastall -p blastp` sequence alignment calculations.
 
 description: |
     <p> <a href="https://efi.igb.illinois.edu/">Enzyme Function Initiative</a></p>
