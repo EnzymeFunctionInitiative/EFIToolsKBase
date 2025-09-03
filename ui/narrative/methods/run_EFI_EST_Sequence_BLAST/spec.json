@@ -13,7 +13,7 @@
     },
     "parameters": [
         {
-            "id": "query_sequence",
+            "id": "import_sequence",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -26,7 +26,7 @@
             }
         },
         {
-            "id": "e_value",
+            "id": "import_blast_evalue",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -36,12 +36,11 @@
             "field_type": "text",
             "text_options": {
                 "valid_ws_types": [],
-                "validate_as": "int",
-                "min_int": 1
+                "validate_as": "int"
             }
         },
         {
-            "id": "max_sequences_retrieved",
+            "id": "import_blast_num_matches",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -62,28 +61,36 @@
             "advanced": false,
             "allow_multiple": false,
             "default_values": [
-                "UniProt"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
                 "options": [
                     {
-                        "value": "UniProt",
+                        "value": "uniprot",
                         "display": "UniProt"
                     },
                     {
-                        "value": "UniRef90",
+                        "value": "uniref90",
                         "display": "UniRef90"
                     },
                     {
-                        "value": "UniRef50",
+                        "value": "uniref50",
                         "display": "UniRef50"
                     }
                 ]
             }
         },
         {
-            "id": "fragment_option",
+            "id": "est_object_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": ["blast_edge_file"],
+            "field_type": "text"
+        },
+        {
+            "id": "exclude_fragments",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
@@ -99,10 +106,10 @@
         {
             "id": "taxonomic_level",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "Superkingdom"
+                ""
             ],
             "field_type": "dropdown",
             "dropdown_options": {
@@ -143,9 +150,19 @@
             }
         },
         {
-            "id": "filter_string",
+            "id": "taxon_filter_string",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
+            "allow_multiple": true,
+            "default_values": [
+                ""
+            ],
+            "field_type": "text"
+        },
+        {
+            "id": "families",
+            "optional": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
                 ""
@@ -153,12 +170,12 @@
             "field_type": "text"
         },
         {
-            "id": "ssn_e_value",
+            "id": "fraction",
             "optional": false,
             "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "5"
+                "1"
             ],
             "field_type": "text",
             "text_options": {
@@ -168,48 +185,26 @@
             }
         },
         {
-            "id": "families_to_add",
-            "optional": true,
-            "advanced": false,
-            "allow_multiple": false,
-            "default_values": [
-                ""
-            ],
-            "field_type": "text"
-        },
-        {
-            "id": "families_addition_cluster_id_format",
+            "id": "blast_e_value",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "UniProt"
+                "5"
             ],
-            "field_type": "dropdown",
-            "dropdown_options": {
-                "options": [
-                    {
-                        "value": "UniProt",
-                        "display": "UniProt"
-                    },
-                    {
-                        "value": "UniRef90",
-                        "display": "UniRef90"
-                    },
-                    {
-                        "value": "UniRef50",
-                        "display": "UniRef50"
-                    }
-                ]
+            "field_type": "text",
+            "text_options": {
+                "valid_ws_types": [],
+                "validate_as": "int"
             }
         },
         {
-            "id": "fraction",
+            "id": "blast_num_matches",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [
-                "1"
+                "250"
             ],
             "field_type": "text",
             "text_options": {
@@ -221,10 +216,11 @@
     ],
     "parameter-groups": [
         {
-            "id": "blast_options",
+            "id": "import_blast_sequence_options",
             "parameters": [
-                "e_value",
-                "max_sequences_retrieved",
+		"import_sequence",
+                "import_blast_evalue",
+                "import_blast_num_matches",
                 "sequence_database"
             ],
             "optional": false,
@@ -233,10 +229,20 @@
             "with_border": true
         },
         {
+            "id": "fragment_option",
+            "parameters": [
+                "exclude_fragments"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
             "id": "taxonomy_filter_options",
             "parameters": [
                 "taxonomic_level",
-                "filter_string"
+                "taxon_filter_string"
             ],
             "optional": true,
             "advanced": true,
@@ -246,9 +252,19 @@
         {
             "id": "protein_family_addition_options",
             "parameters": [
-                "families_to_add",
-                "families_addition_cluster_id_format",
+                "families",
                 "fraction"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "all_by_all_blast_options",
+            "parameters": [
+                "blast_e_value",
+                "blast_num_matches"
             ],
             "optional": false,
             "advanced": true,
@@ -267,16 +283,12 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "input_parameter": "query_sequence",
-                    "target_property": "query_sequence"
+                    "input_parameter": "import_blast_sequence_options",
+                    "target_property": "import_blast_sequence_options"
                 },
                 {
-                    "input_parameter": "ssn_e_value",
-                    "target_property": "ssn_e_value"
-                },
-                {
-                    "input_parameter": "blast_options",
-                    "target_property": "blast_options"
+                    "input_parameter": "est_object_name",
+                    "target_property": "est_object_name"
                 },
                 {
                     "input_parameter": "fragment_option",
@@ -289,6 +301,10 @@
                 {
                     "input_parameter": "protein_family_addition_options",
                     "target_property": "protein_family_addition_options"
+                },
+                {
+                    "input_parameter": "all_by_all_blast_options",
+                    "target_property": "all_by_all_blast_options"
                 }
             ],
             "output_mapping": [
