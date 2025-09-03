@@ -1,14 +1,15 @@
 {
-    "ver": "0.0.1",
+    "ver": "0.4.4",
     "authors": [
+	"rbdavid",
         "hdemeyer"
     ],
-    "contact": "",
+    "contact": "rbdavid@illinois.edu",
     "categories": [
         "active"
     ],
     "widgets": {
-        "input": "",
+        "input": null,
         "output": "no-display"
     },
     "parameters": [
