@@ -133,11 +133,23 @@ class EFIToolsKBaseTest(unittest.TestCase):
         self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_FASTA(self):
-        ret = self.serviceImpl.run_EFI_EST_FASTA(self.ctx, {
-            "fasta_sequences_file": "73509/92/1",
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_FASTA(
+            self.ctx, 
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "import_fasta_options": {
+                    "protein_sequence_set_data_obj": "73509/92/1",
+                    "header_format": "UniProt"
+                },
+                "taxonomy_filter_options": None,
+                "protein_family_addition_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))
