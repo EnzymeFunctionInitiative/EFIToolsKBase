@@ -165,7 +165,7 @@ class EFISequenceBLAST(EFIEST):
         
         logging.info(
             f"Input sequence is\n{sequence_str}\nwith length ="
-            + " {len(sequence_str)}."
+            + f" {len(sequence_str)}."
         )
 
         return query_file
