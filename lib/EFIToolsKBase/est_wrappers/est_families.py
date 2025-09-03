@@ -52,12 +52,6 @@ class EFIFamilies(EFIEST):
         # correctly map and gather all nextflow parameters
         nf_parameters = self.prepare_nf_parameters(params)
 
-        # log the number of family IDs used to get sequences
-        logging.info(
-            f"Using {len(nf_parameters[ADD_FAMILIES.nf_parameter_name])}"
-            + " Family IDs for gathering sequences."
-        )
-
         # do validation
 
         # log the nextflow parameters
@@ -168,6 +162,11 @@ def apply_family_addition(
     if fraction_val:
         return {families_name: families_str}, f"{fraction_name}={fraction_val}"
     
+    # log the number of family IDs used to get sequences
+    logging.info(
+        f"Using {len(families_list)} Family IDs for gathering sequences."
+    )
+
     return {families_name: families_str}, None
 
 
