@@ -32,12 +32,12 @@ parameters:
     protein_sequence_set_data_obj:
         ui-name: Sequences (upload)
         short-hint: |
-            Select the ProteinSequenceSet data object from the Data tab. The IDs associated with sequences in this data object must specify the accession IDs from the below specified UniProt or UniRef90 or UniRef50 sequence database. 
+            Select the ProteinSequenceSet data object from the Data tab.
             
     header_format:
         ui-name: Sequence Database Source
         short-hint: |
-            Specify the source of the sequences in the ProteinSequenceSet. The sequence header lines should specify the appropriate accession ID for this database. 
+            Specify the source of the sequences in the ProteinSequenceSet.
     
     est_object_name:
         ui-name: Name for the final BlastEdgeFile Object
