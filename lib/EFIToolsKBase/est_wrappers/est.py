@@ -146,7 +146,10 @@ class EFIEST(Core):
         if retcode != 0:
             raise ValueError(f"Failed to execute Nextflow pipeline.")
         
-        logging.info(self.shared_folder, os.listdir(self.shared_folder))
+        logging.info(
+            f"Final output directory ({self.shared_folder}) contains:"
+            + f" {os.listdir(self.shared_folder)}"
+        )
         
         # make the images to be shown in the report
         pident_dataurl = png_to_base64(
