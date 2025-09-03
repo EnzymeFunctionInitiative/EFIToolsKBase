@@ -141,7 +141,6 @@ class EFIToolsKBase:
         # return variables are: output
         #BEGIN run_EFI_EST_Families
         efi = EFIFamilies(ctx, config=self.config)
-        logging.info(params)
         output = efi.do_analysis(params)
         #END run_EFI_EST_Families
 
