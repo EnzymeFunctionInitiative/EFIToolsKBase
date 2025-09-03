@@ -75,6 +75,15 @@ module EFIToolsKBase {
 
     typedef structure {
 	string families;
+	string families_id_format;
+    } families_input_options;
+
+    typedef structure {
+        int fraction;
+    } protein_family_size_option;
+
+    typedef structure {
+	string families;
 	int fraction;
     } protein_family_addition_options;
 
@@ -83,6 +92,11 @@ module EFIToolsKBase {
 	string domain_family;
 	int region;
     } family_domain_boundary_options;
+
+    typedef structure {
+	string domain;
+	int region;
+    } domain_boundary_options;
 
     typedef structure {
 	string accession_ids;
@@ -152,11 +166,13 @@ module EFIToolsKBase {
 
     typedef structure {
 	handle workspace_name;
-	protein_family_addition_options protein_family_addition_options;
-	int fragment_option; 						 /* unused */
-	taxonomy_filter_options taxonomy_filter_options;		 /* unused */
-	family_domain_boundary_options family_domain_boundary_options;	 /* unused */
-	string ssn_e_value; 						 /* should map to an int or float */
+	string est_object_name;
+	families_input_options protein_family_addition_options;
+	fragment_option fragment_option;
+	protein_family_size_option protein_family_size_option;
+	domain_boundary_options family_domain_boundary_options;
+	all_by_all_blast_options all_by_all_blast_options;
+	taxonomy_filter_options taxonomy_filter_options;	/* unused */
     } run_EFI_EST_Families_input;
 
     typedef structure {

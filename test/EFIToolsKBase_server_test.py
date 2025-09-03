@@ -99,15 +99,25 @@ class EFIToolsKBaseTest(unittest.TestCase):
         self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_Families(self):
-        ret = self.serviceImpl.run_EFI_EST_Families(self.ctx, {
-            "fragment_option": False,
-            "protein_family_addition_options": {
-                "families_addition_cluster_id_format": "UniProt",
-                "families_to_add": "PF07476"
-            },
-            "ssn_e_value": 5,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_Families(
+            self.ctx, 
+            {
+                "workspace_name": self.wsName,
+                "est_object_name": "TEST",
+                "protein_family_addition_options": {
+                    "families": "PF07476",
+                    "families_id_format": "uniprot"
+                },
+                "fragment_option": None,
+                "taxonomy_filter_options": None,
+                "protein_family_size_option": None,
+                "family_domain_boundary_options": None,
+                "all_by_all_blast_options": {
+                    "blast_e_value": 5,
+                    "blast_num_matches": 250
+                }
+            }
+        )
         print(ret)
         self.assertTrue(len(ret[0]["report_name"]))
         self.assertTrue(len(ret[0]["edge_ref"]))

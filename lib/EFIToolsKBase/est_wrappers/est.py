@@ -47,7 +47,7 @@ class EFIEST(Core):
             sequence_version: str
         ) -> Dict[str, Any]:
         """
-        Prepare the nextflow parameter dict, filled with generic and/or 
+        Prepare the nextflow parameter dict, filled with generic and/or
         EST input branch-agnostic parameters.
 
         This should be called in do_analysis before running the est pipeline.
@@ -57,9 +57,9 @@ class EFIEST(Core):
             parameter_dict
                 dict, parameters gathered from the App's user input.
             sequence_version
-                str, either "UniProt", "UniRef90", or "UniRef50" (or any 
+                str, either "UniProt", "UniRef90", or "UniRef50" (or any
                 capitalization therein). Accepted as an input argument because
-                this info can be stashed in different UI subdicts that should 
+                this info can be stashed in different UI subdicts that should
                 be handled in the App specific wrapper.
 
         RESULTS
@@ -73,7 +73,7 @@ class EFIEST(Core):
         # fill in with the hardcoded parameters
         mapping.update(DEFAULT_NF_PARAMETERS)
 
-        # get values 
+        # get values
         neg_log_e_value = -1*get_param_value(parameter_dict, BLAST_EVALUE)
         num_matches = get_param_value(parameter_dict, BLAST_NMATCHES)
         
@@ -89,12 +89,8 @@ class EFIEST(Core):
         )
 
         # handle nf's params.fasta_db
-        blast_db_source = ("combined"
-            if sequence_version.lower() == "uniprot"
-            else sequence_version
-        )
+        blast_db_source = "combined"
         
-        print(parameter_dict)
         fragment_filter_bool = bool(
             get_param_value(parameter_dict, FRAGMENT_FILTER)
         )
@@ -105,9 +101,9 @@ class EFIEST(Core):
         # add it to the mapping dict
         mapping.update({"fasta_db": fasta_db})
 
-        # add the taxonomy_filter() 
+        # add the taxonomy_filter()
         taxonomy_filters = apply_taxonomy_filter(parameter_dict)
-        # add the first entry to the "filter" keyword, whether the 
+        # add the first entry to the "filter" keyword, whether the
         # taxonomy_filters is an empty list
         mapping.update({"filter": taxonomy_filters})
 
@@ -118,7 +114,7 @@ class EFIEST(Core):
             self,
             mapping: Dict[str, str],
             workspace_name: str,
-            data_obj_name: str = "blast_edge_file", 
+            data_obj_name: str = "blast_edge_file",
         ) -> Dict[str, str]:
         """
         This should be called in do_analysis after rendering parameters.
@@ -150,7 +146,7 @@ class EFIEST(Core):
         if retcode != 0:
             raise ValueError(f"Failed to execute Nextflow pipeline.")
         
-        print(self.shared_folder, os.listdir(self.shared_folder))
+        logging.info(self.shared_folder, os.listdir(self.shared_folder))
         
         # make the images to be shown in the report
         pident_dataurl = png_to_base64(
@@ -168,7 +164,7 @@ class EFIEST(Core):
             acc_data = json.load(f)
 
         # create the data object output from the EST Apps
-        print("Create the BlastEdgeFile object")
+        logging.info("Create the BlastEdgeFile object")
         data_ref = self._save_edge_file_to_workspace(
             workspace_name,
             os.path.join(self.shared_folder, "1.out.parquet"),
@@ -196,7 +192,7 @@ class EFIEST(Core):
             }
         ]
         
-        print("Create the HTML report")
+        logging.info("Create the HTML report")
         output = self._generate_report(
             workspace_name,
             report_data,
@@ -337,7 +333,7 @@ class EFIEST(Core):
         }
 
         # Create report from template
-        logging.info("Creating report...")
+        logging.info("Creating report")
         template_path = os.path.join(TEMPLATES_DIR, "est_report.html")
         with open(template_path) as tpf:
             template_source = tpf.read()
@@ -414,7 +410,7 @@ class EFIEST(Core):
 
 ###############################################################################
 # create dictionary key mapping objects from `..const.KBaseMapping()` namedtuple.
-# only include the generic mappings here. 
+# only include the generic mappings here.
 
 FRAGMENT_FILTER = KBaseMapping(
     "fragment_option",
@@ -424,7 +420,7 @@ FRAGMENT_FILTER = KBaseMapping(
 
 # NOTE: make the equivalent for taxonomy filtering
 
-# used in option A, C, and D
+# used in A, C, and D option
 ADD_FAMILIES = KBaseMapping(
     "protein_family_addition_options",
     "families",
