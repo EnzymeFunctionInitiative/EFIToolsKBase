@@ -37,9 +37,10 @@ class EFIToolsKBase:
     # state. A method could easily clobber the state set by another while
     # the latter method is running.
     ######################################### noqa
-    VERSION = "0.4.4"
+    VERSION = "0.4.5"
     GIT_URL = "git@github.com:EnzymeFunctionInitiative/EFIToolsKBase.git"
-    GIT_COMMIT_HASH = "4777308f04a169666b063f3eb576263da162c9ae"
+    # this will always be outdated so why include it?
+    #GIT_COMMIT_HASH = "4777308f04a169666b063f3eb576263da162c9ae"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -182,17 +183,9 @@ class EFIToolsKBase:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_EFI_EST_SSN_Creation
-        config = dict(
-            callback_url=self.callback_url,
-            shared_folder=self.shared_folder,
-            clients=dict(
-                KBaseReport=KBaseReport,
-                DataFileUtil=DataFileUtil
-            ),
-        )
-        ssnc = SSNCreation(ctx, config=config)
-        logging.info(params)
+        ssnc = SSNCreation(ctx, config=self.config)
         output = ssnc.do_analysis(params)
+
         #END run_EFI_EST_SSN_Creation
 
         # At some point might do deeper type checking...
