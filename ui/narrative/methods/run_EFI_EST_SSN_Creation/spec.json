@@ -1,18 +1,21 @@
 {
-    "ver": "0.0.1",
+    "ver": "0.4.5",
     "authors": [
+        "rbdavid",
         "hdemeyer",
         "nilsoberg"
     ],
-    "contact": "",
-    "categories": ["active"],
+    "contact": "efi@enzymefunction.org",
+    "categories": [
+	"active"
+    ],
     "widgets": {
-        "input": "",
+        "input": null,
         "output": "no-display"
     },
     "parameters": [
         {
-            "id": "blast_edge_file",
+            "id": "blast_edge_file_ref",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
@@ -30,18 +33,20 @@
             "default_values": [ "alignment_score" ],
             "field_type": "dropdown",
             "dropdown_options": {
-                "options": [{
-                    "value": "alignment_score",
-                    "display": "Alignment Score"
-                },
-                {
-                    "value": "pident",
-                    "display": "Percent Identity (0-100)"
-                },
-                {
-                    "value": "bitscore",
-                    "display": "Bit Score"
-                }]
+                "options": [
+		    {
+                        "value": "alignment_score",
+                        "display": "Alignment Score"
+                    },
+                    {
+                        "value": "pident",
+                        "display": "Percent Identity (0-100)"
+                    },
+                    {
+                        "value": "bitscore",
+                        "display": "Bit Score"
+                    }
+		]
             }
         },
         {
@@ -52,8 +57,7 @@
             "default_values": [ "" ],
             "field_type": "text",
             "text_options": {
-                "validate_as": "float",
-                "min_integer": 0
+                "validate_as": "float"
             }
         },
         {
@@ -79,6 +83,14 @@
                 "validate_as": "int",
                 "min_integer": 0
             }
+        },
+        {
+            "id": "ssn_object_name",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "ssn_file" ],
+            "field_type": "text"
         }
     ],
     "parameter-groups": [
@@ -105,8 +117,8 @@
                     "target_property": "workspace_name"
                 },
                 {
-                    "input_parameter": "blast_edge_file",
-                    "target_property": "blast_edge_file",
+                    "input_parameter": "blast_edge_file_ref",
+                    "target_property": "blast_edge_file_ref",
                     "target_type_transform": "resolved-ref"
 
                 },
@@ -121,6 +133,10 @@
                 {
                     "input_parameter": "max_length",
                     "target_property": "max_length"
+                },
+                {
+                    "input_parameter": "ssn_object_name",
+                    "target_property": "ssn_object_name"
                 }
             ],
             "output_mapping": [

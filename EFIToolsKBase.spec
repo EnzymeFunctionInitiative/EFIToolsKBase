@@ -112,7 +112,7 @@ module EFIToolsKBase {
     } fragment_option;
 
     typedef structure {
-	string filter_parameters;
+	string filter_parameter;
 	float filter_value;
     } ssn_filter_options;
 
@@ -186,10 +186,11 @@ module EFIToolsKBase {
 
     typedef structure {
 	handle workspace_name;
-	handle blast_edge_file; 	/* actually maps to a EFIToolsKBase.BlastEdgeFile data object */
+	handle blast_edge_file_ref;
 	ssn_filter_options filter_options;
-	int min_length; 		/* should map to an int */
-	int max_length; 		/* should map to an int */
+	int min_length;
+	int max_length;
+	str ssn_object_name;
     } run_EFI_EST_SSN_Creation_input;
 
     typedef structure {

@@ -4,7 +4,7 @@
 name: EFI-EST SSN Creation
 
 tooltip: |
-    Create an SSN from EFI-EST ComputedProteinSims workspace object
+    Create an Sequence Similarity Network from an EFI-EST BlastEdgeFile workspace object
 
 screenshots: []
 
@@ -20,52 +20,59 @@ icon: efi-est_logo.png
 #        next:
 #            [app3, app4]
 
+publications:
+    - display-text: 'Rémi Zallot, Nils Oberg, and John A. Gerlt, The EFI Web Resource for Genomic Enzymology Tools: Leveraging Protein, Genome, and Metagenome Databases to Discover Novel Enzymes and Metabolic Pathways. Biochemistry 2019 58 (41), 4169-4182'
+      link: https://doi.org/10.1021/acs.biochem.9b00735
+
+    - display-text: 'Nils Oberg, Rémi Zallot, and John A. Gerlt, EFI-EST, EFI-GNT, and EFI-CGFP: Enzyme Function Initiative (EFI) Web Resource for Genomic Enzymology Tools. J Mol Biol 2023.'
+      link: https://doi.org/10.1016/j.jmb.2023.168018
+
 #
 # Configure the display and description of parameters
 #
-parameters :
-    blast_edge_file :
-        ui-name : |
-            Edge File
-        short-hint : |
-            The workspace object representing the SSN edges
-        long-hint : |
-            The workspace object representing the SSN edges
-    filter_parameter :
-        ui-name : |
-            Filter Parameter
-        short-hint : |
-            The column on which to filter edges
-        long-hint : |
-            The column on which to filter edges
-    filter_value :
-        ui-name : |
-            Filter Value
-        short-hint : |
-            The cutoff value for the specified value
-        long-hint: |
-            Edges whose filter_parameter are below this value are discarded
-    min_length :
-        ui-name : |
+parameters:
+    blast_edge_file_ref:
+        ui-name: |
+            Blast Edge File
+        short-hint: |
+            The workspace BlastEdgeFile object representing the all-to-all sequence alignment results.
+
+    filter_parameter:
+        ui-name: |
+            Filter by Given Alignment Metric
+        short-hint: |
+            Choose a sequence alignment metric upon which alignment results will be filtered. Choices are "Alignment Score", "Percent Identity", and "Bit Score".
+
+    filter_value:
+        ui-name: |
+            Filter Threshold
+        short-hint: |
+            The lower limit cutoff value for the specified metric. Two sequences with the alignment metric below this cutoff value will not have an "edge" drawn in the SSN. If either the Alignment Score or Bit Score metrics are chosen, this threshold value should be greater than 0. If Percent Identity is chosen, this threshold value should be between 0 and 100. Consult the graphs from the EST app that generated the Blast Edge File to decide on appropriate threshold values.
+
+    min_length:
+        ui-name: |
             Minimum Sequence Length
-        short-hint : |
-            The minimum length required for a sequence to be included in the SSN
-        long-hint : |
-            The minimum length required for a sequence to be included in the SSN
-    max_length :
-        ui-name : |
+        short-hint: |
+            The minimum length required for a sequence to be included in the SSN.
+
+    max_length:
+        ui-name: |
             Maximum Sequence Length
-        short-hint : |
-            The maximum length required for a sequence to be included in the SSN
-        long-hint : |
-            The maximum length required for a sequence to be included in the SSN
+        short-hint: |
+            The maximum length required for a sequence to be included in the SSN.
 
-parameter-groups :
-    filter_options : 
-        ui-name : |
+    ssn_object_name:
+        ui-name: Name for the final SequenceSimilarityNetwork object
+        short-hint: |
+            Short, descriptive filename (no spaces nor dashes) to be used to name the SequenceSimilarityNetwork data object created by this App.
+
+
+parameter-groups:
+    filter_options: 
+        ui-name: |
             Filter Options
-        short-hint : |
-            Specify how to filter the edges
+        short-hint: |
+            Specify how to filter the dense all-to-all Blast alignment results into a sparse network of edges between nodes in the sequence similarity network.
 
-description : |
+description: |
     <p>Creates an SSN from a dataset from the initial computation step.</p>:w
