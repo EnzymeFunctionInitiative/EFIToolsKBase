@@ -85,7 +85,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_Sequence_BLAST(self):
         ret = self.serviceImpl.run_EFI_EST_Sequence_BLAST(
-            self.ctx, 
+            self.ctx,
             {
                 "workspace_name": self.wsName,
                 "est_object_name": "TEST",
@@ -110,7 +110,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_Families(self):
         ret = self.serviceImpl.run_EFI_EST_Families(
-            self.ctx, 
+            self.ctx,
             {
                 "workspace_name": self.wsName,
                 "est_object_name": "TEST",
@@ -134,7 +134,7 @@ class EFIToolsKBaseTest(unittest.TestCase):
 
     def test_run_EFI_EST_FASTA(self):
         ret = self.serviceImpl.run_EFI_EST_FASTA(
-            self.ctx, 
+            self.ctx,
             {
                 "workspace_name": self.wsName,
                 "est_object_name": "TEST",
@@ -180,29 +180,47 @@ class EFIToolsKBaseTest(unittest.TestCase):
         self.assertTrue(len(ret[0]["edge_ref"]))
 
     def test_run_EFI_EST_SSN_Creation_alignment_score(self):
-        ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
-            "blast_edge_file": "73509/94/12",
-            "filter_options": {
-                "filter_parameter": "alignment_score",
-                "filter_value": 96
-            },
-            "min_length": 75,
-            "max_length": 50000,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_SSN_Creation(
+            self.ctx,
+            {
+                "workspace_name": self.wsName,
+                "blast_edge_file_ref": "73509/94/12",
+                "ssn_object_name": "TEST",
+                "ssn_title": "TEST HELLO WORLD",
+                "metric_filter_options": {
+                    "filter_parameter": "alignment_score",
+                    "filter_value": 96
+                },
+                "sequence_length_options": {
+                    "min_length": 75,
+                    "max_length": 50000
+                },
+                "fragment_option": None,
+                "taxonomy_filter_options": None
+            }
+        )
         self.assertTrue(len(ret[0]["report_name"]))
 
     def test_run_EFI_EST_SSN_Creation_pident(self):
-        ret = self.serviceImpl.run_EFI_EST_SSN_Creation(self.ctx, {
-            "blast_edge_file": "73509/94/12",
-            "filter_options": {
-                "filter_parameter": "pident",
-                "filter_value": 40
-            },
-            "min_length": 75,
-            "max_length": 50000,
-            "workspace_name": self.wsName
-        })
+        ret = self.serviceImpl.run_EFI_EST_SSN_Creation(
+            self.ctx,
+            {
+                "workspace_name": self.wsName,
+                "blast_edge_file_ref": "73509/94/12",
+                "ssn_object_name": "TEST",
+                "ssn_title": "TEST HELLO WORLD",
+                "metric_filter_options": {
+                    "filter_parameter": "pident",
+                    "filter_value": 40
+                },
+                "sequence_length_options": {
+                    "min_length": 75,
+                    "max_length": 50000
+                },
+                "fragment_option": None,
+                "taxonomy_filter_options": None
+            }
+        )
         self.assertTrue(len(ret[0]["report_name"]))
 
     def test_run_SSN_Utils_Color_SSN(self):
