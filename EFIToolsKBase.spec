@@ -114,7 +114,7 @@ module EFIToolsKBase {
     typedef structure {
 	string filter_parameter;
 	float filter_value;
-    } ssn_filter_options;
+    } metric_filter_options;
 
     typedef structure {
 	handle ssn_data_object;
@@ -138,6 +138,11 @@ module EFIToolsKBase {
 	string protein_sequence_set_data_obj;
 	string header_format;
     } import_fasta_options;
+
+    typedef structure {
+	int min_length;
+	int max_length;
+    } sequence_length_options;
 
     /* 
 	App input data structures
@@ -187,10 +192,12 @@ module EFIToolsKBase {
     typedef structure {
 	handle workspace_name;
 	handle blast_edge_file_ref;
-	ssn_filter_options filter_options;
-	int min_length;
-	int max_length;
-	str ssn_object_name;
+	metric_filter_options metric_filter_options;
+	sequence_length_options sequence_length_options;
+	string ssn_title;
+	string ssn_object_name;
+	fragment_option fragment_option;			/* unused */
+	taxonomy_filter_options taxonomy_filter_options;	/* unused */
     } run_EFI_EST_SSN_Creation_input;
 
     typedef structure {

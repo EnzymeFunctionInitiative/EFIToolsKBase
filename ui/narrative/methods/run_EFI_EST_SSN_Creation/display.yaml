@@ -61,18 +61,60 @@ parameters:
         short-hint: |
             The maximum length required for a sequence to be included in the SSN.
 
+    ssn_title:
+        ui-name: (Optional) A Descriptive Header for the SSN
+        short-hint: |
+            A descriptive title to be used within the SSN xgmml file to name the visualized network. Can include spaces and special characters.
+
     ssn_object_name:
         ui-name: Name for the final SequenceSimilarityNetwork object
         short-hint: |
             Short, descriptive filename (no spaces nor dashes) to be used to name the SequenceSimilarityNetwork data object created by this App.
 
+    #
+    # Fragment filter parameter
+    #
+    exclude_fragments:
+        ui-name: Exclude UniProt-defined fragments in the results?
+        short-hint: |
+            Check to exclude UniProt-defined fragments in the results (default: off). For the UniRef90 and UniRef50 databases, clusters are excluded if the cluster ID ("representative sequence") is a fragment. UniProt IDs in UniRef90 and UniRef50 clusters with complete cluster IDs are removed from the clusters if they are fragments.
+        # probably should have a long-hint
+
+    #
+    # Taxonomy filter parameters; NEEDS MAJOR UPDATE
+    #
+    taxonomic_level:
+        ui-name: Taxonomic Level
+        short-hint: |
+            Which level of taxomony to which the filter string is applied.
+
+    taxon_filter_string:
+        ui-name: Filter string
+        short-hint: |
+            The filter to apply, may inlcude NOT at the beginning.
 
 parameter-groups:
-    filter_options: 
+    metric_filter_options:
         ui-name: |
             Filter Options
         short-hint: |
             Specify how to filter the dense all-to-all Blast alignment results into a sparse network of edges between nodes in the sequence similarity network.
+
+    sequence_length_options:
+        ui-name: |
+            Filter by Sequence Lengths
+        short-hint: |
+            Remove results associated with sequences that are beyond the minimum and maximum length values specified here.
+
+    taxonomy_filter_options:
+        ui-name: Filter by Taxonomy
+        short-hint: |
+            A taxonomy filter is applied to the list of input UniProt, UniRef90, or UniRef50 cluster IDs.
+
+    fragment_option:
+        ui-name: Fragment Option
+        short-hint: |
+            UniProt designates a Sequence Status for each member: "Complete" if the encoding DNA sequence has both start and stop codons; "Fragment" if the start and/or stop codon is missing. Approximately 10% of the entries in UniProt are fragments.
 
 description: |
     <p>Creates an SSN from a dataset from the initial computation step.</p>:w

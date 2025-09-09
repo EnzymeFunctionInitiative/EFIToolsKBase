@@ -85,17 +85,95 @@
             }
         },
         {
+            "id": "ssn_title",
+            "optional": true,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text"
+        },
+        {
             "id": "ssn_object_name",
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "ssn_file" ],
             "field_type": "text"
+        },
+        {
+            "id": "exclude_fragments",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [
+                false
+            ],
+            "field_type": "checkbox",
+            "checkbox_options": {
+                "unchecked_value": false,
+                "checked_value": true
+            }
+        },
+        {
+            "id": "taxonomic_level",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": false,
+            "default_values": [
+                ""
+            ],
+            "field_type": "dropdown",
+            "dropdown_options": {
+                "options": [
+                    {
+                        "value": "Superkingdom",
+                        "display": "Superkingdom"
+                    },
+                    {
+                        "value": "Kingdom",
+                        "display": "Kingdom"
+                    },
+                    {
+                        "value": "Pylum",
+                        "display": "Phylum"
+                    },
+                    {
+                        "value": "Class",
+                        "display": "Class"
+                    },
+                    {
+                        "value": "Order",
+                        "display": "Order"
+                    },
+                    {
+                        "value": "Family",
+                        "display": "Family"
+                    },
+                    {
+                        "value": "Genus",
+                        "display": "Genus"
+                    },
+                    {
+                        "value": "Species",
+                        "display": "Species"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "taxon_filter_string",
+            "optional": false,
+            "advanced": true,
+            "allow_multiple": true,
+            "default_values": [
+                ""
+            ],
+            "field_type": "text"
         }
     ],
     "parameter-groups": [
         {
-            "id": "filter_options",
+            "id": "metric_filter_options",
             "parameters": [
                 "filter_parameter",
                 "filter_value"
@@ -103,6 +181,38 @@
             "optional": false,
             "advanced": false,
             "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "sequence_length_options",
+            "parameters": [
+                "min_length",
+                "max_length"
+            ],
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "fragment_option",
+            "parameters": [
+                "exclude_fragments"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": false,
+            "with_border": true
+        },
+        {
+            "id": "taxonomy_filter_options",
+            "parameters": [
+                "taxonomic_level",
+                "taxon_filter_string"
+            ],
+            "optional": true,
+            "advanced": true,
+            "allow_multiple": true,
             "with_border": true
         }
     ],
@@ -123,20 +233,28 @@
 
                 },
                 {
-                    "input_parameter": "filter_options",
-                    "target_property": "filter_options"
+                    "input_parameter": "metric_filter_options",
+                    "target_property": "metric_filter_options"
                 },
                 {
-                    "input_parameter": "min_length",
-                    "target_property": "min_length"
+                    "input_parameter": "sequence_length_options",
+                    "target_property": "sequence_length_options"
                 },
                 {
-                    "input_parameter": "max_length",
-                    "target_property": "max_length"
+                    "input_parameter": "ssn_title",
+                    "target_property": "ssn_title"
                 },
                 {
                     "input_parameter": "ssn_object_name",
                     "target_property": "ssn_object_name"
+                },
+                {
+                    "input_parameter": "fragment_option",
+                    "target_property": "fragment_option"
+                },
+                {
+                    "input_parameter": "taxonomy_filter_options",
+                    "target_property": "taxonomy_filter_options"
                 }
             ],
             "output_mapping": [

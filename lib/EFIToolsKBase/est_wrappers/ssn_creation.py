@@ -31,7 +31,7 @@ BLAST_FASTA = KBaseMapping(
     "fasta_handle",
     "fasta_file"
 )
-BLAST_FASTA = KBaseMapping(
+BLAST_META = KBaseMapping(
     "data",
     "seq_meta_handle",
     "seq_meta_file"
@@ -45,12 +45,12 @@ SSN_TITLE = KBaseMapping(
 
 SEQ_LEN_MIN = KBaseMapping(
     "sequence_length_options",
-    "min_len",
+    "min_length",
     "min_length"
 )
 SEQ_LEN_MAX = KBaseMapping(
     "sequence_length_options",
-    "max_len",
+    "max_length",
     "max_length"
 )
 
@@ -62,7 +62,7 @@ METRIC_STR = KBaseMapping(
 METRIC_VAL = KBaseMapping(
     "metric_filter_options",
     "filter_value",
-    "filter_min_value"
+    "filter_min_val"
 )
 
 
@@ -98,7 +98,7 @@ class SSNCreation(Core):
         ----------
             params
                 dict of UI user input. Key:value pairs are:
-                    "blast_edge_file"
+                    "blast_edge_file_ref"
                         string, reference info to the selected BlastEdgeFile
                         data object
                     "filter_options"
@@ -114,6 +114,10 @@ class SSNCreation(Core):
                         int, maximum sequence length to consider
                     "workspace_name"
                         string, name of the narrative workspace
+                    "ssn_object_name"
+                        string, name to be used for the created
+                        SequenceSimilarityNetwork data object output from the
+                        app
 
         Returns
         -------
@@ -124,10 +128,22 @@ class SSNCreation(Core):
         # log user input from the UI
         logging.info(f"User input parameters:\n{params}")
 
+        # clean the input params dict and subdict values
+        # step 1. remove un-mapped keys in the outer dict; these are created
+        # because parameter_groups are "optional" but are always included in
+        # the params dict from the UI. If left un-enabled, the parameter
+        # group's key maps to a NoneType object.
+        params = clean_dict(params)
+        # step 2. do the same for inner subdicts.
+        for key in params.keys():
+            params[key] = clean_dict(params[key])
+
         # correctly map and gather all nextflow parameters
         nf_parameters = self._prepare_nf_parameters(params)
 
         # do validation
+        # - given a filter_parameter, make sure the given filter_value is 
+        #   appropriate
 
         # log the nextflow parameters
         logging.info(f"Nextflow parameter file contains:\n{nf_parameters}")
@@ -150,18 +166,24 @@ class SSNCreation(Core):
         with open(os.path.join(self.shared_folder, "stats.json")) as f:
             stats = json.load(f)
 
+        print(stats)
+        logging.info(stats)
+
         # create the data object output from the SSN_Creation App
         ssn_ref = self._save_ssn_file_to_workspace(
             params["workspace_name"],
             os.path.join(self.shared_folder, "full_ssn.xgmml"),
-            int(stats["Nodes"][0]),
-            int(stats["Edges"][0]),
-            "A SSN XGMML file and metadata"
+            int(stats["full_ssn.xgmml"]["num_nodes"]),
+            int(stats["full_ssn.xgmml"]["num_edges"]),
+            "A SSN XGMML file and metadata",
+            params["ssn_object_name"]
         )
 
         # prepare the data structures to be used in the report
         report_data = {
-            "stats": stats.to_html(),
+            "num_nodes": stats["full_ssn.xgmml"]["num_nodes"],
+            "num_edges": stats["full_ssn.xgmml"]["num_edges"],
+            "size": stats["full_ssn.xgmml"]["size"] * 10**-9,
             "workspace_name": params["workspace_name"]
         }
         # only one object created (the SequenceSimilarityNetwork) so list of
@@ -174,7 +196,7 @@ class SSNCreation(Core):
         ]
 
         output = self._generate_report(
-            workspace_name,
+            params["workspace_name"],
             report_data,
             objects_created_list
         )
@@ -211,11 +233,10 @@ class SSNCreation(Core):
         mapping = {}
 
         # fill in with the generic parameters
+        mapping.update(DEFAULT_NF_PARAMETERS)
         mapping.update(
             {
                 "db_version": EFI_DB_VERSION,
-                "efi_config": EFI_CONFIG_PATH,
-                "efi_db": EFI_DB_PATH,
                 "final_output_dir": self.shared_folder
             }
         )
@@ -244,23 +265,23 @@ class SSNCreation(Core):
         mapping.update(
             {
                 SSN_TITLE.nf_parameter_name: get_param_value(
-                    edge_file_obj,
+                    parameter_dict,
                     SSN_TITLE
                 ),
                 SEQ_LEN_MIN.nf_parameter_name: get_param_value(
-                    edge_file_obj,
+                    parameter_dict,
                     SEQ_LEN_MIN
                 ),
                 SEQ_LEN_MAX.nf_parameter_name: get_param_value(
-                    edge_file_obj,
+                    parameter_dict,
                     SEQ_LEN_MAX
                 ),
                 METRIC_STR.nf_parameter_name: get_param_value(
-                    edge_file_obj,
+                    parameter_dict,
                     METRIC_STR
                 ),
                 METRIC_VAL.nf_parameter_name: get_param_value(
-                    edge_file_obj,
+                    parameter_dict,
                     METRIC_VAL
                 )
             }
@@ -276,18 +297,18 @@ class SSNCreation(Core):
         # check for the fragment fitler boolean
         frag_filter_str = apply_fragment_filter(parameter_dict)
         if frag_filter_str:
-            nf_parameters["filter"].append(frag_filter_str)
+            mapping["filter"].append(frag_filter_str)
 
         # remove the filter parameter if it is an empty list
-        if not nf_parameters.get("filter"):
-            nf_parameters.pop("filter", None)
+        if not mapping.get("filter"):
+            mapping.pop("filter", None)
 
-        return nf_parameters
+        return mapping
 
     def _access_data_obj(
             self,
             dfu_ref_str: str,
-            file_iterator: Iterator[tuple] = []
+            file_iterator: Iterator[tuple] = [],
             meta_iterator: List = []
         ) -> Dict[str, Any]:
         """
@@ -371,7 +392,7 @@ class SSNCreation(Core):
             edges: int,
             description: str = "SSN XGMML file and metadata",
             obj_name: str = "ssn_file"
-        ) -> Dict[str, Any]:
+        ) -> str:
         """Create the SequenceSimilarityNetwork data object"""
         workspace_id = self.dfu.ws_name_to_id(workspace_name)
         output_file_shock_id = self.dfu.file_to_shock(
