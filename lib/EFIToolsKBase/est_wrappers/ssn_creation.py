@@ -165,11 +165,14 @@ class SSNCreation(Core):
         # gather stats output from the workflow
         with open(os.path.join(self.shared_folder, "stats.json")) as f:
             stats = json.load(f)
-
-        print(stats)
-        logging.info(stats)
+    
+        stats_str = "\n".join(
+            [f"{key}: {value}" for key, value in stats.items()]
+        )
+        logging.info(f"The full SSN has:\n{stats_str}")
 
         # create the data object output from the SSN_Creation App
+        logging.info("Creating the SequenceSimilarityNetwork object")
         ssn_ref = self._save_ssn_file_to_workspace(
             params["workspace_name"],
             os.path.join(self.shared_folder, "full_ssn.xgmml"),
@@ -183,7 +186,7 @@ class SSNCreation(Core):
         report_data = {
             "num_nodes": stats["full_ssn.xgmml"]["num_nodes"],
             "num_edges": stats["full_ssn.xgmml"]["num_edges"],
-            "size": stats["full_ssn.xgmml"]["size"] * 10**-9,
+            "size": f'{stats["full_ssn.xgmml"]["size"] * 10**-9}:.3f',
             "workspace_name": params["workspace_name"]
         }
         # only one object created (the SequenceSimilarityNetwork) so list of
@@ -348,7 +351,8 @@ class SSNCreation(Core):
         )["data"][0]
         
         logging.info(
-            f"The {dfu_ref_str} data object contains:\n{data_obj_dict}"
+            f"The BlastEdgeFile {dfu_ref_str} data object contains:"
+            + f"\n{data_obj_dict}"
         )
       
         parameter_dict = {}
@@ -545,7 +549,7 @@ class SSNCreation(Core):
         )
 
         # Create report from template
-        logging.info("Creating report")
+        logging.info("Creating the HTML report")
         template_path = os.path.join(TEMPLATES_DIR, "ssn_creation_report.html")
         with open(template_path) as tpf:
             template_source = tpf.read()
