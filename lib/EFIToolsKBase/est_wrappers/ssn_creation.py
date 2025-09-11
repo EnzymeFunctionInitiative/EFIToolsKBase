@@ -290,7 +290,6 @@ class SSNCreation(Core):
             }
         )
 
-        # NOTE: these filters have not been implemented on the backend
         # add the taxonomy_filter()
         taxonomy_filters = apply_taxonomy_filter(parameter_dict)
         # add the first entry to the "filter" keyword, whether the

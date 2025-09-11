@@ -81,7 +81,7 @@ parameters:
         # probably should have a long-hint
 
     #
-    # Taxonomy filter parameters; NEEDS MAJOR UPDATE
+    # Taxonomy filter parameters
     #
     taxonomic_level:
         ui-name: Taxonomic Level
