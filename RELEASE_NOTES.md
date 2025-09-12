@@ -3,7 +3,11 @@
 
 Current EST repo commit hash: 6f2bce4fbac77323bff4825ef3b5bd2ef6d3b622
 Current EFI Database version: 101 (https://efi.igb.illinois.edu/downloads/databases/20241017/)
-Current EFIToolsKBase commit hash registered on KBase: 1442215763260c1193eb1e0afdeffdd07f9a5f39
+Current EFIToolsKBase commit hash registered on KBase: d649e6438f291077cb81b228eabc0b9ede095da1
+
+0.4.5, 2025-09-09
+-----------------
+* Fix the EFI-EST SSN Creation app for the EST backend code changes. Bring the KBase UI up to par with the EFI website's content.
 
 0.4.4, 2025-09-03
 -----

@@ -11,6 +11,19 @@
   </head>
  <body>
     <h3>SSN Statistics</h3>
-    {{ stats }}
+    <table>
+     <tr>
+       <td>Number of Nodes</td>
+       <td>{{ num_nodes }}</td>
+     </tr>
+     <tr>
+       <td>Number of Edges</td>
+       <td>{{ num_edges }}</td>
+     </tr>
+     <tr>
+       <td> Size of SSN File (GB)</td>
+       <td>{{ size }}</td>
+     </tr>
+    </table>
  </body>
 </html>
