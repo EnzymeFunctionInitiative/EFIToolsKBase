@@ -1,9 +1,14 @@
 # EFIToolsKBase release notes
 =========================================
 
-Current EST repo commit hash: 6f2bce4fbac77323bff4825ef3b5bd2ef6d3b622
+Current EST repo commit hash: a805a68b97fa3cc2491b2942b55273fbeb73f9c7
 Current EFI Database version: 101 (https://efi.igb.illinois.edu/downloads/databases/20241017/)
 Current EFIToolsKBase commit hash registered on KBase: d649e6438f291077cb81b228eabc0b9ede095da1
+
+0.5.0, 2025-09-24
+-----------------
+* Update the EST commit hash in the DockerFile.
+* Centralize the use of the nextflow config file.
 
 0.4.5, 2025-09-09
 -----------------
