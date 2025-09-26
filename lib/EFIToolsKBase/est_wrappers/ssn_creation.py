@@ -80,7 +80,7 @@ class SSNCreation(Core):
         self.wsClient = self.clients.Workspace
         self.flow = NextflowRunner(
             "pipelines/generatessn/generatessn.nf",
-            "generatessn/kbase.config"
+            "kbase.config"
         )
 
 

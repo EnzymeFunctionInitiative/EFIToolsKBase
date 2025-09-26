@@ -31,8 +31,8 @@ RUN curl -o /opt/install_nextflow.sh https://get.nextflow.io && chmod +x /opt/in
 
 # install the EST repo
 # update the commitHash variable to point to a specific commit (short or long) or branch name
-ARG commitHash=6f2bce4fbac77323bff4825ef3b5bd2ef6d3b622
-#ARG commitHash=6f2bce4
+ARG commitHash=a805a68b97fa3cc2491b2942b55273fbeb73f9c7
+#ARG commitHash=a805a68
 #ARG commitHash=nextflow-test
 RUN git clone https://github.com/EnzymeFunctionInitiative/EST.git && \
     cd EST && \

@@ -25,7 +25,7 @@ class EFIEST(Core):
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
         self.wsClient = self.clients.Workspace
-        self.flow = NextflowRunner("pipelines/est/est.nf", "est/kbase.config")
+        self.flow = NextflowRunner("pipelines/est/est.nf", "kbase.config")
 
     ###########################################################################
     # interface method

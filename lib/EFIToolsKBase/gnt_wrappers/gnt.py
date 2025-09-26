@@ -27,7 +27,7 @@ class EFIGNT(Core):
         self.report = self.clients.KBaseReport
         self.dfu = self.clients.DataFileUtil
         self.wsClient = self.clients.Workspace
-        self.flow = NextflowRunner("pipelines/gnt/gnt.nf", "gnt/kbase.config")
+        self.flow = NextflowRunner("pipelines/gnt/gnt.nf", "kbase.config")
 
 
     def run_gnt_pipeline(self, params: Dict[str,str]) -> Dict[str,str]:
